@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JLV
+Bundle-SymbolicName: com.rdiachenko.jlv; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.rdiachenko.jlv.JlvActivator
+Bundle-Vendor: RDIACHENKO
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

@@ -1,5 +1,10 @@
 target
 bin
 gh-pages
-.settings
+*.settings
+*.classpath
 *~
+.checkstyle
+*.zip
+*.tar.gz
+*.tar

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.rdiachenko.jlv.feature"
+      label="JLV"
+      version="1.0.0"
+      provider-name="Ruslan Diachenko"
+      nl="en_GB,en_US">
+
+   <description url="https://github.com/rusya7/JLV">
+      Java logging viewer
+   </description>
+
+   <copyright url="http://www.eclipse.org/legal/epl-v10.html">
+      JLV is licensed under the terms of the Eclipse Public License v1.0.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License v1.0
+   </license>
+
+   <url>
+      <update label="Eclipse update site" url="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
+      <discovery label="Project site" url="https://github.com/rusya7/JLV"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="com.rdiachenko.jlv"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
+
+</feature>
