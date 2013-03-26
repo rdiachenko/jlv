@@ -5,16 +5,16 @@
 	<artifactId>com.rdiachenko.jlv.parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<name>Java logging viewer</name>
-	
+
 	<modules>
 		<module>jlv-eclipse-plugin</module>
 		<module>jlv-eclipse-plugin-tests</module>
 		<module>jlv-eclipse-feature</module>
 		<module>jlv-eclipse-update-site</module>
 	</modules>
-	
+
 	<properties>
 		<tycho-version>0.17.0</tycho-version>
 		<juno-repo.url>http://download.eclipse.org/releases/juno</juno-repo.url>
