@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
+import org.apache.log4j.spi.LoggingEvent;
+
 public class ClientThread extends Thread {
 
 	private Socket socket = null;
@@ -23,7 +25,7 @@ public class ClientThread extends Thread {
 
 			while ((object = inputStream.readObject()) != null) {
 				LoggingEvent log = (LoggingEvent) object;
-				sendLogToList(log);
+//				sendLogToList(log);
 			}
 
 		} catch (IOException e) {
