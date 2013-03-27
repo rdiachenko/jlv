@@ -17,6 +17,7 @@
 
 	<properties>
 		<tycho-version>0.17.0</tycho-version>
+		<jlv.version>1.0.0-SNAPSHOT</jlv.version>
 		<juno-repo.url>http://download.eclipse.org/releases/juno</juno-repo.url>
 	</properties>
 
@@ -27,6 +28,16 @@
 			<url>${juno-repo.url}</url>
 		</repository>
 	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.rdiachenko.jlv</groupId>
+				<artifactId>jlv</artifactId>
+				<version>${jlv.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>

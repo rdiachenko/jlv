@@ -28,10 +28,10 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<finalName>jlv-with-dependencies-${project.version}</finalName>
+					<finalName>${project.build.finalName}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptors>
-						<descriptor>src/assembly/assembly-descriptor.xml</descriptor>
+						<descriptor>${basedir}/src/assembly/assembly-descriptor.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
