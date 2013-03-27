@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: jlv-eclipse-plugin-tests
+Bundle-Name: jlv-plugin-tests
 Bundle-SymbolicName: com.rdiachenko.jlv.plugin.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.rdiachenko.jlv.tests.Activator

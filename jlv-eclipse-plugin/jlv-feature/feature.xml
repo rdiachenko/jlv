@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.rdiachenko.jlv.feature"
-      label="jlv-eclipse-feature"
+      label="jlv-feature"
       version="1.0.0.qualifier"
       provider-name="Ruslan Diachenko">
 

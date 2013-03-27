@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: jlv-eclipse-plugin
+Bundle-Name: jlv-plugin
 Bundle-SymbolicName: com.rdiachenko.jlv.plugin
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.rdiachenko.jlv.Activator
