@@ -6,13 +6,22 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 
 import org.apache.log4j.spi.LoggingEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.rdiachenko.jlv.log4j.domain.LogContainer;
 
 public class ClientThread extends Thread {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	private Socket socket = null;
+	
+	private LogContainer container = null;
 
 	public ClientThread(Socket socket) {
 		this.socket = socket;
+		container = LogContainer.createNewContainer();
 	}
 
 	@Override
@@ -25,21 +34,25 @@ public class ClientThread extends Thread {
 
 			while ((object = inputStream.readObject()) != null) {
 				LoggingEvent log = (LoggingEvent) object;
-//				sendLogToList(log);
+				container.add(log);
 			}
 
 		} catch (IOException e) {
-			// log error
+			logger.error("Errors occur while reading from socket's input stream: ", e);
 
 		} catch (ClassNotFoundException e) {
-			// log error "Couldn't recognized LoggingEvent object from input stream";
+			logger.error("Couldn't recognized LoggingEvent object from the socket's input stream: ", e);
 
 		} finally {
 			try {
 				inputStream.close();
+			} catch (IOException e) {
+				logger.error("Socket's input stream could not be closed: ", e);
+			}
+			try {
 				socket.close();
 			} catch (IOException e) {
-				// log error Errors occur when closing socket
+				logger.error("Socket could not be closed: ", e);
 			}
 		}
 	}

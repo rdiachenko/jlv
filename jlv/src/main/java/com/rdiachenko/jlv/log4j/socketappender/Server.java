@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Server {
-
+	
 	private ServerSocket serverSocket = null;
 	
 	private boolean listening = true;
@@ -20,9 +20,9 @@ public class Server {
 		}
 	}
 	
-	public void start() {
+	public void start() throws IOException {
 		while (listening) {
-			// new ClientThread(serverSocket.accept()).start();
+			 new ClientThread(serverSocket.accept()).start();
 		}
 	}
 	
