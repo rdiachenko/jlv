@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
 
-public class ClientThread extends Thread {
+public class ClientThread implements Runnable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -24,7 +24,6 @@ public class ClientThread extends Thread {
 		container = LogContainer.createNewContainer();
 	}
 
-	@Override
 	public void run() {
 		ObjectInputStream inputStream = null;
 
