@@ -35,7 +35,9 @@ public class Server {
 	public void stop() throws IOException {
 		try {
 			executor.shutdown();
-			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+				executor.shutdownNow();
+			}
 		} catch (InterruptedException e) {
 			logger.error("Client's thread proccessing was interrupted: ", e);
 		} finally {
