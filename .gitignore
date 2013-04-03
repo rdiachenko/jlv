@@ -8,3 +8,4 @@ gh-pages
 *.zip
 *.tar.gz
 *.tar
+*.log
