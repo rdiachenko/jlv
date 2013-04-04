@@ -74,7 +74,7 @@ public class ClientThread implements Runnable {
 			fileAppender.setFile(LOG_FILE);
 			fileAppender.setLayout(new PatternLayout(PATTERN_LAYOUT));
 			fileAppender.setThreshold(Level.ALL);
-			fileAppender.setAppend(true);
+			fileAppender.setAppend(false);
 			fileAppender.activateOptions();
 		}
 

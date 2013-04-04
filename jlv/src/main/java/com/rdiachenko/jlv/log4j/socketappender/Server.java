@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class Server {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	private ServerSocket serverSocket = null;
