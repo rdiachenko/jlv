@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.rdiachenko.jlv.log4j.socketappender.Server;
 
-public class Log4jServerRunner {
+public final class Log4jServerRunner {
 
 	public static void main(String[] args) throws IOException {
 		Server server = new Server(4445);
@@ -13,5 +13,9 @@ public class Log4jServerRunner {
 		} finally {
 			server.stop();
 		}
+	}
+
+	private Log4jServerRunner() {
+		// it is a runner class, no reason to have a public constructor
 	}
 }

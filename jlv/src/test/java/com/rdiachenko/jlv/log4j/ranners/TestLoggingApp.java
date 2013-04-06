@@ -4,15 +4,19 @@ import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestLoggingApp {
+public final class TestLoggingApp {
+
+	public static void main(String[] args) {
+		PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
+		TestLoggingApp app = new TestLoggingApp();
+		app.run();
+	}
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static void main(String[] args) {
-        PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
-        TestLoggingApp app = new TestLoggingApp();
-        app.run();
-    }
+	private TestLoggingApp() {
+		// it is a runner class, no reason to have a public constructor
+	}
 
 	private void run() {
 		logger.debug("debug test message 1");

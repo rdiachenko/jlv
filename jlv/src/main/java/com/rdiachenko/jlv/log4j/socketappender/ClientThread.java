@@ -61,7 +61,7 @@ public class ClientThread implements Runnable {
 		}
 	}
 
-	private static class Log4jFileAppender {
+	private final static class Log4jFileAppender {
 
 		private static final String LOG_FILE = "src/main/resources/log4j.log";
 
