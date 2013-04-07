@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jlv-plugin
-Bundle-SymbolicName: com.rdiachenko.jlv.plugin
+Bundle-SymbolicName: com.rdiachenko.jlv.plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.rdiachenko.jlv.Activator
 Bundle-Vendor: Ruslan Diachenko
