@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
  */
 public class Activator extends AbstractUIPlugin {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
 	public static final String PLUGIN_ID = "com.rdiachenko.jlv";
 
 	public static final String LOG4J_CONFIG_KEY = "log4j.configuration";
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static Activator plugin;
 
