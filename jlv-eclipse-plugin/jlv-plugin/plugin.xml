@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.preferencePages">
+   <extension point="org.eclipse.ui.preferencePages">
       <page
             class="com.rdiachenko.jlv.ui.preferences.GeneralPreferencePage"
             id="com.rdiachenko.jlv.ui.preferences.general"
             name="JLV">
       </page>
+   </extension>
+   
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.rdiachenko.jlv.ui.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

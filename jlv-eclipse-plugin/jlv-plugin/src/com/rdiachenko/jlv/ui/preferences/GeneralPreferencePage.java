@@ -1,21 +1,36 @@
 package com.rdiachenko.jlv.ui.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.rdiachenko.jlv.JlvActivator;
+
 public class GeneralPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+	public GeneralPreferencePage() {
+		super(GRID);
+		setPreferenceStore(JlvActivator.getDefault().getPreferenceStore());
+		setDescription("General settings:");
+	}
 
 	@Override
 	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
-
+		// initialization moved in constructor
 	}
 
 	@Override
 	protected void createFieldEditors() {
-		// TODO Auto-generated method stub
+		IntegerFieldEditor serverPortNumberPrefEditor = new IntegerFieldEditor(
+				PreferenceConstants.JLV_SERVER_PORT_NUMBER,
+				"Port number:", getFieldEditorParent());
+		addField(serverPortNumberPrefEditor);
 
+		BooleanFieldEditor serverAutoStartPrefEditor = new BooleanFieldEditor(
+				PreferenceConstants.JLV_SERVER_AUTO_START,
+				"Automatic start", getFieldEditorParent());
+		addField(serverAutoStartPrefEditor);
 	}
-
 }

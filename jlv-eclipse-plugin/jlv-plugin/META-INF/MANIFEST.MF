@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: jlv-plugin
 Bundle-SymbolicName: com.rdiachenko.jlv.plugin;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.rdiachenko.jlv.Activator
+Bundle-Activator: com.rdiachenko.jlv.JlvActivator
 Bundle-Vendor: Ruslan Diachenko
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

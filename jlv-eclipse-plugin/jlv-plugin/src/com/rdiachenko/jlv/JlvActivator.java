@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class JlvActivator extends AbstractUIPlugin {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -17,7 +17,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public static final String LOG4J_CONFIG_KEY = "log4j.configuration";
 
-	private static Activator plugin;
+	private static JlvActivator plugin;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -37,7 +37,7 @@ public class Activator extends AbstractUIPlugin {
 		super.stop(context);
 	}
 
-	public static Activator getDefault() {
+	public static JlvActivator getDefault() {
 		return plugin;
 	}
 }

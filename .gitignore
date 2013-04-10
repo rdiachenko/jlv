@@ -9,3 +9,5 @@ gh-pages
 *.tar.gz
 *.tar
 *.log
+.metadata
+*.class
