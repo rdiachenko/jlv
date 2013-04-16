@@ -1,41 +1,34 @@
 package com.rdiachenko.jlv.log4j.domain;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.log4j.spi.LoggingEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class LogContainer {
 
-	private Set<LoggingEvent> logList;
+	private final List<Log> container;
 
-	public static LogContainer createNewContainer() {
+	public static LogContainer newInstance() {
 		return new LogContainer();
 	}
 
 	private LogContainer() {
-		logList = new HashSet<LoggingEvent>();
-	}
-
-	public void add(LoggingEvent le) {
-		logList.add(le);
-	}
-
-	public void remove(LoggingEvent le) {
-		logList.remove(le);
-	}
-
-	public Iterator<LoggingEvent> iterator() {
-		return logList.iterator();
+		container = new LinkedList<Log>();
 	}
 
 	public int size() {
-		return logList.size();
+		return container.size();
 	}
 
-	@Override
-	public String toString() {
-		return logList.toString();
+	public void add(Log log) {
+		container.add(log);
+	}
+
+	public Log get(int index) {
+		return container.get(index);
+	}
+
+	public Iterator<Log> iterator() {
+		return container.iterator();
 	}
 }

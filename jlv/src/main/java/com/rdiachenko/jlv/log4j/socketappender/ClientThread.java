@@ -39,19 +39,19 @@ public class ClientThread implements Runnable {
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
 			// TODO: create more accurate handling
-			logger.warn("Exception occur while reading object from socket input stream: ", e);
+			logger.warn("Exception occur while reading object from socket input stream:", e);
 
 		} catch (IOException e) {
-			logger.error("Errors occur while reading from socket's input stream: ", e);
+			logger.error("Errors occur while reading from socket's input stream:", e);
 
 		} catch (ClassNotFoundException e) {
-			logger.error("Couldn't recognized LoggingEvent object from the socket's input stream: ", e);
+			logger.error("Couldn't recognized LoggingEvent object from the socket's input stream:", e);
 
 		} finally {
 			try {
 				inputStream.close();
 			} catch (IOException e) {
-				logger.error("Socket's input stream could not be closed: ", e);
+				logger.error("Socket's input stream could not be closed:", e);
 			}
 			try {
 				socket.close();
@@ -67,7 +67,7 @@ public class ClientThread implements Runnable {
 
 		private static final String PATTERN_LAYOUT = "[%c][%C][%d][%F][%l][%L][%M][%p][%r][%t][%m]%n";
 
-		private FileAppender fileAppender;
+		private final FileAppender fileAppender;
 
 		private Log4jFileAppender() {
 			fileAppender = new FileAppender();
