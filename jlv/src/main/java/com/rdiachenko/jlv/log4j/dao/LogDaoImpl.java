@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +16,39 @@ public class LogDaoImpl implements LogDao {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public LogContainer getAllLogs() {
-//		String queryString = "SELECT * FROM logs";
-//		Connection conn = ConnectionFactory.INSTANCE.getConnection();
-//		PreparedStatement ps = conn.prepareStatement(queryString);
-//		ps.setInt(1, value);
-//		ResultSet rs = ps.executeQuery();
-//		while (rs.next()) {
-//
-//		}
-		return null;
+	public void dropAndCreateLogsTable() throws SQLException {
+		String dropQueryString = "DROP TABLE logs IF EXISTS";
+		String createQueryString = "CREATE TABLE logs("
+				+ "ID BIGINT AUTO_INCREMENT,"
+				+ "category VARCHAR(100) DEFAULT '',"
+				+ "class VARCHAR(100) DEFAULT '',"
+				+ "date VARCHAR(100) DEFAULT '',"
+				+ "file VARCHAR(100) DEFAULT '',"
+				+ "locInfo VARCHAR(100) DEFAULT '',"
+				+ "line VARCHAR(100) DEFAULT '',"
+				+ "method VARCHAR(100) DEFAULT '',"
+				+ "level VARCHAR(100) DEFAULT '',"
+				+ "ms VARCHAR(100) DEFAULT '',"
+				+ "thread VARCHAR(100) DEFAULT '',"
+				+ "message VARCHAR(1000) DEFAULT '',"
+				+ ")";
+		Connection conn = null;
+		Statement statement = null;
+
+		try {
+			conn = ConnectionFactory.CONNECTION.getConnection();
+			statement = conn.createStatement();
+			statement.execute(dropQueryString);
+			statement.execute(createQueryString);
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+
+			if (conn != null) {
+				conn.close();
+			}
+		}
 	}
 
 	public LogContainer getTailingLogs(int tail) {

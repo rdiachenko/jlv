@@ -5,9 +5,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.jdbc.JDBCAppender;
@@ -16,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
+import com.rdiachenko.jlv.log4j.dao.LogDao;
+import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
 
 public class ClientThread implements Runnable {
 
@@ -99,7 +99,8 @@ public class ClientThread implements Runnable {
 		private final JDBCAppender jdbcAppender;
 
 		private Log4jDbAppender() throws SQLException {
-			initDb();
+			LogDao logDao = new LogDaoImpl();
+			logDao.dropAndCreateLogsTable();
 			jdbcAppender = new JDBCAppender();
 			jdbcAppender.setDriver(ConnectionFactory.CONNECTION.getDbDriver());
 			jdbcAppender.setURL(ConnectionFactory.CONNECTION.getDbUrl());
@@ -109,34 +110,6 @@ public class ClientThread implements Runnable {
 			jdbcAppender.setLocationInfo(true);
 			jdbcAppender.setThreshold(Level.ALL);
 			jdbcAppender.activateOptions();
-		}
-
-		private static void initDb() throws SQLException {
-			Connection conn = null;
-
-			try {
-				conn = ConnectionFactory.CONNECTION.getConnection();
-				Statement statement = conn.createStatement();
-				statement.execute("DROP TABLE logs IF EXISTS");
-				statement.execute("CREATE TABLE logs("
-						+ "ID BIGINT AUTO_INCREMENT,"
-						+ "category VARCHAR(100) DEFAULT '',"
-						+ "class VARCHAR(100) DEFAULT '',"
-						+ "date VARCHAR(100) DEFAULT '',"
-						+ "file VARCHAR(100) DEFAULT '',"
-						+ "locInfo VARCHAR(100) DEFAULT '',"
-						+ "line VARCHAR(100) DEFAULT '',"
-						+ "method VARCHAR(100) DEFAULT '',"
-						+ "level VARCHAR(100) DEFAULT '',"
-						+ "ms VARCHAR(100) DEFAULT '',"
-						+ "thread VARCHAR(100) DEFAULT '',"
-						+ "message VARCHAR(1000) DEFAULT '',"
-						+ ")");
-			} finally {
-				if (conn != null) {
-					conn.close();
-				}
-			}
 		}
 
 		private void append(LoggingEvent le) {
