@@ -11,3 +11,4 @@ gh-pages
 *.log
 .metadata
 *.class
+*.db

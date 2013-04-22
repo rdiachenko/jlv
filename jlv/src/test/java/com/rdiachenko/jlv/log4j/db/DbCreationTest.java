@@ -1,30 +1,27 @@
 package com.rdiachenko.jlv.log4j.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Iterator;
 
 import org.junit.Test;
+
+import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
+import com.rdiachenko.jlv.log4j.dao.LogDao;
+import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
+import com.rdiachenko.jlv.log4j.domain.Log;
 
 public class DbCreationTest {
 
 	@Test
-	public void testDb() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Class.forName("org.h2.Driver").newInstance();
-		Connection conn = DriverManager.getConnection("jdbc:h2:src/main/resources/jlv", "jlv",  "jlv");
-		Statement statement = conn.createStatement();
-		ResultSet rs = statement.executeQuery("select * from logs");
+	public void testDb() throws SQLException {
+		Connection conn = ConnectionFactory.CONNECTION.getConnection();
+		LogDao logDao = new LogDaoImpl();
+		Iterator<Log> logs = logDao.getTailingLogs(1).iterator();
 
-		while (rs.next()) {
-			System.out.println(rs.getBigDecimal(1));
-
-			for (int i = 2; i < 13; i++) {
-				System.out.println(rs.getString(i));
-			}
+		while (logs.hasNext()) {
+			System.out.println(logs.next());
 		}
 		conn.close();
 	}
-
 }

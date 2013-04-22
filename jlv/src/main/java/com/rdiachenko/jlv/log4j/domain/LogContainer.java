@@ -8,11 +8,7 @@ public final class LogContainer {
 
 	private final List<Log> container;
 
-	public static LogContainer newInstance() {
-		return new LogContainer();
-	}
-
-	private LogContainer() {
+	public LogContainer() {
 		container = new LinkedList<Log>();
 	}
 

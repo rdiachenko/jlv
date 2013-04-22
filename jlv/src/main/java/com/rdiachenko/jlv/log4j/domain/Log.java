@@ -72,6 +72,22 @@ public final class Log {
 		return message;
 	}
 
+	@Override
+	public String toString() {
+		return "[categoryName=" + categoryName
+				+ "; className=" + className
+				+ "; date=" + date
+				+ "; fileName=" + fileName
+				+ "; locationInfo=" + locationInfo
+				+ "; lineNumber=" + lineNumber
+				+ "; methodName=" + methodName
+				+ "; level=" + level
+				+ "; ms=" + ms
+				+ "; threadName=" + threadName
+				+ "; message=" + message
+				+ "]";
+	}
+
 	public static class Builder {
 
 		private String categoryName = "";	// %c

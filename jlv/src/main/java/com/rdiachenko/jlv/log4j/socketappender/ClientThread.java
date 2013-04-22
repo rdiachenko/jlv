@@ -6,17 +6,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
 import org.apache.log4j.jdbc.JDBCAppender;
 import org.apache.log4j.spi.LoggingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
 
 public class ClientThread implements Runnable {
 
@@ -42,12 +41,6 @@ public class ClientThread implements Runnable {
 				LoggingEvent log = (LoggingEvent) object;
 				dbAppender.append(log);
 			}
-
-		} catch (InstantiationException e) {
-			logger.error("", e);
-
-		} catch (IllegalAccessException e) {
-			logger.error("", e);
 
 		} catch (SQLException e) {
 			logger.error("", e);
@@ -77,57 +70,52 @@ public class ClientThread implements Runnable {
 		}
 	}
 
-	private final static class Log4jFileAppender {
-
-		private static final String LOG_FILE = "src/main/resources/log4j.log";
-		private static final String PATTERN_LAYOUT = "[%c][%C][%d][%F][%l][%L][%M][%p][%r][%t][%m]%n";
-
-		private final FileAppender fileAppender;
-
-		private Log4jFileAppender() {
-			fileAppender = new FileAppender();
-			fileAppender.setFile(LOG_FILE);
-			fileAppender.setLayout(new PatternLayout(PATTERN_LAYOUT));
-			fileAppender.setThreshold(Level.ALL);
-			fileAppender.setAppend(false);
-			fileAppender.activateOptions();
-		}
-
-		private void append(LoggingEvent le) {
-			fileAppender.append(le);
-		}
-	}
+//	private final static class Log4jFileAppender {
+//
+//		private static final String LOG_FILE = "src/main/resources/log4j.log";
+//		private static final String PATTERN_LAYOUT = "[%c][%C][%d][%F][%l][%L][%M][%p][%r][%t][%m]%n";
+//
+//		private final FileAppender fileAppender;
+//
+//		private Log4jFileAppender() {
+//			fileAppender = new FileAppender();
+//			fileAppender.setFile(LOG_FILE);
+//			fileAppender.setLayout(new PatternLayout(PATTERN_LAYOUT));
+//			fileAppender.setThreshold(Level.ALL);
+//			fileAppender.setAppend(false);
+//			fileAppender.activateOptions();
+//		}
+//
+//		private void append(LoggingEvent le) {
+//			fileAppender.append(le);
+//		}
+//	}
 
 	private final static class Log4jDbAppender {
 
-		private static final String DB_DRIVER = "org.h2.Driver";
-		private static final String DB_URL = "jdbc:h2:src/main/resources/jlv";
-		private static final String USER_NAME = "jlv";
-		private static final String USER_PASSWORD = "jlv";
 		private static final String SQL = "INSERT INTO logs (category, class, date, file, locInfo, line, method, level, ms, thread, message) "
 				+ "VALUES ('%c', '%C', '%d', '%F', '%l', '%L', '%M', '%p', '%r', '%t', '%m')";
 
 		private final JDBCAppender jdbcAppender;
 
-		private Log4jDbAppender() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		private Log4jDbAppender() throws SQLException {
 			initDb();
 			jdbcAppender = new JDBCAppender();
-			jdbcAppender.setDriver(DB_DRIVER);
-			jdbcAppender.setURL(DB_URL);
-			jdbcAppender.setUser(USER_NAME);
-			jdbcAppender.setPassword(USER_PASSWORD);
+			jdbcAppender.setDriver(ConnectionFactory.CONNECTION.getDbDriver());
+			jdbcAppender.setURL(ConnectionFactory.CONNECTION.getDbUrl());
+			jdbcAppender.setUser(ConnectionFactory.CONNECTION.getUser());
+			jdbcAppender.setPassword(ConnectionFactory.CONNECTION.getPassword());
 			jdbcAppender.setSql(SQL);
 			jdbcAppender.setLocationInfo(true);
 			jdbcAppender.setThreshold(Level.ALL);
 			jdbcAppender.activateOptions();
 		}
 
-		private static void initDb() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-			Class.forName(DB_DRIVER).newInstance();
+		private static void initDb() throws SQLException {
 			Connection conn = null;
 
 			try {
-				conn = DriverManager.getConnection(DB_URL, USER_NAME, USER_PASSWORD);
+				conn = ConnectionFactory.CONNECTION.getConnection();
 				Statement statement = conn.createStatement();
 				statement.execute("DROP TABLE logs IF EXISTS");
 				statement.execute("CREATE TABLE logs("
@@ -145,7 +133,9 @@ public class ClientThread implements Runnable {
 						+ "message VARCHAR(1000) DEFAULT '',"
 						+ ")");
 			} finally {
-				conn.close();
+				if (conn != null) {
+					conn.close();
+				}
 			}
 		}
 
