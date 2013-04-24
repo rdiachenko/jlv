@@ -47,7 +47,7 @@ public class ClientThread implements Runnable {
 
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
-			// TODO: create more accurate handling (Issue #19: https://github.com/rusya7/JLV/issues/19)
+			// TODO: create more accurate handling (Issue #19: https://github.com/rdiachenko/JLV/issues/19)
 			logger.warn("Exception occur while reading object from socket input stream:", e);
 
 		} catch (IOException e) {

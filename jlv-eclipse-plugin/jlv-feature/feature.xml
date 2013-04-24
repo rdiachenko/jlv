@@ -5,7 +5,7 @@
       version="1.0.0.qualifier"
       provider-name="Ruslan Diachenko">
 
-   <description url="https://github.com/rusya7/JLV">
+   <description url="https://github.com/rdiachenko/JLV">
       Java logging viewer (JLV)
    </description>
 
