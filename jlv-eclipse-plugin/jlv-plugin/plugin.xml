@@ -14,5 +14,56 @@
             class="com.rdiachenko.jlv.ui.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.rdiachenko.jlv.ui.views.category"
+            name="JLV">
+      </category>
+      <view
+            category="com.rdiachenko.jlv.ui.views.category"
+            class="com.rdiachenko.jlv.ui.views.JlvView"
+            icon="icons/jlv_view.gif"
+            id="com.rdiachenko.jlv.ui.views.view"
+            name="JLV"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="com.rdiachenko.jlv.ui.views.viewContribution"
+            targetID="com.rdiachenko.jlv.ui.views.view">
+         <action
+               class="com.rdiachenko.jlv.ui.views.StopServerAction"
+               icon="icons/stop_server.png"
+               id="com.rdiachenko.jlv.ui.views.stopServerAction"
+               label="Stop server"
+               state="true"
+               style="radio"
+               toolbarPath="group1"
+               tooltip="Stop server">
+         </action>
+         <action
+               class="com.rdiachenko.jlv.ui.views.StartServerAction"
+               icon="icons/start_server.png"
+               id="com.rdiachenko.jlv.ui.views.startServerAction"
+               label="Start server"
+               state="false"
+               style="radio"
+               toolbarPath="group1"
+               tooltip="Start server">
+         </action>
+         <action
+               class="com.rdiachenko.jlv.ui.views.ClearViewAction"
+               icon="icons/clear.png"
+               id="com.rdiachenko.jlv.ui.views.clearViewAction"
+               label="Clear view"
+               style="push"
+               toolbarPath="group2"
+               tooltip="Clear view">
+         </action>
+      </viewContribution>
+   </extension>
 
 </plugin>
