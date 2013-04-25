@@ -15,7 +15,6 @@
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<unpack>true</unpack>
 			<scope>runtime</scope>
-
 			<excludes>
 				<exclude>junit:junit</exclude>
 			</excludes>
