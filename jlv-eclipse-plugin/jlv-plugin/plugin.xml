@@ -39,8 +39,7 @@
                icon="icons/stop_server.png"
                id="com.rdiachenko.jlv.ui.views.stopServerAction"
                label="Stop server"
-               state="true"
-               style="radio"
+               style="push"
                toolbarPath="group1"
                tooltip="Stop server">
          </action>
@@ -49,8 +48,7 @@
                icon="icons/start_server.png"
                id="com.rdiachenko.jlv.ui.views.startServerAction"
                label="Start server"
-               state="false"
-               style="radio"
+               style="push"
                toolbarPath="group1"
                tooltip="Start server">
          </action>

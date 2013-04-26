@@ -24,12 +24,12 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	protected void createFieldEditors() {
 		IntegerFieldEditor serverPortNumberPrefEditor = new IntegerFieldEditor(
-				PreferenceConstants.JLV_SERVER_PORT_NUMBER,
+				PreferenceManager.JLV_SERVER_PORT_NUMBER,
 				"Port number:", getFieldEditorParent());
 		addField(serverPortNumberPrefEditor);
 
 		BooleanFieldEditor serverAutoStartPrefEditor = new BooleanFieldEditor(
-				PreferenceConstants.JLV_SERVER_AUTO_START,
+				PreferenceManager.JLV_SERVER_AUTO_START,
 				"Automatic start", getFieldEditorParent());
 		addField(serverAutoStartPrefEditor);
 	}

@@ -7,22 +7,20 @@ import org.eclipse.ui.IViewPart;
 
 public class ClearViewAction implements IViewActionDelegate {
 
+	private JlvView view;
+
 	@Override
 	public void run(IAction action) {
-		// TODO Auto-generated method stub
-
+		view.clear();
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+		// no need to use this event
 	}
 
 	@Override
 	public void init(IViewPart view) {
-		// TODO Auto-generated method stub
-
+		this.view = (JlvView) view;
 	}
-
 }

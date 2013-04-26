@@ -13,7 +13,7 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static final String PLUGIN_ID = "com.rdiachenko.jlv";
+	public static final String PLUGIN_ID = "com.rdiachenko.jlv.plugin";
 
 	public static final String LOG4J_CONFIG_KEY = "log4j.configuration";
 

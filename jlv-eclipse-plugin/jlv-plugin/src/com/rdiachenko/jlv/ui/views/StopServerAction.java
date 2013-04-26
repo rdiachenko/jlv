@@ -4,25 +4,29 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StopServerAction implements IViewActionDelegate {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	private JlvView view;
+
 	@Override
 	public void run(IAction action) {
-		// TODO Auto-generated method stub
-
+		view.getController().stopServer();
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+		logger.debug("Stop server action selection");
+		view.updateServerActionsState();
 	}
 
 	@Override
 	public void init(IViewPart view) {
-		// TODO Auto-generated method stub
-
+		this.view = (JlvView) view;
 	}
 
 }
