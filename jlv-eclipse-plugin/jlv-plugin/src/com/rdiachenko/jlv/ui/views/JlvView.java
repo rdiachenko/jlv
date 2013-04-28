@@ -2,7 +2,10 @@ package com.rdiachenko.jlv.ui.views;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -15,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.JlvActivator;
+import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
+import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class JlvView extends ViewPart {
 
@@ -34,6 +39,10 @@ public class JlvView extends ViewPart {
 
 	private ViewLifecycleListener viewLifecycleListener;
 
+	public JlvView() {
+		controller = new JlvViewController();
+	}
+
 	public JlvViewController getController() {
 		return controller;
 	}
@@ -41,8 +50,6 @@ public class JlvView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		viewer = createViewer(parent);
-		controller = new JlvViewController(this);
-
 		viewLifecycleListener = new ViewLifecycleListener();
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv view");
@@ -58,6 +65,7 @@ public class JlvView extends ViewPart {
 	@Override
 	public void dispose() {
 		super.dispose();
+		getController().dispose();
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was removed from Jlv view");
 	}
@@ -72,24 +80,7 @@ public class JlvView extends ViewPart {
 	}
 
 	public void setStopServerActionEnabled(boolean state) {
-		stopServerAction.setChecked(state);
-	}
-
-	public void updateServerActionsState() {
-		logger.debug("Start server action enabled: {}", startServerAction.isEnabled());
-		logger.debug("Stop server action enabled: {}", stopServerAction.isEnabled());
-		logger.debug("Updating server's action state ...");
-
-		if (startServerAction.isEnabled() && !stopServerAction.isEnabled()) {
-			startServerAction.setEnabled(false);
-			stopServerAction.setEnabled(true);
-		} else if (!startServerAction.isEnabled() && stopServerAction.isEnabled()) {
-			startServerAction.setEnabled(true);
-			stopServerAction.setEnabled(false);
-		}
-
-		logger.debug("Start server action enabled: {}", startServerAction.isEnabled());
-		logger.debug("Stop server action enabled: {}", stopServerAction.isEnabled());
+		stopServerAction.setEnabled(state);
 	}
 
 	private void initServerActions() {
@@ -97,33 +88,61 @@ public class JlvView extends ViewPart {
 				.find(START_SERVER_ACTION_ID)).getAction();
 		stopServerAction = ((ActionContributionItem) getViewSite().getActionBars().getToolBarManager()
 				.find(STOP_SERVER_ACTION_ID)).getAction();
-		updateServerActionsState();
+
+		boolean isServerAutoStart = PreferenceManager.getServerAutoStart();
+		logger.debug("Server auto start option: {}", isServerAutoStart);
+
+		if (isServerAutoStart) {
+			getController().startServer();
+			setStartServerActionEnabled(false);
+			setStopServerActionEnabled(true);
+		} else {
+			setStartServerActionEnabled(true);
+			setStopServerActionEnabled(false);
+		}
 	}
 
 	private TableViewer createViewer(Composite parent) {
-		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.VIRTUAL;
 		TableViewer viewer = new TableViewer(parent, style);
 		Table table = viewer.getTable();
+//		table.setItemCount(2);
+//		table.addListener(SWT.SetData, new Listener() {
+//			@Override
+//			public void handleEvent(Event event) {
+//				TableItem item = (TableItem) event.item;
+//				item.setData(getController().getLogs()[0]);
+//			}
+//		});
 
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
-		createColumns(table);
+		createColumns(viewer);
 
 		viewer.setUseHashlookup(true);
-		viewer.setContentProvider(new JlvViewContentProvider());
-		viewer.setLabelProvider(new JlvViewLabelProvider());
-//        viewer.setInput(input);
+		viewer.setContentProvider(new ArrayContentProvider());
+        viewer.setInput(getController().getLogs());
 
 		return viewer;
 	}
 
-	private void createColumns(Table table) {
-		for (LogField logField : LogField.values()) {
-			TableColumn column = new TableColumn(table, SWT.NONE);
+	private void createColumns(TableViewer viewer) {
+		for (final LogField logField : LogField.values()) {
+			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+			TableColumn column = viewerColumn.getColumn();
 			column.setText(logField.getName());
 			column.setWidth(100);
+			viewerColumn.setLabelProvider(new ColumnLabelProvider() {
+				@Override
+				public String getText(Object element) {
+					Log log = (Log) element;
+					String value = logField.getValue(log);
+					logger.debug("Log's field name=value: {}={}", logField.getName(), value);
+					return value;
+				}
+			});
 		}
 	}
 

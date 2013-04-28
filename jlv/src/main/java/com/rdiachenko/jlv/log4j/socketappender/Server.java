@@ -17,6 +17,8 @@ public class Server {
 
 	private ServerSocket serverSocket = null;
 
+	private volatile boolean listening = true;
+
 	public Server(int port) throws IOException {
 		if (port < 0) {
 			throw new IllegalArgumentException("Port value should be a positive number. Current port: " + port);
@@ -29,10 +31,13 @@ public class Server {
 	}
 
 	public void start() throws IOException {
-		executor.execute(new ClientThread(serverSocket.accept()));
+		while (listening) {
+			executor.execute(new ClientThread(serverSocket.accept()));
+		}
 	}
 
 	public void stop() throws IOException {
+		listening = false;
 		try {
 			executor.shutdown();
 			if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {

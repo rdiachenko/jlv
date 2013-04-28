@@ -12,7 +12,6 @@ public class JlvViewLabelProvider extends LabelProvider implements ITableLabelPr
 
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

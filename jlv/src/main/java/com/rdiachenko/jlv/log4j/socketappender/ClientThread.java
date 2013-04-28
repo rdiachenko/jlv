@@ -5,7 +5,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.sql.SQLException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.jdbc.JDBCAppender;
@@ -14,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
-import com.rdiachenko.jlv.log4j.dao.LogDao;
-import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
 
 public class ClientThread implements Runnable {
 
@@ -41,9 +38,6 @@ public class ClientThread implements Runnable {
 				LoggingEvent log = (LoggingEvent) object;
 				dbAppender.append(log);
 			}
-
-		} catch (SQLException e) {
-			logger.error("", e);
 
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
@@ -98,9 +92,7 @@ public class ClientThread implements Runnable {
 
 		private final JDBCAppender jdbcAppender;
 
-		private Log4jDbAppender() throws SQLException {
-			LogDao logDao = new LogDaoImpl();
-			logDao.dropAndCreateLogsTable();
+		private Log4jDbAppender() {
 			jdbcAppender = new JDBCAppender();
 			jdbcAppender.setDriver(ConnectionFactory.CONNECTION.getDbDriver());
 			jdbcAppender.setURL(ConnectionFactory.CONNECTION.getDbUrl());

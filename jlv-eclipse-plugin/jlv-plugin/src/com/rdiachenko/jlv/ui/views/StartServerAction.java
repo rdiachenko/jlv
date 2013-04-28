@@ -4,24 +4,21 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StartServerAction implements IViewActionDelegate {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private JlvView view;
 
 	@Override
 	public void run(IAction action) {
 		view.getController().startServer();
+		view.setStartServerActionEnabled(false);
+		view.setStopServerActionEnabled(true);
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		logger.debug("Start server action selection");
-		view.updateServerActionsState();
+		// no code
 	}
 
 	@Override
