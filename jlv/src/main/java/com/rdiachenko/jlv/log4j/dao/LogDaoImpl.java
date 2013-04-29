@@ -32,6 +32,8 @@ public class LogDaoImpl implements LogDao {
 				+ "thread VARCHAR(100) DEFAULT '',"
 				+ "message VARCHAR(1000) DEFAULT '',"
 				+ ")";
+		String createTriggerQueryString = "CREATE TRIGGER logs_ins AFTER INSERT ON logs "
+				+ "FOR EACH ROW CALL \"com.rdiachenko.jlv.log4j.dao.LogsInsTrigger\"";
 		Connection conn = null;
 		Statement statement = null;
 
@@ -40,6 +42,7 @@ public class LogDaoImpl implements LogDao {
 			statement = conn.createStatement();
 			statement.execute(dropQueryString);
 			statement.execute(createQueryString);
+			statement.execute(createTriggerQueryString);
 		} finally {
 			if (statement != null) {
 				statement.close();
@@ -56,7 +59,7 @@ public class LogDaoImpl implements LogDao {
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
-		LogContainer logs = new LogContainer();
+		LogContainer logs = new LogContainer(tail);
 
 		try {
 			conn = ConnectionFactory.CONNECTION.getConnection();

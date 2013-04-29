@@ -1,8 +1,6 @@
 package com.rdiachenko.jlv.ui.views;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -11,10 +9,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rdiachenko.jlv.log4j.dao.LogDao;
-import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
+import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
+import com.rdiachenko.jlv.log4j.domain.LogEventListener;
 import com.rdiachenko.jlv.log4j.socketappender.Server;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
@@ -22,17 +20,28 @@ public class JlvViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private static final int VIEWER_BUFFER_SIZE = 5000;
+
+	private final LogContainer logContainer;
+
+	private final LogEventListener logEventListener;
+
 	private Server server;
 
-	private LogDao logDao;
+	public JlvViewController(final JlvView view) {
+		logContainer = new LogContainer(VIEWER_BUFFER_SIZE);
+		logEventListener = new LogEventListener() {
+			@Override
+			public void handleLogEvent(Log log) {
+				logContainer.add(log);
+				view.refreshViewer();
+			}
+		};
+		LogEventContainer.addListener(logEventListener);
+	}
 
-	public JlvViewController() {
-		logDao = new LogDaoImpl();
-		try {
-			logDao.dropAndCreateLogsTable();
-		} catch (SQLException e) {
-			logger.error("", e);
-		}
+	public LogContainer getLogContainer() {
+		return logContainer;
 	}
 
 	public void startServer() {
@@ -77,17 +86,11 @@ public class JlvViewController {
 	}
 
 	public void dispose() {
+		LogEventContainer.removeListener(logEventListener);
 		stopServer();
 	}
 
-	public Log[] getLogs() {
-		LogContainer logContainer = logDao.getTailingLogs(5000);
-		Iterator<Log> iterator = logContainer.iterator();
-		Log[] logs = new Log[logContainer.size()];
-
-		for (int i = 0; iterator.hasNext(); i++) {
-			logs[i] = iterator.next();
-		}
-		return logs;
+	public void clearLogContainer() {
+		logContainer.clear();
 	}
 }

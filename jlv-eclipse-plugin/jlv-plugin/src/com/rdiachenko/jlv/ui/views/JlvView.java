@@ -2,7 +2,6 @@ package com.rdiachenko.jlv.ui.views;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -29,7 +28,7 @@ public class JlvView extends ViewPart {
 	private static final String START_SERVER_ACTION_ID = "com.rdiachenko.jlv.ui.views.startServerAction";
 	private static final String STOP_SERVER_ACTION_ID = "com.rdiachenko.jlv.ui.views.stopServerAction";
 
-	private JlvViewController controller;
+	private final JlvViewController controller;
 
 	private TableViewer viewer;
 
@@ -40,7 +39,7 @@ public class JlvView extends ViewPart {
 	private ViewLifecycleListener viewLifecycleListener;
 
 	public JlvView() {
-		controller = new JlvViewController();
+		controller = new JlvViewController(this);
 	}
 
 	public JlvViewController getController() {
@@ -73,6 +72,8 @@ public class JlvView extends ViewPart {
 	public void clear() {
 		viewer.getTable().removeAll();
 		logger.debug("Log's table was cleared.");
+		getController().clearLogContainer();
+		logger.debug("Log's container was cleared.");
 	}
 
 	public void setStartServerActionEnabled(boolean state) {
@@ -81,6 +82,10 @@ public class JlvView extends ViewPart {
 
 	public void setStopServerActionEnabled(boolean state) {
 		stopServerAction.setEnabled(state);
+	}
+
+	public void refreshViewer() {
+		viewer.refresh();
 	}
 
 	private void initServerActions() {
@@ -122,8 +127,8 @@ public class JlvView extends ViewPart {
 		createColumns(viewer);
 
 		viewer.setUseHashlookup(true);
-		viewer.setContentProvider(new ArrayContentProvider());
-        viewer.setInput(getController().getLogs());
+		viewer.setContentProvider(new JlvViewContentProvider());
+        viewer.setInput(getController().getLogContainer());
 
 		return viewer;
 	}

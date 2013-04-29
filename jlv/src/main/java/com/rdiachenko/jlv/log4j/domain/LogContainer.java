@@ -1,15 +1,17 @@
 package com.rdiachenko.jlv.log4j.domain;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
 public final class LogContainer {
 
-	private final List<Log> container;
+	// Generics for CircularFifoBuffer will be provided in commons-collections v.4.0
+	// TODO: use replace current 3.2.1 commons-collections version to 4.0 when it releases
+	private final CircularFifoBuffer container;
 
-	public LogContainer() {
-		container = new LinkedList<Log>();
+	public LogContainer(int bufferSize) {
+		container = new CircularFifoBuffer(bufferSize);
 	}
 
 	public int size() {
@@ -20,11 +22,15 @@ public final class LogContainer {
 		container.add(log);
 	}
 
-	public Log get(int index) {
-		return container.get(index);
+	public Log get() {
+		return (Log) container.get();
 	}
 
 	public Iterator<Log> iterator() {
 		return container.iterator();
+	}
+
+	public void clear() {
+		container.clear();
 	}
 }
