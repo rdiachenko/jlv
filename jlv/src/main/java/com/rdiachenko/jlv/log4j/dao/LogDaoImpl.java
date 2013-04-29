@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,42 +15,10 @@ public class LogDaoImpl implements LogDao {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public void dropAndCreateLogsTable() throws SQLException {
-		String dropQueryString = "DROP TABLE logs IF EXISTS";
-		String createQueryString = "CREATE TABLE logs("
-				+ "ID BIGINT AUTO_INCREMENT,"
-				+ "category VARCHAR(100) DEFAULT '',"
-				+ "class VARCHAR(100) DEFAULT '',"
-				+ "date VARCHAR(100) DEFAULT '',"
-				+ "file VARCHAR(100) DEFAULT '',"
-				+ "locInfo VARCHAR(100) DEFAULT '',"
-				+ "line VARCHAR(100) DEFAULT '',"
-				+ "method VARCHAR(100) DEFAULT '',"
-				+ "level VARCHAR(100) DEFAULT '',"
-				+ "ms VARCHAR(100) DEFAULT '',"
-				+ "thread VARCHAR(100) DEFAULT '',"
-				+ "message VARCHAR(1000) DEFAULT '',"
-				+ ")";
-		String createTriggerQueryString = "CREATE TRIGGER logs_ins AFTER INSERT ON logs "
-				+ "FOR EACH ROW CALL \"com.rdiachenko.jlv.log4j.dao.LogsInsTrigger\"";
-		Connection conn = null;
-		Statement statement = null;
-
-		try {
-			conn = ConnectionFactory.CONNECTION.getConnection();
-			statement = conn.createStatement();
-			statement.execute(dropQueryString);
-			statement.execute(createQueryString);
-			statement.execute(createTriggerQueryString);
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-
-			if (conn != null) {
-				conn.close();
-			}
-		}
+	public void initDb() {
+		dropLogsTable();
+		createLogsTable();
+		createLogsInsTrigger();
 	}
 
 	public LogContainer getTailingLogs(int tail) {
@@ -85,31 +52,69 @@ public class LogDaoImpl implements LogDao {
 		} catch (SQLException e) {
 			logger.error("", e);
 		} finally {
-			try {
-				if (result != null) {
-					result.close();
-				}
-			} catch (SQLException e) {
-				logger.error("Result set could not be closed:", e);
-			}
-
-			try {
-				if (preparedStatement != null) {
-					preparedStatement.close();
-				}
-			} catch (SQLException e) {
-				logger.error("Prepared statement could not be closed:", e);
-			}
-
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				logger.error("Connection could not be closed:", e);
-			}
+			DaoUtil.close(conn, preparedStatement, result);
 		}
 		return logs;
 	}
 
+	public void insert(Log log) {
+		String queryString = "INSERT INTO logs "
+				+ "(category, class, date, file, locInfo, line, method, level, ms, thread, message) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			conn = ConnectionFactory.CONNECTION.getConnection();
+			preparedStatement = conn.prepareStatement(queryString);
+			preparedStatement.setString(1, log.getCategoryName());
+			preparedStatement.setString(2, log.getClassName());
+			preparedStatement.setString(3, log.getDate());
+			preparedStatement.setString(4, log.getFileName());
+			preparedStatement.setString(5, log.getLocationInfo());
+			preparedStatement.setString(6, log.getLineNumber());
+			preparedStatement.setString(7, log.getMethodName());
+			preparedStatement.setString(8, log.getLevel());
+			preparedStatement.setString(9, log.getMs());
+			preparedStatement.setString(10, log.getThreadName());
+			preparedStatement.setString(11, log.getMessage());
+			preparedStatement.execute();
+		} catch (SQLException e) {
+			logger.error("", e);
+		} finally {
+			DaoUtil.close(conn, preparedStatement);
+		}
+	}
+
+	private void dropLogsTable() {
+		String dropTableQueryString = "DROP TABLE logs IF EXISTS";
+		DaoUtil.executeQuery(dropTableQueryString);
+		logger.debug("Logs table was dropped");
+	}
+
+	private void createLogsTable() {
+		String createTableQueryString = "CREATE TABLE logs("
+				+ "ID BIGINT AUTO_INCREMENT,"
+				+ "category VARCHAR(100) DEFAULT '',"
+				+ "class VARCHAR(100) DEFAULT '',"
+				+ "date VARCHAR(100) DEFAULT '',"
+				+ "file VARCHAR(100) DEFAULT '',"
+				+ "locInfo VARCHAR(100) DEFAULT '',"
+				+ "line VARCHAR(100) DEFAULT '',"
+				+ "method VARCHAR(100) DEFAULT '',"
+				+ "level VARCHAR(100) DEFAULT '',"
+				+ "ms VARCHAR(100) DEFAULT '',"
+				+ "thread VARCHAR(100) DEFAULT '',"
+				+ "message VARCHAR(1000) DEFAULT '',"
+				+ ")";
+		DaoUtil.executeQuery(createTableQueryString);
+		logger.debug("Logs table was created");
+	}
+
+	private void createLogsInsTrigger() {
+		String createTriggerQueryString = "CREATE TRIGGER IF NOT EXISTS logs_ins AFTER INSERT ON logs "
+				+ "FOR EACH ROW CALL \"com.rdiachenko.jlv.log4j.dao.LogsInsTrigger\"";
+		DaoUtil.executeQuery(createTriggerQueryString);
+		logger.debug("Logs table insertion trigger was created");
+	}
 }

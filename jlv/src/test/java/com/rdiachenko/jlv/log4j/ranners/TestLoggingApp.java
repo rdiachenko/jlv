@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public final class TestLoggingApp {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
 		TestLoggingApp app = new TestLoggingApp();
 		app.run();
@@ -18,9 +18,12 @@ public final class TestLoggingApp {
 		// it is a runner class, no reason to have a public constructor
 	}
 
-	private void run() {
-		logger.debug("debug test message 1");
-		logger.info("info test message 1");
-		logger.error("error test message 1");
+	private void run() throws InterruptedException {
+		for (int i = 0; i < 100; i++) {
+			logger.debug("i=" + i + " - debug test message 1");
+			logger.info("i=" + i + " - info test message 1");
+			logger.error("i=" + i + " - error test message 1");
+			Thread.sleep(500);
+		}
 	}
 }

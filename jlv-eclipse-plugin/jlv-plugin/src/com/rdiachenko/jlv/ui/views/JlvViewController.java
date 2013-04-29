@@ -6,9 +6,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rdiachenko.jlv.log4j.dao.LogDao;
+import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
 import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
@@ -26,15 +29,24 @@ public class JlvViewController {
 
 	private final LogEventListener logEventListener;
 
+	private final LogDao logDao;
+
 	private Server server;
 
 	public JlvViewController(final JlvView view) {
+		logDao = new LogDaoImpl();
+		logDao.initDb();
 		logContainer = new LogContainer(VIEWER_BUFFER_SIZE);
 		logEventListener = new LogEventListener() {
 			@Override
 			public void handleLogEvent(Log log) {
 				logContainer.add(log);
-				view.refreshViewer();
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						view.refreshViewer();
+					}
+				});
 			}
 		};
 		LogEventContainer.addListener(logEventListener);
@@ -47,7 +59,7 @@ public class JlvViewController {
 	public void startServer() {
 		try {
 			server = new Server(PreferenceManager.getServerPortNumber());
-			Job job = new Job("Server start job") {
+			Job job = new Job("JLV server is running") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
@@ -70,7 +82,7 @@ public class JlvViewController {
 	public void stopServer() {
 		logger.debug("Stopping server from Jlv view ...");
 		if (server != null) {
-			Job job = new Job("Server stop job") {
+			Job job = new Job("Stopping JLV server") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
