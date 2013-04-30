@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/com.rdiachenko.jlv.feature_1.0.0.201304301443.jar" id="com.rdiachenko.jlv.feature" version="1.0.0.201304301443">
-      <category name="jlv"/>
-   </feature>
-   <category-def name="jlv" label="Java logging viewer Eclipse plugin"/>
-</site>
