@@ -1,1 +1,8 @@
-
+target
+bin
+*.settings
+*.classpath
+*~
+.checkstyle
+.metadata
+*.class
