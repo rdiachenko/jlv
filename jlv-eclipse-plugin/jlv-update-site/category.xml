@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<category-def name="jlv" label="Java logging viewer Eclipse plugin" />
+	<category-def name="jlv" label="JLV Eclipse plugin" />
 	
 	<feature url="features/com.rdiachenko.jlv.feature_1.0.0.qualifier.jar" id="com.rdiachenko.jlv.feature">
 		<category name="jlv" />
