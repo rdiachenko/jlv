@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
 
-public class ClientThread implements Runnable {
+public class ClientThread {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 

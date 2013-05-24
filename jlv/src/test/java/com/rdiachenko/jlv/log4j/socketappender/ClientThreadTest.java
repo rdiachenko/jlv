@@ -1,76 +1,71 @@
 package com.rdiachenko.jlv.log4j.socketappender;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rdiachenko.jlv.log4j.dao.LogDao;
+import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
+import com.rdiachenko.jlv.log4j.domain.Log;
+import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
+import com.rdiachenko.jlv.log4j.domain.LogEventListener;
+
 public class ClientThreadTest {
 
-	private static File logFile;
+	private LogDao logDao;
 
 	private ClientApp client;
 
-	private ExecutorService executor;
-
 	private ServerRunner serverRunner;
 
+	private ExecutorService executor;
+
+//	@BeforeClass
+//	public static void init() {
+//
+//	}
+
+
+
+
+
 	@Test
-	public void testClient() throws IOException {
+	public void testClient() {
+
+		LogEventListener listener = new LogEventListener() {
+			public void handleLogEvent(Log log) {
+				System.out.println("Inside listener: " + log);
+			}
+		};
+
+		LogEventContainer.addListener(listener);
+
 		client.logger.debug("debug test message 1");
 		client.logger.info("info test message 1");
 		client.logger.error("error test message 1");
 
-		Assert.assertTrue(logFile.exists());
-		BufferedReader reader = null;
-
-		try {
-			reader = new BufferedReader(new FileReader(logFile));
-
-			String log = reader.readLine();
-			Assert.assertNotNull(log);
-			Assert.assertTrue(log.endsWith("[debug test message 1]"));
-
-			log = reader.readLine();
-			Assert.assertNotNull(log);
-			Assert.assertTrue(log.endsWith("[info test message 1]"));
-
-			log = reader.readLine();
-			Assert.assertNotNull(log);
-			Assert.assertTrue(log.endsWith("[error test message 1]"));
-		} finally {
-			reader.close();
-		}
-
+		LogEventContainer.removeListener(listener);
 	}
 
-	@BeforeClass
-	public static void init() {
-		logFile = new File("src/main/resources/log4j.log");
-	}
 
-	@AfterClass
-	public static void clean() {
-		if (logFile.exists()) {
-			logFile.delete();
-		}
-	}
+
+//	@AfterClass
+//	public void clean() {
+//		// drop db
+//	}
 
 	@Before
 	public void initServerAndClient() throws IOException {
+		logDao = new LogDaoImpl();
+		logDao.initDb();
+
 		executor = Executors.newSingleThreadExecutor();
 		serverRunner = new ServerRunner();
 		executor.execute(serverRunner);
@@ -78,15 +73,13 @@ public class ClientThreadTest {
 	}
 
 	@After
-	public void stopServerAndClient() throws IOException, InterruptedException {
+	public void stopServerAndClient() throws IOException {
 		serverRunner.stop();
 		executor.shutdown();
-		if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-			executor.shutdownNow();
-		}
+		executor.shutdownNow();
 	}
 
-	private static class ClientApp {
+	private final static class ClientApp {
 
 		private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -95,9 +88,9 @@ public class ClientThreadTest {
 		}
 	}
 
-	private static class ServerRunner implements Runnable {
+	private final static class ServerRunner implements Runnable {
 
-		private Server server;
+		private final Server server;
 
 		private ServerRunner() throws IOException {
 			server = new Server(4445);
