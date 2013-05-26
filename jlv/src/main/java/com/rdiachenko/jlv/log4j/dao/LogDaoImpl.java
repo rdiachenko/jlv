@@ -21,6 +21,10 @@ public class LogDaoImpl implements LogDao {
 		createLogsInsTrigger();
 	}
 
+	public void dropDb() {
+		dropLogsTable();
+	}
+
 	public LogContainer getTailingLogs(int tail) {
 		String queryString = "SELECT * FROM logs ORDER BY id DESC LIMIT ?";
 		Connection conn = null;

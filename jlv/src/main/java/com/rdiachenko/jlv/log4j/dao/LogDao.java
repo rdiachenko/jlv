@@ -7,6 +7,8 @@ public interface LogDao {
 
 	public void initDb();
 
+	public void dropDb();
+
 	public LogContainer getTailingLogs(int tail);
 
 	public void insert(Log log);

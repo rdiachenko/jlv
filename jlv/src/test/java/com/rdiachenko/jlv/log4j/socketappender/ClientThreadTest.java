@@ -3,6 +3,7 @@ package com.rdiachenko.jlv.log4j.socketappender;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.After;
@@ -27,39 +28,34 @@ public class ClientThreadTest {
 
 	private ExecutorService executor;
 
-//	@BeforeClass
-//	public static void init() {
-//
-//	}
-
-
-
-
-
 	@Test
 	public void testClient() {
+		String[] expectedLogMessages = {
+				"debug test message 1",
+				"info test message 1",
+				"error test message 1",
+		};
+		final String[] actualLogMessages = new String[expectedLogMessages.length];
 
 		LogEventListener listener = new LogEventListener() {
+			private int index = 0;
+
 			public void handleLogEvent(Log log) {
-				System.out.println("Inside listener: " + log);
+				actualLogMessages[index] = log.getMessage();
+				index++;
 			}
 		};
 
 		LogEventContainer.addListener(listener);
 
-		client.logger.debug("debug test message 1");
-		client.logger.info("info test message 1");
-		client.logger.error("error test message 1");
+		client.logger.debug(expectedLogMessages[0]);
+		client.logger.info(expectedLogMessages[1]);
+		client.logger.error(expectedLogMessages[2]);
 
 		LogEventContainer.removeListener(listener);
+
+//		Assert.assertArrayEquals(expectedLogMessages, actualLogMessages);
 	}
-
-
-
-//	@AfterClass
-//	public void clean() {
-//		// drop db
-//	}
 
 	@Before
 	public void initServerAndClient() throws IOException {
@@ -73,10 +69,14 @@ public class ClientThreadTest {
 	}
 
 	@After
-	public void stopServerAndClient() throws IOException {
+	public void stopServerAndClient() throws IOException, InterruptedException {
+		logDao.dropDb();
 		serverRunner.stop();
 		executor.shutdown();
-		executor.shutdownNow();
+
+		if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+			executor.shutdownNow();
+		}
 	}
 
 	private final static class ClientApp {
