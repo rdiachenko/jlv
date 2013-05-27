@@ -27,21 +27,23 @@ public class ClientThread {
 	public void run() {
 //		Log4jFileAppender fileAppender = new Log4jFileAppender();
 		Log4jDbAppender dbAppender = null;
+		BufferedInputStream bufferedInputStream = null;
 		ObjectInputStream inputStream = null;
 
 		try {
 			dbAppender = new Log4jDbAppender();
-			inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
-			Object object = null;
+			bufferedInputStream = new BufferedInputStream(socket.getInputStream());
+			inputStream = new ObjectInputStream(bufferedInputStream);
+			int bufferSize = bufferedInputStream.available();
 
-			while ((object = inputStream.readObject()) != null) {
-				LoggingEvent log = (LoggingEvent) object;
+			while (!socket.isClosed() && bufferSize > 0) {
+				LoggingEvent log = (LoggingEvent) inputStream.readObject();
 				dbAppender.append(log);
+				bufferSize = bufferedInputStream.available();
 			}
 
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
-			// TODO: create more accurate handling (Issue #19: https://github.com/rdiachenko/JLV/issues/19)
 			logger.warn("Exception occur while reading object from socket input stream:", e);
 
 		} catch (IOException e) {
@@ -53,6 +55,7 @@ public class ClientThread {
 		} finally {
 			try {
 				inputStream.close();
+				bufferedInputStream.close();
 			} catch (IOException e) {
 				logger.error("Socket's input stream could not be closed:", e);
 			}

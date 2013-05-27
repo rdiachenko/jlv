@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Server {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private ServerSocket serverSocket = null;
 
@@ -21,16 +26,24 @@ public class Server {
 		}
 	}
 
-	public void start() throws IOException {
+	public void start() {
 		while (listening) {
-			Socket socket = serverSocket.accept();
-			ClientThread client = new ClientThread(socket);
-			client.run();
+			try {
+				Socket socket = serverSocket.accept();
+				ClientThread client = new ClientThread(socket);
+				client.run();
+			} catch (IOException e) {
+				logger.error("Socket couldn't be started:", e);
+			}
 		}
 	}
 
-	public void stop() throws IOException {
+	public void stop() {
 		listening = false;
-		serverSocket.close();
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			logger.error("Server socket couldn't be closed:", e);
+		}
 	}
 }

@@ -70,7 +70,7 @@ public class ClientThreadTest {
 	}
 
 	@After
-	public void stop() throws IOException, InterruptedException {
+	public void stop() throws InterruptedException {
 		serverRunner.stop();
 		executor.shutdown();
 		if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
@@ -88,14 +88,10 @@ public class ClientThreadTest {
 		}
 
 		public void run() {
-			try {
-				server.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			server.start();
 		}
 
-		public void stop() throws IOException {
+		public void stop() {
 			if (server != null) {
 				server.stop();
 			}
