@@ -45,7 +45,7 @@ public class ClientThreadTest {
 		PropertyConfigurator.configure("src/main/resources/log4j.properties");
 
 		// Wait for logs
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		Iterator<Log> logs = logDao.getTailingLogs(3).iterator();
 
 		Assert.assertTrue(logs.hasNext());
@@ -92,9 +92,7 @@ public class ClientThreadTest {
 		}
 
 		public void stop() {
-			if (server != null) {
-				server.stop();
-			}
+			server.stop();
 		}
 	}
 }

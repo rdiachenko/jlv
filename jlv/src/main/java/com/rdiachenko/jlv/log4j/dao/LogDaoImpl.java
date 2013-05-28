@@ -26,6 +26,7 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	public LogContainer getTailingLogs(int tail) {
+		logger.info("Selection {} tailing logs from db...", tail);
 		String queryString = "SELECT * FROM logs ORDER BY id DESC LIMIT ?";
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
@@ -58,6 +59,7 @@ public class LogDaoImpl implements LogDao {
 		} finally {
 			DaoUtil.close(conn, preparedStatement, result);
 		}
+		logger.info("{} logs were selected", logs.size());
 		return logs;
 	}
 
@@ -93,7 +95,7 @@ public class LogDaoImpl implements LogDao {
 	private void dropLogsTable() {
 		String dropTableQueryString = "DROP TABLE logs IF EXISTS";
 		DaoUtil.executeQuery(dropTableQueryString);
-		logger.debug("Logs table was dropped");
+		logger.info("Logs table was dropped");
 	}
 
 	private void createLogsTable() {
@@ -112,13 +114,13 @@ public class LogDaoImpl implements LogDao {
 				+ "message VARCHAR(1000) DEFAULT '',"
 				+ ")";
 		DaoUtil.executeQuery(createTableQueryString);
-		logger.debug("Logs table was created");
+		logger.info("Logs table was created");
 	}
 
 	private void createLogsInsTrigger() {
 		String createTriggerQueryString = "CREATE TRIGGER IF NOT EXISTS logs_ins AFTER INSERT ON logs "
 				+ "FOR EACH ROW CALL \"com.rdiachenko.jlv.log4j.dao.LogsInsTrigger\"";
 		DaoUtil.executeQuery(createTriggerQueryString);
-		logger.debug("Logs table insertion trigger was created");
+		logger.info("Logs table insertion trigger was created");
 	}
 }

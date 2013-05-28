@@ -27,6 +27,8 @@ public class Server {
 	}
 
 	public void start() {
+		logger.info("Server was started");
+
 		while (listening) {
 			try {
 				Socket socket = serverSocket.accept();
@@ -42,6 +44,7 @@ public class Server {
 		listening = false;
 		try {
 			serverSocket.close();
+			logger.info("Server was stopped");
 		} catch (IOException e) {
 			logger.error("Server socket couldn't be closed:", e);
 		}

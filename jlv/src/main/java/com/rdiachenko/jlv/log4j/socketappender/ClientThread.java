@@ -34,12 +34,16 @@ public class ClientThread {
 			dbAppender = new Log4jDbAppender();
 			bufferedInputStream = new BufferedInputStream(socket.getInputStream());
 			inputStream = new ObjectInputStream(bufferedInputStream);
-			int bufferSize = bufferedInputStream.available();
+			int bufferLowBound = 10;
 
-			while (!socket.isClosed() && bufferSize > 0) {
+			while (!socket.isClosed()) {
 				LoggingEvent log = (LoggingEvent) inputStream.readObject();
 				dbAppender.append(log);
-				bufferSize = bufferedInputStream.available();
+
+				// Check available data amount to avoid EOFException by breaking from the loop
+				if (bufferedInputStream.available() < bufferLowBound) {
+					break;
+				}
 			}
 
 		} catch (EOFException e) {
@@ -55,7 +59,6 @@ public class ClientThread {
 		} finally {
 			try {
 				inputStream.close();
-				bufferedInputStream.close();
 			} catch (IOException e) {
 				logger.error("Socket's input stream could not be closed:", e);
 			}
