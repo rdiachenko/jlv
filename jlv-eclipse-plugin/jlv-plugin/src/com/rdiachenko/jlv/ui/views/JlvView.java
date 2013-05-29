@@ -144,7 +144,7 @@ public class JlvView extends ViewPart {
 				public String getText(Object element) {
 					Log log = (Log) element;
 					String value = logField.getValue(log);
-					logger.debug("Log's field name=value: {}={}", logField.getName(), value);
+//					logger.debug("Log's field name=value: {}={}", logField.getName(), value);
 					return value;
 				}
 			});

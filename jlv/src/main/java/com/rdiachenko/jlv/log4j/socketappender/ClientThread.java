@@ -27,28 +27,25 @@ public class ClientThread {
 	public void run() {
 //		Log4jFileAppender fileAppender = new Log4jFileAppender();
 		Log4jDbAppender dbAppender = null;
-		BufferedInputStream bufferedInputStream = null;
 		ObjectInputStream inputStream = null;
 
 		try {
 			dbAppender = new Log4jDbAppender();
-			bufferedInputStream = new BufferedInputStream(socket.getInputStream());
-			inputStream = new ObjectInputStream(bufferedInputStream);
-			int bufferLowBound = 10;
+			inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
 			while (!socket.isClosed()) {
-				LoggingEvent log = (LoggingEvent) inputStream.readObject();
-				dbAppender.append(log);
+				try {
+					LoggingEvent log = (LoggingEvent) inputStream.readObject();
+					dbAppender.append(log);
 
-				// Check available data amount to avoid EOFException by breaking from the loop
-				if (bufferedInputStream.available() < bufferLowBound) {
-					break;
+					if (logger.isDebugEnabled()) {
+						logger.debug("New log is appended: {}", log);
+					}
+				} catch (EOFException e) {
+					// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
+//					logger.warn("Exception occur while reading object from socket input stream:", e);
 				}
 			}
-
-		} catch (EOFException e) {
-			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
-			logger.warn("Exception occur while reading object from socket input stream:", e);
 
 		} catch (IOException e) {
 			logger.error("Errors occur while reading from socket's input stream:", e);
@@ -57,16 +54,19 @@ public class ClientThread {
 			logger.error("", e);
 
 		} finally {
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				logger.error("Socket's input stream could not be closed:", e);
-			}
-			try {
+			stop();
+		}
+	}
+
+	public void stop() {
+		try {
+			if (!socket.isClosed()) {
+				logger.info("Closing client's socket...");
 				socket.close();
-			} catch (IOException e) {
-				logger.error("Socket could not be closed: ", e);
+				logger.info("Client's socket was closed");
 			}
+		} catch (IOException e) {
+			logger.error("Socket could not be closed: ", e);
 		}
 	}
 

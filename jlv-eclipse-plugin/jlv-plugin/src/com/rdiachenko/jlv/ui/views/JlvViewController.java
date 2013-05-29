@@ -62,14 +62,8 @@ public class JlvViewController {
 			Job job = new Job("JLV server is running") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						logger.debug("Starting server from Jlv view ...");
-						server.start();
-					} catch (IOException e) {
-						logger.error("", e);
-					} finally {
-						stopServer();
-					}
+					logger.debug("Starting server from Jlv view ...");
+					server.start();
 					return Status.OK_STATUS;
 				}
 			};
@@ -85,11 +79,7 @@ public class JlvViewController {
 			Job job = new Job("Stopping JLV server") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						server.stop();
-					} catch (IOException e) {
-						logger.error("", e);
-					}
+					server.stop();
 					return Status.OK_STATUS;
 				}
 			};

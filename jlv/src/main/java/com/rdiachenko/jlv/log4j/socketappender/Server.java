@@ -3,6 +3,8 @@ package com.rdiachenko.jlv.log4j.socketappender;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,8 @@ public class Server {
 	private ServerSocket serverSocket = null;
 
 	private volatile boolean listening = true;
+
+	private List<ClientThread> clients = new ArrayList<ClientThread>();
 
 	public Server(int port) throws IOException {
 		if (port < 0) {
@@ -33,6 +37,7 @@ public class Server {
 			try {
 				Socket socket = serverSocket.accept();
 				ClientThread client = new ClientThread(socket);
+				clients.add(client);
 				client.run();
 			} catch (IOException e) {
 				logger.error("Socket couldn't be started:", e);
@@ -43,6 +48,9 @@ public class Server {
 	public void stop() {
 		listening = false;
 		try {
+			for (ClientThread client : clients) {
+				client.stop();
+			}
 			serverSocket.close();
 			logger.info("Server was stopped");
 		} catch (IOException e) {
