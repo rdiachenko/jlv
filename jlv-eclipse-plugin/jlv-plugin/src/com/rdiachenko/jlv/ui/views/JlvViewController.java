@@ -1,11 +1,10 @@
 package com.rdiachenko.jlv.ui.views;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,8 @@ public class JlvViewController {
 
 	private Server server;
 
+	private ExecutorService executor;
+
 	public JlvViewController(final JlvView view) {
 		logDao = new LogDaoImpl();
 		logDao.initDb();
@@ -59,31 +60,35 @@ public class JlvViewController {
 	public void startServer() {
 		try {
 			server = new Server(PreferenceManager.getServerPortNumber());
-			Job job = new Job("JLV server is running") {
+			executor = Executors.newSingleThreadExecutor();
+			executor.execute(new Runnable() {
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
+				public void run() {
 					logger.debug("Starting server from Jlv view ...");
 					server.start();
-					return Status.OK_STATUS;
+					logger.debug("Start is completed");
 				}
-			};
-			job.schedule();
+			});
 		} catch (IOException e) {
 			logger.error("", e);
 		}
 	}
 
 	public void stopServer() {
-		logger.debug("Stopping server from Jlv view ...");
-		if (server != null) {
-			Job job = new Job("Stopping JLV server") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					server.stop();
-					return Status.OK_STATUS;
+		try {
+			logger.debug("Stopping server from Jlv view ...");
+
+			if (server != null && executor != null) {
+				server.stop();
+				executor.shutdown();
+
+				if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
+					executor.shutdownNow();
 				}
-			};
-			job.schedule();
+				logger.debug("Stop is completed");
+			}
+		} catch (InterruptedException e) {
+			logger.error("", e);
 		}
 	}
 
