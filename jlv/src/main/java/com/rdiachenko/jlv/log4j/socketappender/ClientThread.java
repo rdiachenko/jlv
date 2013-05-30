@@ -20,6 +20,8 @@ public class ClientThread {
 
 	private Socket socket = null;
 
+	private volatile boolean listening = true;
+
 	public ClientThread(Socket socket) {
 		this.socket = socket;
 	}
@@ -33,7 +35,7 @@ public class ClientThread {
 			dbAppender = new Log4jDbAppender();
 			inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
-			while (!socket.isClosed()) {
+			while (listening) {
 				try {
 					LoggingEvent log = (LoggingEvent) inputStream.readObject();
 					dbAppender.append(log);
@@ -59,6 +61,8 @@ public class ClientThread {
 	}
 
 	public void stop() {
+		listening = false;
+
 		try {
 			if (!socket.isClosed()) {
 				logger.info("Closing client's socket...");
