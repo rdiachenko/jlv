@@ -7,9 +7,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
@@ -30,6 +32,8 @@ public class JlvView extends ViewPart {
 
 	private final JlvViewController controller;
 
+	private Text searchField;
+
 	private TableViewer viewer;
 
 	private IAction startServerAction;
@@ -48,6 +52,16 @@ public class JlvView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		parent.setLayout(layout);
+
+		searchField = new Text(parent, SWT.BORDER);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		searchField.setLayoutData(gridData);
+
 		viewer = createViewer(parent);
 		viewLifecycleListener = new ViewLifecycleListener();
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
