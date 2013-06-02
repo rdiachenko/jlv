@@ -17,7 +17,6 @@ public class LogsInsTrigger extends TriggerAdapter {
 
 	@Override
 	public void fire(Connection conn, ResultSet oldRow, ResultSet newRow) throws SQLException {
-		logger.info("Triggering new log...");
 		if (newRow.next()) {
 			Log log = (new Log.Builder()).categoryName(newRow.getString("category"))
 					.className(newRow.getString("class"))
@@ -32,7 +31,6 @@ public class LogsInsTrigger extends TriggerAdapter {
 					.message(newRow.getString("message"))
 					.build();
 			LogEventContainer.notifyListeners(log);
-			logger.debug("Trigger new log: {}", log);
 		}
 	}
 

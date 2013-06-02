@@ -35,6 +35,15 @@
             id="com.rdiachenko.jlv.ui.views.viewContribution"
             targetID="com.rdiachenko.jlv.ui.views.view">
          <action
+               class="com.rdiachenko.jlv.ui.views.QuickSearchAction"
+               icon="icons/quick_search.png"
+               id="com.rdiachenko.jlv.ui.views.quickSearchAction"
+               label="Quick search"
+               style="push"
+               toolbarPath="group3"
+               tooltip="Quick search">
+         </action>
+         <action
                class="com.rdiachenko.jlv.ui.views.StopServerAction"
                icon="icons/stop_server.png"
                id="com.rdiachenko.jlv.ui.views.stopServerAction"

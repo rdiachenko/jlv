@@ -6,6 +6,8 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -18,6 +20,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
@@ -32,18 +35,20 @@ public class JlvView extends ViewPart {
 
 	private final JlvViewController controller;
 
-	private Text searchField;
+	private Text quickSearchField;
+	private String quickSearchText;
+	private QuickLogFilter quickFilter;
 
 	private TableViewer viewer;
 
 	private IAction startServerAction;
-
 	private IAction stopServerAction;
 
 	private ViewLifecycleListener viewLifecycleListener;
 
 	public JlvView() {
 		controller = new JlvViewController(this);
+		quickFilter = new QuickLogFilter();
 	}
 
 	public JlvViewController getController() {
@@ -58,14 +63,12 @@ public class JlvView extends ViewPart {
 		layout.marginHeight = 0;
 		parent.setLayout(layout);
 
-		searchField = new Text(parent, SWT.BORDER);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		searchField.setLayoutData(gridData);
-
 		viewer = createViewer(parent);
 		viewLifecycleListener = new ViewLifecycleListener();
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv view");
+
+		quickSearchField = createQuickSearchField(parent);
 	}
 
 	@Override
@@ -81,6 +84,24 @@ public class JlvView extends ViewPart {
 		getController().dispose();
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was removed from Jlv view");
+	}
+
+	public void changeSearchFieldState() {
+		Composite parent = viewer.getTable().getParent();
+
+		if (quickSearchField.isDisposed()) {
+			quickSearchField = createQuickSearchField(parent);
+
+			if (!Strings.isNullOrEmpty(quickSearchText)) {
+				quickSearchField.setText(quickSearchText);
+				quickSearchField.selectAll();
+			}
+			quickSearchField.setFocus();
+		} else {
+			quickSearchText = quickSearchField.getText();
+			quickSearchField.dispose();
+		}
+		parent.layout();
 	}
 
 	public void clear() {
@@ -99,7 +120,24 @@ public class JlvView extends ViewPart {
 	}
 
 	public void refreshViewer() {
-		viewer.refresh();
+		if (!viewer.getTable().isDisposed()) {
+			viewer.refresh();
+		}
+	}
+
+	private Text createQuickSearchField(Composite parent) {
+		final Text quickSearchField = new Text(parent, SWT.BORDER);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		quickSearchField.setLayoutData(gridData);
+
+		quickSearchField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent key) {
+				quickFilter.setSearchText(quickSearchField.getText());
+				refreshViewer();
+			}
+		});
+		return quickSearchField;
 	}
 
 	private void initServerActions() {
@@ -142,7 +180,8 @@ public class JlvView extends ViewPart {
 
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new JlvViewContentProvider());
-        viewer.setInput(getController().getLogContainer());
+		viewer.setInput(getController().getLogContainer());
+		viewer.addFilter(quickFilter);
 
 		return viewer;
 	}

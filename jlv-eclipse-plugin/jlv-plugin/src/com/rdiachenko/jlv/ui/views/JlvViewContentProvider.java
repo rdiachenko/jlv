@@ -26,10 +26,10 @@ public class JlvViewContentProvider implements IStructuredContentProvider {
 
 		if (inputElement instanceof LogContainer) {
 			LogContainer logContainer = (LogContainer) inputElement;
-			elements = new Object[logContainer.size()];
 			Iterator<Log> iter = logContainer.iterator();
+			elements = new Object[logContainer.size()];
 
-			for (int i = 0; iter.hasNext(); i++) {
+			for (int i = 0; i < elements.length && iter.hasNext(); i++) {
 				elements[i] = iter.next();
 			}
 		}

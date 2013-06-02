@@ -10,8 +10,10 @@ public final class ClientRunner {
 		Logger logger = LoggerFactory.getLogger(ClientRunner.class);
 		PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
 
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < 50000; i++) {
 			logger.debug("i={}", i);
+			logger.info("i={}", i);
+			logger.error("i={}", i);
 //			Thread.sleep(1000);
 		}
 	}

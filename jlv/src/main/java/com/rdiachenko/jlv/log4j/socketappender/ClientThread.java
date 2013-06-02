@@ -20,8 +20,6 @@ public class ClientThread {
 
 	private Socket socket = null;
 
-	private volatile boolean listening = true;
-
 	public ClientThread(Socket socket) {
 		this.socket = socket;
 	}
@@ -35,20 +33,14 @@ public class ClientThread {
 			dbAppender = new Log4jDbAppender();
 			inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
-			while (listening) {
-				try {
-					LoggingEvent log = (LoggingEvent) inputStream.readObject();
-					dbAppender.append(log);
-
-					if (logger.isDebugEnabled()) {
-						logger.debug("New log is appended: {}", log);
-					}
-				} catch (EOFException e) {
-					// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
-//					logger.warn("Exception occur while reading object from socket input stream:", e);
-				}
+			while (!socket.isClosed()) {
+				LoggingEvent log = (LoggingEvent) inputStream.readObject();
+				dbAppender.append(log);
 			}
 
+		} catch (EOFException e) {
+			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
+//			logger.warn("Exception occur while reading object from socket input stream:", e);
 		} catch (IOException e) {
 			logger.error("Errors occur while reading from socket's input stream:", e);
 
@@ -61,8 +53,6 @@ public class ClientThread {
 	}
 
 	public void stop() {
-		listening = false;
-
 		try {
 			if (!socket.isClosed()) {
 				logger.info("Closing client's socket...");
