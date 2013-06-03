@@ -1,0 +1,7 @@
+h3. Information
+
+Java logging viewer - currently available as a plugin for Eclipse IDE.
+
+h3. Eclipse update site
+
+https://github.com/rdiachenko/JLV/raw/repo/eclipse
