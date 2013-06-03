@@ -27,6 +27,7 @@ check_status $?
 
 echo '[JLV-ECLIPSE-PLUGIN DEPLOY]'
 echo 'Commiting changes'
+cd ..
 git add .
 git commit -m "jlv eclipse plugin version was updated to $1"
 check_status $?
@@ -56,7 +57,7 @@ git checkout master
 check_status $?
 
 echo "Updating jlv eclipse plugin version to $2-SNAPSHOT"
-cd ../jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
+cd jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
 check_status $?
 
 echo 'Commiting changes'
