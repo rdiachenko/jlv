@@ -37,7 +37,7 @@ git checkout repo
 check_status $?
 
 echo 'Removing old jars'
-cd eclipse && rm -fr *.jar feautres plugins
+cd eclipse && rm -fr *.jar features plugins
 check_status $?
 
 echo 'Copying new jars into eclipse/'
@@ -49,7 +49,7 @@ check_status $?
 echo 'Commiting and pushing changes'
 git add eclipse
 git commit -m "JLV released (v.$1)"
-#git push
+git push
 check_status $?
 
 echo 'Switching to master branch'
@@ -60,11 +60,11 @@ echo "Updating jlv eclipse plugin version to $2-SNAPSHOT"
 cd jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
 check_status $?
 
-echo 'Commiting changes'
+echo 'Commiting and pushing changes'
 cd ..
 git add .
 git commit -m "jlv eclipse plugin version was updated to $2-SNAPSHOT"
-#git push
+git push
 status=$?
 
 if [ "$status" -gt 0 ]
