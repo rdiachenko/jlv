@@ -4,7 +4,10 @@
 <!--
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
-
+<!--
+    Checkstyle-Configuration: JLV Checkstyle config
+    Description: none
+-->
 <module name="Checker">
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
@@ -22,7 +25,6 @@
     </module>
     <module name="JavadocMethod">
       <property name="severity" value="ignore"/>
-      <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="info"/>
     </module>
@@ -145,7 +147,6 @@
     </module>
     <module name="RedundantThrows">
       <property name="severity" value="ignore"/>
-      <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="info"/>
     </module>
@@ -275,7 +276,6 @@
     </module>
     <module name="IllegalCatchExtended">
       <property name="severity" value="warning"/>
-      <property name="allowThrow" value="true"/>      
       <property name="allowRethrow" value="true"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="info"/>
     </module>
@@ -321,6 +321,7 @@
     </module>
     <module name="VariableDeclarationUsageDistance">
       <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
     <module name="AbbreviationAsWordInName">
       <property name="severity" value="warning"/>
@@ -339,8 +340,8 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="ReturnCountExtended">
-      <property name="ignoreMethodLinesCount" value="35"/>
       <property name="severity" value="warning"/>
+      <property name="ignoreMethodLinesCount" value="35"/>
     </module>
     <module name="CauseParameterInException">
       <property name="severity" value="warning"/>
@@ -355,6 +356,12 @@
       <property name="forbiddenImportRegexp" value=".+.dao..+"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="warning"/>
     </module>
+    <module name="InterfaceTypeParameterNameCheck"/>
+    <module name="NestedTernary"/>
+    <module name="LogicConditionNeedOptimizationCheck"/>
+    <module name="ForbidReturnInFinalBlockCheck"/>
+    <module name="ForbidCCommentsInMethods"/>
+    <module name="AvoidDefaultSerializableInInnerClasses"/>
   </module>
   <module name="JavadocPackage">
     <property name="severity" value="ignore"/>
