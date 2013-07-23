@@ -1,28 +1,64 @@
 package com.rdiachenko.jlv.ui.views;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.commands.IHandlerListener;
 
-public class StartServerAction implements IViewActionDelegate {
-
-	private JlvView view;
+public class StartServerAction implements IHandler {
 
 	@Override
-	public void run(IAction action) {
-		view.getController().startServer();
-		view.setStartServerActionEnabled(false);
-		view.setStopServerActionEnabled(true);
+	public void addHandlerListener(IHandlerListener handlerListener) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		// no code
+	public void dispose() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
-	public void init(IViewPart view) {
-		this.view = (JlvView) view;
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isHandled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void removeHandlerListener(IHandlerListener handlerListener) {
+		// TODO Auto-generated method stub
+
+	}
+
+//	private JlvView view;
+//
+//	@Override
+//	public void run(IAction action) {
+//		view.getController().startServer();
+//		view.setStartServerActionEnabled(false);
+//		view.setStopServerActionEnabled(true);
+//	}
+//
+//	@Override
+//	public void selectionChanged(IAction action, ISelection selection) {
+//		// no code
+//	}
+//
+//	@Override
+//	public void init(IViewPart view) {
+//		this.view = (JlvView) view;
+//	}
 }

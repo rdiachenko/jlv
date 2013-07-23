@@ -30,47 +30,61 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.viewActions">
-      <viewContribution
-            id="com.rdiachenko.jlv.ui.views.viewContribution"
-            targetID="com.rdiachenko.jlv.ui.views.view">
-         <action
-               class="com.rdiachenko.jlv.ui.views.QuickSearchAction"
+         point="org.eclipse.ui.commands">
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.rdiachenko.jlv.ui.views.QuickSearchAction"
+            commandId="com.rdiachenko.jlv.ui.views.quickSearchAction">
+      </handler>
+      <handler
+            class="com.rdiachenko.jlv.ui.views.StopServerAction"
+            commandId="com.rdiachenko.jlv.ui.views.stopServerAction">
+      </handler>
+      <handler
+            class="com.rdiachenko.jlv.ui.views.StartServerAction"
+            commandId="com.rdiachenko.jlv.ui.views.startServerAction">
+      </handler>
+      <handler
+            class="com.rdiachenko.jlv.ui.views.ClearViewAction"
+            commandId="com.rdiachenko.jlv.ui.views.clearViewAction">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:com.rdiachenko.jlv.ui.views.view">
+         <command
+               commandId="com.rdiachenko.jlv.ui.views.quickSearchAction"
                icon="icons/quick_search.png"
-               id="com.rdiachenko.jlv.ui.views.quickSearchAction"
                label="Quick search"
                style="push"
-               toolbarPath="group3"
                tooltip="Quick search">
-         </action>
-         <action
-               class="com.rdiachenko.jlv.ui.views.StopServerAction"
+         </command>
+         <command
+               commandId="com.rdiachenko.jlv.ui.views.stopServerAction"
                icon="icons/stop_server.png"
-               id="com.rdiachenko.jlv.ui.views.stopServerAction"
                label="Stop server"
                style="push"
-               toolbarPath="group1"
                tooltip="Stop server">
-         </action>
-         <action
-               class="com.rdiachenko.jlv.ui.views.StartServerAction"
+         </command>
+         <command
+               commandId="com.rdiachenko.jlv.ui.views.startServerAction"
                icon="icons/start_server.png"
-               id="com.rdiachenko.jlv.ui.views.startServerAction"
                label="Start server"
                style="push"
-               toolbarPath="group1"
                tooltip="Start server">
-         </action>
-         <action
-               class="com.rdiachenko.jlv.ui.views.ClearViewAction"
+         </command>
+         <command
+               commandId="com.rdiachenko.jlv.ui.views.clearViewAction"
                icon="icons/clear.png"
-               id="com.rdiachenko.jlv.ui.views.clearViewAction"
                label="Clear view"
                style="push"
-               toolbarPath="group2"
                tooltip="Clear view">
-         </action>
-      </viewContribution>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>
