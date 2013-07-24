@@ -113,7 +113,7 @@ public class JlvViewController {
 				if (!viewRefresher.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
 					viewRefresher.shutdownNow();
 				}
-				logger.debug("Vier refresher was stopped");
+				logger.debug("View refresher was stopped");
 			}
 		} catch (InterruptedException e) {
 			logger.error("", e);

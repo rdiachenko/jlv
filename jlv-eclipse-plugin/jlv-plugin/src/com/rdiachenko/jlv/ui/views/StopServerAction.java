@@ -1,65 +1,34 @@
 package com.rdiachenko.jlv.ui.views;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.services.ISourceProviderService;
 
-public class StopServerAction implements IHandler {
+import com.rdiachenko.jlv.ui.ConstantUiIds;
 
-	@Override
-	public void addHandlerListener(IHandlerListener handlerListener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
+public class StopServerAction extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
+		// get the window (which is a IServiceLocator)
+		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+		// get the service 
+		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
+		// get our source provider by querying by the variable name 
+		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
+				.getSourceProvider(ConstantUiIds.SERVER_STATE_VARIABLE_ID);
+
+		IViewPart part = window.getActivePage().findView(ConstantUiIds.JLV_MAIN_VIEW_ID);
+
+		if (part != null) {
+			JlvView view = (JlvView) part;
+			view.getController().stopServer();
+			viewSourceProvider.setServerStarted(false);
+		}
 		return null;
 	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isHandled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void removeHandlerListener(IHandlerListener handlerListener) {
-		// TODO Auto-generated method stub
-
-	}
-
-//	private JlvView view;
-//
-//	@Override
-//	public void run(IAction action) {
-//		view.getController().stopServer();
-//		view.setStartServerActionEnabled(true);
-//		view.setStopServerActionEnabled(false);
-//	}
-//
-//	@Override
-//	public void selectionChanged(IAction action, ISelection selection) {
-//		// no code
-//	}
-//
-//	@Override
-//	public void init(IViewPart view) {
-//		this.view = (JlvView) view;
-//	}
-
 }

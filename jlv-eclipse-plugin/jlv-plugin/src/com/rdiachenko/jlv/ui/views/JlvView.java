@@ -1,7 +1,5 @@
 package com.rdiachenko.jlv.ui.views;
 
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -30,9 +28,6 @@ public class JlvView extends ViewPart {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final String START_SERVER_ACTION_ID = "com.rdiachenko.jlv.ui.views.startServerAction";
-	private static final String STOP_SERVER_ACTION_ID = "com.rdiachenko.jlv.ui.views.stopServerAction";
-
 	private final JlvViewController controller;
 
 	private Text quickSearchField;
@@ -40,9 +35,6 @@ public class JlvView extends ViewPart {
 	private QuickLogFilter quickFilter;
 
 	private TableViewer viewer;
-
-	private IAction startServerAction;
-	private IAction stopServerAction;
 
 	private ViewLifecycleListener viewLifecycleListener;
 
@@ -111,14 +103,6 @@ public class JlvView extends ViewPart {
 		logger.debug("Log's container was cleared.");
 	}
 
-	public void setStartServerActionEnabled(boolean state) {
-		startServerAction.setEnabled(state);
-	}
-
-	public void setStopServerActionEnabled(boolean state) {
-		stopServerAction.setEnabled(state);
-	}
-
 	public void refreshViewer() {
 		if (!viewer.getTable().isDisposed()) {
 			viewer.refresh();
@@ -138,25 +122,6 @@ public class JlvView extends ViewPart {
 			}
 		});
 		return quickSearchField;
-	}
-
-	private void initServerActions() {
-		startServerAction = ((ActionContributionItem) getViewSite().getActionBars().getToolBarManager()
-				.find(START_SERVER_ACTION_ID)).getAction();
-		stopServerAction = ((ActionContributionItem) getViewSite().getActionBars().getToolBarManager()
-				.find(STOP_SERVER_ACTION_ID)).getAction();
-
-		boolean isServerAutoStart = PreferenceManager.getServerAutoStart();
-		logger.debug("Server auto start option: {}", isServerAutoStart);
-
-		if (isServerAutoStart) {
-			getController().startServer();
-			setStartServerActionEnabled(false);
-			setStopServerActionEnabled(true);
-		} else {
-			setStartServerActionEnabled(true);
-			setStopServerActionEnabled(false);
-		}
 	}
 
 	private TableViewer createViewer(Composite parent) {
@@ -237,7 +202,12 @@ public class JlvView extends ViewPart {
 			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof JlvView) {
-					initServerActions();
+					boolean isServerAutoStart = PreferenceManager.getServerAutoStart();
+					logger.debug("Server auto start option: {}", isServerAutoStart);
+
+					if (isServerAutoStart) {
+						getController().startServer();
+					}
 					logger.debug("Jlv view was opened.");
 				}
 			}
