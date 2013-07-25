@@ -44,7 +44,7 @@ public enum LogField {
         	value = log.getThrowable();
         	break;
         default:
-            throw new IllegalStateException("Only [LEVEL,CATEGORY,MESSAGE,LINE,DATE] log fields are available. "
+            throw new IllegalStateException("Only [LEVEL,CATEGORY,MESSAGE,LINE,DATE,THROWABLE] log fields are available. "
             		+ "Current value: " + this);
         }
         return value;
