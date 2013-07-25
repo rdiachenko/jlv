@@ -145,6 +145,7 @@ public class JlvView extends ViewPart {
 
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new JlvViewContentProvider());
+		viewer.setLabelProvider(new JlvViewLabelProvider());
 		viewer.setInput(getController().getLogContainer());
 		viewer.addFilter(quickFilter);
 

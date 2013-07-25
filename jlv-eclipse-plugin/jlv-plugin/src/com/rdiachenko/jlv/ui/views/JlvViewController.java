@@ -24,7 +24,7 @@ public class JlvViewController {
 
 	private static final int VIEWER_BUFFER_SIZE = 5000;
 
-	private static final int VIEWER_REFRESH_TIME = 1500; //ms
+	private static final int VIEWER_REFRESH_TIME = 5000; //ms
 
 	private final JlvView view;
 
@@ -125,6 +125,7 @@ public class JlvViewController {
 	public void dispose() {
 		LogEventContainer.removeListener(logEventListener);
 		stopServer();
+		logDao.dropDb();
 	}
 
 	public void clearLogContainer() {
