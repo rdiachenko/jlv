@@ -13,8 +13,7 @@ public class QuickLogFilter extends ViewerFilter {
 
 	public void setSearchText(String searchText) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(".*(").append(searchText.toLowerCase()).append("|")
-				.append(searchText.toUpperCase()).append(").*");
+		builder.append("(?i)(?s).*(").append(searchText).append(").*");
 		this.searchText = builder.toString();
 	}
 
