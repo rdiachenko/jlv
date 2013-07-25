@@ -2,17 +2,18 @@ package com.rdiachenko.jlv.log4j.domain;
 
 public final class Log {
 
-	private final String categoryName;		// %c
-	private final String className; 		// %C
-	private final String date; 				// %d
-	private final String fileName; 			// %F
-	private final String locationInfo;		// %l
-	private final String lineNumber;		// %L
-	private final String methodName;		// %M
-	private final String level;				// %p
-	private final String ms;				// %r
-	private final String threadName;		// %t
-	private final String message;			// %m
+	private final String categoryName; 	// %c
+	private final String className; 	// %C
+	private final String date; 			// %d
+	private final String fileName; 		// %F
+	private final String locationInfo; 	// %l
+	private final String lineNumber; 	// %L
+	private final String methodName; 	// %M
+	private final String level; 		// %p
+	private final String ms; 			// %r
+	private final String threadName; 	// %t
+	private final String message; 		// %m
+	private final String throwable; 	// %throwable
 
 	private Log(Builder builder) {
 		categoryName = builder.categoryName;
@@ -26,6 +27,7 @@ public final class Log {
 		ms = builder.ms;
 		threadName = builder.threadName;
 		message = builder.message;
+		throwable = builder.throwable;
 	}
 
 	public String getCategoryName() {
@@ -72,6 +74,10 @@ public final class Log {
 		return message;
 	}
 
+	public String getThrowable() {
+		return throwable;
+	}
+
 	@Override
 	public String toString() {
 		return "[categoryName=" + categoryName
@@ -85,22 +91,24 @@ public final class Log {
 				+ "; ms=" + ms
 				+ "; threadName=" + threadName
 				+ "; message=" + message
+				+ "; throwable=" + throwable
 				+ "]";
 	}
 
 	public static class Builder {
 
-		private String categoryName = "";	// %c
+		private String categoryName = ""; 	// %c
 		private String className = ""; 		// %C
 		private String date = ""; 			// %d
 		private String fileName = ""; 		// %F
-		private String locationInfo = "";	// %l
-		private String lineNumber = "";		// %L
-		private String methodName = "";		// %M
-		private String level = "";			// %p
-		private String ms = "";				// %r
-		private String threadName = "";		// %t
-		private String message = "";		// %m
+		private String locationInfo = ""; 	// %l
+		private String lineNumber = ""; 	// %L
+		private String methodName = ""; 	// %M
+		private String level = ""; 			// %p
+		private String ms = ""; 			// %r
+		private String threadName = ""; 	// %t
+		private String message = ""; 		// %m
+		private String throwable = ""; 		// %throwable
 
 		public Builder categoryName(String name) {
 			categoryName = name;
@@ -154,6 +162,11 @@ public final class Log {
 
 		public Builder message(String msg) {
 			message = msg;
+			return this;
+		}
+
+		public Builder throwable(String throwable) {
+			this.throwable = throwable;
 			return this;
 		}
 

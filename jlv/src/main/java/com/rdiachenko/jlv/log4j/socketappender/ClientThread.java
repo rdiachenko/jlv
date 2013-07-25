@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
+import org.apache.log4j.EnhancedPatternLayout;
 import org.apache.log4j.Level;
 import org.apache.log4j.jdbc.JDBCAppender;
 import org.apache.log4j.spi.LoggingEvent;
@@ -87,8 +88,8 @@ public class ClientThread {
 
 	private final static class Log4jDbAppender {
 
-		private static final String SQL = "INSERT INTO logs (category, class, date, file, locInfo, line, method, level, ms, thread, message) "
-				+ "VALUES ('%c', '%C', '%d', '%F', '%l', '%L', '%M', '%p', '%r', '%t', '%m')";
+		private static final String SQL = "INSERT INTO logs (category, class, date, file, locInfo, line, method, level, ms, thread, message, throwable) "
+				+ "VALUES ('%c', '%C', '%d', '%F', '%l', '%L', '%M', '%p', '%r', '%t', '%m', '%throwable')";
 
 		private final JDBCAppender jdbcAppender;
 
@@ -102,6 +103,7 @@ public class ClientThread {
 			jdbcAppender.setLocationInfo(true);
 			jdbcAppender.setThreshold(Level.ALL);
 			jdbcAppender.activateOptions();
+			jdbcAppender.setLayout(new EnhancedPatternLayout(SQL));
 		}
 
 		private void append(LoggingEvent le) {

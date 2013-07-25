@@ -8,7 +8,8 @@ public enum LogField {
     CATEGORY("Category"),
     MESSAGE("Message"),
     LINE("Line"),
-    DATE("Date");
+    DATE("Date"),
+    THROWABLE("Throwable");
 
     private String name;
 
@@ -39,8 +40,12 @@ public enum LogField {
         case DATE:
             value = log.getDate();
             break;
+        case THROWABLE:
+        	value = log.getThrowable();
+        	break;
         default:
-            throw new IllegalStateException("Only [LEVEL,CATEGORY,MESSAGE,LINE,DATE] log fields are available.");
+            throw new IllegalStateException("Only [LEVEL,CATEGORY,MESSAGE,LINE,DATE] log fields are available. "
+            		+ "Current value: " + this);
         }
         return value;
     }

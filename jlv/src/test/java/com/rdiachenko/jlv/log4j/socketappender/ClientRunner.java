@@ -15,6 +15,12 @@ public final class ClientRunner {
 			logger.info("i={}", i);
 			logger.error("i={}", i);
 //			Thread.sleep(1000);
+			try {
+				int[] array = new int[2];
+				int a = array[3];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				logger.error("array exception:", e);
+			}
 		}
 	}
 

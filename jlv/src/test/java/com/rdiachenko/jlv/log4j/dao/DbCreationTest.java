@@ -26,6 +26,7 @@ public class DbCreationTest {
 				.ms("ms")
 				.threadName("thread")
 				.message("message")
+				.throwable("throwable")
 				.build();
 
 		LogEventListener listener = new LogEventListener() {

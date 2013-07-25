@@ -29,6 +29,7 @@ public class LogsInsTrigger extends TriggerAdapter {
 					.ms(newRow.getString("ms"))
 					.threadName(newRow.getString("thread"))
 					.message(newRow.getString("message"))
+					.throwable(newRow.getString("throwable"))
 					.build();
 			LogEventContainer.notifyListeners(log);
 		}

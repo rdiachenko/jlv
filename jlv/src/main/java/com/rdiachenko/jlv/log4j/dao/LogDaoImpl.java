@@ -51,6 +51,7 @@ public class LogDaoImpl implements LogDao {
 						.ms(result.getString("ms"))
 						.threadName(result.getString("thread"))
 						.message(result.getString("message"))
+						.throwable(result.getString("throwable"))
 						.build();
 				logs.add(log);
 			}
@@ -65,8 +66,8 @@ public class LogDaoImpl implements LogDao {
 
 	public void insert(Log log) {
 		String queryString = "INSERT INTO logs "
-				+ "(category, class, date, file, locInfo, line, method, level, ms, thread, message) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "(category, class, date, file, locInfo, line, method, level, ms, thread, message, throwable) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 
@@ -84,6 +85,7 @@ public class LogDaoImpl implements LogDao {
 			preparedStatement.setString(9, log.getMs());
 			preparedStatement.setString(10, log.getThreadName());
 			preparedStatement.setString(11, log.getMessage());
+			preparedStatement.setString(12, log.getThrowable());
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			logger.error("", e);
@@ -112,6 +114,7 @@ public class LogDaoImpl implements LogDao {
 				+ "ms VARCHAR(100) DEFAULT '',"
 				+ "thread VARCHAR(100) DEFAULT '',"
 				+ "message VARCHAR(1000) DEFAULT '',"
+				+ "throwable VARCHAR(MAX) DEFAULT '',"
 				+ ")";
 		DaoUtil.executeQuery(createTableQueryString);
 		logger.info("Logs table was created");
