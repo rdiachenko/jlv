@@ -32,5 +32,15 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 				PreferenceManager.JLV_SERVER_AUTO_START,
 				"Automatic start", getFieldEditorParent());
 		addField(serverAutoStartPrefEditor);
+
+		IntegerFieldEditor logViewBufferSizePrefEditor = new IntegerFieldEditor(
+				PreferenceManager.JLV_LOGVIEW_BUFFER_SIZE,
+				"Buffer size (logs):", getFieldEditorParent());
+		addField(logViewBufferSizePrefEditor);
+
+		IntegerFieldEditor logViewRefreshingTimePrefEditor = new IntegerFieldEditor(
+				PreferenceManager.JLV_LOGVIEW_REFRESHING_TIME,
+				"Refreshing time (ms):", getFieldEditorParent());
+		addField(logViewRefreshingTimePrefEditor);
 	}
 }

@@ -22,10 +22,6 @@ public class JlvViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final int VIEWER_BUFFER_SIZE = 5000;
-
-	private static final int VIEWER_REFRESH_TIME = 5000; //ms
-
 	private final JlvView view;
 
 	private final LogContainer logContainer;
@@ -44,7 +40,7 @@ public class JlvViewController {
 		this.view = view;
 		logDao = new LogDaoImpl();
 		logDao.initDb();
-		logContainer = new LogContainer(VIEWER_BUFFER_SIZE);
+		logContainer = new LogContainer(PreferenceManager.getLogViewBufferSize());
 		logEventListener = new LogEventListener() {
 			@Override
 			public void handleLogEvent(final Log log) {
@@ -145,7 +141,7 @@ public class JlvViewController {
 		try {
 			while (server != null && executor != null) {
 				refreshViewer();
-				Thread.sleep(VIEWER_REFRESH_TIME);
+				Thread.sleep(PreferenceManager.getLogViewRefreshingTime());
 			}
 			refreshViewer();
 		} catch (InterruptedException e) {
