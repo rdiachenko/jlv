@@ -12,5 +12,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = JlvActivator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceManager.JLV_SERVER_PORT_NUMBER, 4445);
 		store.setDefault(PreferenceManager.JLV_SERVER_AUTO_START, true);
+
+		store.setDefault(PreferenceManager.JLV_QUICK_SEARCH_FIELD_STATUS, true);
 	}
 }

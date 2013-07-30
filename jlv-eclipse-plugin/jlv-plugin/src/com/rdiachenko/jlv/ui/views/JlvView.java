@@ -60,7 +60,9 @@ public class JlvView extends ViewPart {
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv view");
 
-		quickSearchField = createQuickSearchField(parent);
+		if (PreferenceManager.getQuickSearchFieldStatus()) {
+			quickSearchField = createQuickSearchField(parent);
+		}
 	}
 
 	@Override
@@ -78,10 +80,10 @@ public class JlvView extends ViewPart {
 		logger.debug("Lifecycle listener was removed from Jlv view");
 	}
 
-	public void changeSearchFieldState() {
+	public void setSearchFieldVisible(boolean isVisible) {
 		Composite parent = viewer.getTable().getParent();
 
-		if (quickSearchField.isDisposed()) {
+		if (isVisible) {
 			quickSearchField = createQuickSearchField(parent);
 
 			if (!Strings.isNullOrEmpty(quickSearchText)) {

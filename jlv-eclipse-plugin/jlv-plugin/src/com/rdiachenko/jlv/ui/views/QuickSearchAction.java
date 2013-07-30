@@ -7,6 +7,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.rdiachenko.jlv.ui.ConstantUiIds;
+import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class QuickSearchAction extends AbstractHandler {
 
@@ -17,7 +18,9 @@ public class QuickSearchAction extends AbstractHandler {
 
 		if (part != null) {
 			JlvView view = (JlvView) part;
-			view.changeSearchFieldState();
+			boolean isVisible = !PreferenceManager.getQuickSearchFieldStatus();
+			view.setSearchFieldVisible(isVisible);
+			PreferenceManager.setQuickSearchFieldStatus(isVisible);
 		}
 		return null;
 	}

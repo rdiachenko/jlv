@@ -7,8 +7,9 @@ import com.rdiachenko.jlv.JlvActivator;
 public final class PreferenceManager {
 
 	public static final String JLV_SERVER_PORT_NUMBER = "jlv.server.port.number";
-
 	public static final String JLV_SERVER_AUTO_START = "jlv.server.auto.start";
+
+	public static final String JLV_QUICK_SEARCH_FIELD_STATUS = "jlv.logview.main.quickSearchField.visible";
 
 	private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
 
@@ -22,5 +23,13 @@ public final class PreferenceManager {
 
 	public static boolean getServerAutoStart() {
 		return STORE.getBoolean(JLV_SERVER_AUTO_START);
+	}
+
+	public static void setQuickSearchFieldStatus(boolean isVisible) {
+		STORE.setValue(JLV_QUICK_SEARCH_FIELD_STATUS, isVisible);
+	}
+
+	public static boolean getQuickSearchFieldStatus() {
+		return STORE.getBoolean(JLV_QUICK_SEARCH_FIELD_STATUS);
 	}
 }
