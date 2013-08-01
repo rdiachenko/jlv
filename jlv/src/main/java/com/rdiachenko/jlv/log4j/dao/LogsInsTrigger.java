@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
+import com.rdiachenko.jlv.log4j.domain.LogFieldName;
 
 public class LogsInsTrigger extends TriggerAdapter {
 
@@ -18,18 +19,18 @@ public class LogsInsTrigger extends TriggerAdapter {
 	@Override
 	public void fire(Connection conn, ResultSet oldRow, ResultSet newRow) throws SQLException {
 		if (newRow.next()) {
-			Log log = (new Log.Builder()).categoryName(newRow.getString("category"))
-					.className(newRow.getString("class"))
-					.date(newRow.getString("date"))
-					.fileName(newRow.getString("file"))
-					.locationInfo(newRow.getString("locInfo"))
-					.lineNumber(newRow.getString("line"))
-					.methodName(newRow.getString("method"))
-					.level(newRow.getString("level"))
-					.ms(newRow.getString("ms"))
-					.threadName(newRow.getString("thread"))
-					.message(newRow.getString("message"))
-					.throwable(newRow.getString("throwable"))
+			Log log = (new Log.Builder()).categoryName(newRow.getString(LogFieldName.CATEGORY.getName()))
+					.className(newRow.getString(LogFieldName.CLASS.getName()))
+					.date(newRow.getString(LogFieldName.DATE.getName()))
+					.fileName(newRow.getString(LogFieldName.FILE.getName()))
+					.locationInfo(newRow.getString(LogFieldName.LOCATION_INFO.getName()))
+					.lineNumber(newRow.getString(LogFieldName.LINE.getName()))
+					.methodName(newRow.getString(LogFieldName.METHOD.getName()))
+					.level(newRow.getString(LogFieldName.LEVEL.getName()))
+					.ms(newRow.getString(LogFieldName.MILLISECONDS.getName()))
+					.threadName(newRow.getString(LogFieldName.THREAD.getName()))
+					.message(newRow.getString(LogFieldName.MESSAGE.getName()))
+					.throwable(newRow.getString(LogFieldName.THROWABLE.getName()))
 					.build();
 			LogEventContainer.notifyListeners(log);
 		}

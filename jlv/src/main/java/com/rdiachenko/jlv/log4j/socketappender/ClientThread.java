@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.dao.ConnectionFactory;
+import com.rdiachenko.jlv.log4j.domain.LogFieldName;
 
 public class ClientThread {
 
@@ -88,7 +89,20 @@ public class ClientThread {
 
 	private final static class Log4jDbAppender {
 
-		private static final String SQL = "INSERT INTO logs (category, class, date, file, locInfo, line, method, level, ms, thread, message, throwable) "
+		private static final String SQL = "INSERT INTO logs ("
+				+ LogFieldName.CATEGORY.getName()
+				+ ", " + LogFieldName.CLASS.getName()
+				+ ", " + LogFieldName.DATE.getName()
+				+ ", " + LogFieldName.FILE.getName()
+				+ ", " + LogFieldName.LOCATION_INFO.getName()
+				+ ", " + LogFieldName.LINE.getName()
+				+ ", " + LogFieldName.METHOD.getName()
+				+ ", " + LogFieldName.LEVEL.getName()
+				+ ", " + LogFieldName.MILLISECONDS.getName()
+				+ ", " + LogFieldName.THREAD.getName()
+				+ ", " + LogFieldName.MESSAGE.getName()
+				+ ", " + LogFieldName.THROWABLE.getName()
+				+ ") "
 				+ "VALUES ('%c', '%C', '%d', '%F', '%l', '%L', '%M', '%p', '%r', '%t', '%m', '%throwable')";
 
 		private final JDBCAppender jdbcAppender;
