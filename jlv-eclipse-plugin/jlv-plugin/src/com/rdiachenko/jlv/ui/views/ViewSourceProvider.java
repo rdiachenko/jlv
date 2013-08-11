@@ -5,11 +5,15 @@ import java.util.Map;
 
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.ui.ConstantUiIds;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private boolean isServerStarted = PreferenceManager.getServerAutoStart();
 
@@ -20,7 +24,8 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public void dispose() {
-		// no code
+		setServerStarted(PreferenceManager.getServerAutoStart());
+		logger.debug("View source provider has been disposed.");
 	}
 
 	@Override

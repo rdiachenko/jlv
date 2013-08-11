@@ -5,25 +5,31 @@ import java.util.Set;
 
 public final class LogEventContainer {
 
-    private static final Set<LogEventListener> LISTENERS = new HashSet<LogEventListener>();
+	private static final Set<LogEventListener> LISTENERS = new HashSet<LogEventListener>();
 
-    private LogEventContainer() {
-    	throw new IllegalStateException("This is an util class. The object should not be created.");
-    }
+	private LogEventContainer() {
+		throw new IllegalStateException("This is an util class. The object should not be created.");
+	}
 
-    public static void notifyListeners(Log logEvent) {
-        for (LogEventListener listener : LISTENERS) {
-            listener.handleLogEvent(logEvent);
-        }
-    }
+	public static void notifyListeners(Log logEvent) {
+		for (LogEventListener listener : LISTENERS) {
+			listener.handleLogEvent(logEvent);
+		}
+	}
 
-    public static void addListener(final LogEventListener listener) {
-        if (listener != null) {
-            LISTENERS.add(listener);
-        }
-    }
+	public static void disposeEvent() {
+		for (LogEventListener listener : LISTENERS) {
+			listener.dispose();
+		}
+	}
 
-    public static void removeListener(final LogEventListener listener) {
-        LISTENERS.remove(listener);
-    }
+	public static void addListener(final LogEventListener listener) {
+		if (listener != null) {
+			LISTENERS.add(listener);
+		}
+	}
+
+	public static void removeListener(final LogEventListener listener) {
+		LISTENERS.remove(listener);
+	}
 }

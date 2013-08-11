@@ -1,6 +1,7 @@
 package com.rdiachenko.jlv.ui.views;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -34,17 +35,30 @@ public class JlvViewController {
 
 	private ExecutorService executor;
 
-	private ExecutorService viewRefresher;
-
 	public JlvViewController(JlvView view) {
 		this.view = view;
 		logDao = new LogDaoImpl();
 		logDao.initDb();
 		logContainer = new LogContainer(PreferenceManager.getLogViewBufferSize());
+
 		logEventListener = new LogEventListener() {
+			private long startTime = Calendar.getInstance().getTimeInMillis();
+
 			@Override
 			public void handleLogEvent(final Log log) {
 				logContainer.add(log);
+				long updateTime = Calendar.getInstance().getTimeInMillis() - startTime;
+
+				if (updateTime >= PreferenceManager.getLogViewRefreshingTime()) {
+					refreshViewer();
+					startTime = Calendar.getInstance().getTimeInMillis();
+				}
+			}
+
+			@Override
+			public void dispose() {
+				refreshViewer();
+				startTime = Calendar.getInstance().getTimeInMillis();
 			}
 		};
 		LogEventContainer.addListener(logEventListener);
@@ -64,15 +78,6 @@ public class JlvViewController {
 					logger.debug("Starting server from Jlv view...");
 					server.start();
 					logger.debug("Start is completed");
-				}
-			});
-			viewRefresher = Executors.newSingleThreadExecutor();
-			viewRefresher.execute(new Runnable() {
-				@Override
-				public void run() {
-					logger.debug("Starting view refresher...");
-					refreshViewerPeriodically();
-					logger.debug("View refresher start is completed");
 				}
 			});
 		} catch (IOException e) {
@@ -99,23 +104,6 @@ public class JlvViewController {
 			server = null;
 			executor = null;
 		}
-
-		try {
-			logger.debug("Stopping view refresher...");
-
-			if (viewRefresher != null) {
-				viewRefresher.shutdown();
-
-				if (!viewRefresher.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-					viewRefresher.shutdownNow();
-				}
-				logger.debug("View refresher was stopped");
-			}
-		} catch (InterruptedException e) {
-			logger.error("", e);
-		} finally {
-			viewRefresher = null;
-		}
 	}
 
 	public void dispose() {
@@ -129,23 +117,11 @@ public class JlvViewController {
 	}
 
 	private void refreshViewer() {
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				view.refreshViewer();
 			}
 		});
-	}
-
-	private void refreshViewerPeriodically() {
-		try {
-			while (server != null && executor != null) {
-				refreshViewer();
-				Thread.sleep(PreferenceManager.getLogViewRefreshingTime());
-			}
-			refreshViewer();
-		} catch (InterruptedException e) {
-			logger.error("", e);
-		}
 	}
 }

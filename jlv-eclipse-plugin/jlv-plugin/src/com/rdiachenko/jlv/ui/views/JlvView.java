@@ -14,7 +14,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,7 @@ import com.google.common.base.Strings;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
+import com.rdiachenko.jlv.ui.ConstantUiIds;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class JlvView extends ViewPart {
@@ -75,6 +79,13 @@ public class JlvView extends ViewPart {
 	@Override
 	public void dispose() {
 		super.dispose();
+
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
+		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
+				.getSourceProvider(ConstantUiIds.SERVER_STATE_VARIABLE_ID);
+		viewSourceProvider.dispose();
+
 		getController().dispose();
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was removed from Jlv view");

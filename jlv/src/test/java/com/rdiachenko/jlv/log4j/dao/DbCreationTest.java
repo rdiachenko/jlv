@@ -33,6 +33,10 @@ public class DbCreationTest {
 			public void handleLogEvent(Log log) {
 				System.out.println("Inside listener: " + log);
 			}
+
+			public void dispose() {
+				System.out.println("Dispose event");
+			}
 		};
 
 		LogEventContainer.addListener(listener);

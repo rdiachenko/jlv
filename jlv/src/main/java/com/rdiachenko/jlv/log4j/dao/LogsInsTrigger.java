@@ -38,6 +38,7 @@ public class LogsInsTrigger extends TriggerAdapter {
 
 	@Override
 	public void close() throws SQLException {
+		LogEventContainer.disposeEvent();
 		logger.info("Closing database...");
 		super.close();
 		logger.info("The database is closed");
