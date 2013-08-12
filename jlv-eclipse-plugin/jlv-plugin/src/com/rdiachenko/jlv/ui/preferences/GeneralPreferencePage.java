@@ -18,7 +18,7 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 	private static final int LOG_VIEW_BUFFER_SIZE_MIN = 50;
 	private static final int LOG_VIEW_BUFFER_SIZE_MAX = 100000;
 
-	private static final int LOG_VIEW_REFRESHING_TIME_MIN = 1000;
+	private static final int LOG_VIEW_REFRESHING_TIME_MIN = 500;
 	private static final int LOG_VIEW_REFRESHING_TIME_MAX = 60000;
 
 	public GeneralPreferencePage() {

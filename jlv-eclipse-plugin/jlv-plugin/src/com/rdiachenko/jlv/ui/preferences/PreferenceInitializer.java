@@ -16,6 +16,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.JLV_QUICK_SEARCH_FIELD_STATUS, true);
 
 		store.setDefault(PreferenceManager.JLV_LOGVIEW_BUFFER_SIZE, 1000);
-		store.setDefault(PreferenceManager.JLV_LOGVIEW_REFRESHING_TIME, 2000);
+		store.setDefault(PreferenceManager.JLV_LOGVIEW_REFRESHING_TIME, 500);
 	}
 }
