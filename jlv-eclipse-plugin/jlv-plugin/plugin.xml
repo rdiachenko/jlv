@@ -25,7 +25,15 @@
             class="com.rdiachenko.jlv.ui.views.JlvView"
             icon="icons/jlv_view.png"
             id="com.rdiachenko.jlv.ui.views.view"
-            name="JLV"
+            name="Main view"
+            restorable="true">
+      </view>
+      <view
+            category="com.rdiachenko.jlv.ui.views.category"
+            class="com.rdiachenko.jlv.ui.views.JlvDetailedView"
+            icon="icons/jlv_detailed_view.png"
+            id="com.rdiachenko.jlv.ui.views.detailedview"
+            name="Detailed view"
             restorable="true">
       </view>
    </extension>
