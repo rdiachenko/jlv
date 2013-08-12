@@ -17,9 +17,9 @@ public final class LogEventContainer {
 		}
 	}
 
-	public static void disposeEvent() {
+	public static void endLogEvent() {
 		for (LogEventListener listener : LISTENERS) {
-			listener.dispose();
+			listener.endLogEvent();
 		}
 	}
 

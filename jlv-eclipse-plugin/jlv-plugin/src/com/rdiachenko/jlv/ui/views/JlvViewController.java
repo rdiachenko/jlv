@@ -56,7 +56,7 @@ public class JlvViewController {
 			}
 
 			@Override
-			public void dispose() {
+			public void endLogEvent() {
 				refreshViewer();
 				startTime = Calendar.getInstance().getTimeInMillis();
 			}

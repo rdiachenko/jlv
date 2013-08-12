@@ -34,7 +34,7 @@ public class DbCreationTest {
 				System.out.println("Inside listener: " + log);
 			}
 
-			public void dispose() {
+			public void endLogEvent() {
 				System.out.println("Dispose event");
 			}
 		};
