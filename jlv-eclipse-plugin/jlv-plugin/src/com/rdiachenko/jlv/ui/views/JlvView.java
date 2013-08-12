@@ -60,6 +60,8 @@ public class JlvView extends ViewPart {
 		parent.setLayout(layout);
 
 		viewer = createViewer(parent);
+		getViewSite().setSelectionProvider(viewer);
+
 		viewLifecycleListener = new ViewLifecycleListener();
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv view");
