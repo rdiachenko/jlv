@@ -8,7 +8,7 @@ import org.eclipse.ui.ISources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rdiachenko.jlv.ui.ConstantUiIds;
+import com.rdiachenko.jlv.ui.UiStringConstants;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
@@ -19,7 +19,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	public void setServerStarted(boolean state) {
 		isServerStarted = state;
-		fireSourceChanged(ISources.WORKBENCH, ConstantUiIds.SERVER_STATE_VARIABLE_ID, isServerStarted);
+		fireSourceChanged(ISources.WORKBENCH, UiStringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 	@Override
 	public Map<String, Boolean> getCurrentState() {
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
-		map.put(ConstantUiIds.SERVER_STATE_VARIABLE_ID, isServerStarted);
+		map.put(UiStringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
 		return map;
 	}
 
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[] { ConstantUiIds.SERVER_STATE_VARIABLE_ID };
+		return new String[] { UiStringConstants.SERVER_STATE_VARIABLE_ID };
 	}
 }

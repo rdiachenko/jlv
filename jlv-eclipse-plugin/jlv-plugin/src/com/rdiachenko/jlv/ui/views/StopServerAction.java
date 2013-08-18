@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.services.ISourceProviderService;
 
-import com.rdiachenko.jlv.ui.ConstantUiIds;
+import com.rdiachenko.jlv.ui.UiStringConstants;
 
 public class StopServerAction extends AbstractHandler {
 
@@ -20,9 +20,9 @@ public class StopServerAction extends AbstractHandler {
 		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
 		// get our source provider by querying by the variable name 
 		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
-				.getSourceProvider(ConstantUiIds.SERVER_STATE_VARIABLE_ID);
+				.getSourceProvider(UiStringConstants.SERVER_STATE_VARIABLE_ID);
 
-		IViewPart part = window.getActivePage().findView(ConstantUiIds.JLV_MAIN_VIEW_ID);
+		IViewPart part = window.getActivePage().findView(UiStringConstants.JLV_MAIN_VIEW_ID);
 
 		if (part != null) {
 			JlvView view = (JlvView) part;

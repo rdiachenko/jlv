@@ -128,7 +128,7 @@ public class LogDaoImpl implements LogDao {
 				+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(100) DEFAULT '',"
 				+ LogFieldName.THREAD.getName() + " VARCHAR(100) DEFAULT '',"
 				+ LogFieldName.MESSAGE.getName() + " VARCHAR(1000) DEFAULT '',"
-				+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT '',"
+				+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
 				+ ")";
 		DaoUtil.executeQuery(createTableQueryString);
 		logger.info("Logs table was created");

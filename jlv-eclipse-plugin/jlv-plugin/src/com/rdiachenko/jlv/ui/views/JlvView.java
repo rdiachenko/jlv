@@ -9,6 +9,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -25,7 +27,7 @@ import com.google.common.base.Strings;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
-import com.rdiachenko.jlv.ui.ConstantUiIds;
+import com.rdiachenko.jlv.ui.UiStringConstants;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class JlvView extends ViewPart {
@@ -74,7 +76,6 @@ public class JlvView extends ViewPart {
 	@Override
 	public void setFocus() {
 		getViewSite().getPage().activate(this);
-		viewer.getControl().setFocus();
 		logger.debug("Focus has been set on jlv view.");
 	}
 
@@ -85,7 +86,7 @@ public class JlvView extends ViewPart {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
 		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
-				.getSourceProvider(ConstantUiIds.SERVER_STATE_VARIABLE_ID);
+				.getSourceProvider(UiStringConstants.SERVER_STATE_VARIABLE_ID);
 		viewSourceProvider.dispose();
 
 		getController().dispose();
@@ -143,14 +144,14 @@ public class JlvView extends ViewPart {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.VIRTUAL;
 		TableViewer viewer = new TableViewer(parent, style);
 		Table table = viewer.getTable();
-//		table.setItemCount(2);
-//		table.addListener(SWT.SetData, new Listener() {
-//			@Override
-//			public void handleEvent(Event event) {
-//				TableItem item = (TableItem) event.item;
-//				item.setData(getController().getLogs()[0]);
-//			}
-//		});
+
+		table.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				ViewUtils.openView(UiStringConstants.JLV_DETAILED_VIEW_ID);
+				setFocus();
+			}
+		});
 
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		table.setLayoutData(gridData);
