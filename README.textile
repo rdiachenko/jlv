@@ -1,7 +1,22 @@
 h3. Information
 
-Java logging viewer - currently available as a plugin for Eclipse IDE.
+Java logging viewer is available as a plugin for Eclipse IDE. Currently, it supports log4j logging system.
 
 h3. Eclipse update site
 
-https://github.com/rdiachenko/JLV/raw/repo/eclipse
+@https://github.com/rdiachenko/JLV/raw/repo/eclipse@
+
+h3. Screenshots
+
+h4. Show JLV's view in Eclipse (Window > Show View > Other)
+
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/show_jlv_view.png!
+
+h4. JLV's main preferences page (Window > Preferences > JLV)
+
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_main_preferences.png!
+
+h4. JLV's main log view and detailed log view
+
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
+
