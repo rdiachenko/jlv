@@ -47,7 +47,7 @@ cp jlv-eclipse-plugin/jlv-update-site/target/*.zip eclipse/archive/
 check_status $?
 
 echo 'Commiting and pushing changes'
-git add eclipse
+git add -A eclipse
 git commit -m "JLV released (v.$1)"
 git push
 check_status $?
