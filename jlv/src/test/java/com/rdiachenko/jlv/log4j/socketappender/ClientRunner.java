@@ -10,7 +10,7 @@ public final class ClientRunner {
 		Logger logger = LoggerFactory.getLogger(ClientRunner.class);
 		PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
 
-		String exception = "Socket couldn''t be started:\n"
+		String exception = "Socket couldn't be started:\n"
 				+ "java.net.SocketException: Socket closed\n"
 				+ " at java.net.PlainSocketImpl.socketAccept(Native Method)\n"
 				+ " at java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)\n"
@@ -39,7 +39,7 @@ public final class ClientRunner {
 					logger.error("illegal state:", e);
 				}
 			}
-			Thread.sleep(1000);
+//			Thread.sleep(1000);
 		}
 	}
 

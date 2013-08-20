@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rdiachenko.jlv.log4j.dao.DaoProvider;
 import com.rdiachenko.jlv.log4j.dao.LogDao;
-import com.rdiachenko.jlv.log4j.dao.LogDaoImpl;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
 import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
@@ -37,7 +37,7 @@ public class JlvViewController {
 
 	public JlvViewController(JlvView view) {
 		this.view = view;
-		logDao = new LogDaoImpl();
+		logDao = DaoProvider.LOG_DAO.getLogDao();
 		logDao.initDb();
 		logContainer = new LogContainer(PreferenceManager.getLogViewBufferSize());
 

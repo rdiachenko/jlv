@@ -21,7 +21,7 @@ public final class DaoUtil {
 		Statement statement = null;
 
 		try {
-			conn = ConnectionFactory.CONNECTION.getConnection();
+			conn = ConnectionPool.CONNECTION_POOL.getConnection();
 			statement = conn.createStatement();
 			statement.execute(query);
 		} catch (SQLException e) {

@@ -10,16 +10,65 @@ import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
+import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
+import com.rdiachenko.jlv.log4j.domain.LogEventListener;
 import com.rdiachenko.jlv.log4j.domain.LogFieldName;
 
 public class LogDaoImpl implements LogDao {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private final LogEventListener logEventListener;
+
+	private String insertLogQueryString = "INSERT INTO logs "
+			+ "("
+			+ LogFieldName.CATEGORY.getName()
+			+ ", " + LogFieldName.CLASS.getName()
+			+ ", " + LogFieldName.DATE.getName()
+			+ ", " + LogFieldName.FILE.getName()
+			+ ", " + LogFieldName.LOCATION_INFO.getName()
+			+ ", " + LogFieldName.LINE.getName()
+			+ ", " + LogFieldName.METHOD.getName()
+			+ ", " + LogFieldName.LEVEL.getName()
+			+ ", " + LogFieldName.MILLISECONDS.getName()
+			+ ", " + LogFieldName.THREAD.getName()
+			+ ", " + LogFieldName.MESSAGE.getName()
+			+ ", " + LogFieldName.THROWABLE.getName()
+			+ ") "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+	private String createTableQueryString = "CREATE TABLE logs("
+			+ "ID BIGINT AUTO_INCREMENT,"
+			+ LogFieldName.CATEGORY.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.CLASS.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.DATE.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.FILE.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.LOCATION_INFO.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.LINE.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.METHOD.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.LEVEL.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.THREAD.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.MESSAGE.getName() + " VARCHAR(1000) DEFAULT '',"
+			+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
+			+ ")";
+
+	public LogDaoImpl() {
+		logEventListener = new LogEventListener() {
+			public void handleLogEvent(final Log log) {
+
+			}
+
+			public void endLogEvent() {
+
+			}
+		};
+		LogEventContainer.addListener(logEventListener);
+	}
+
 	public void initDb() {
 		dropLogsTable();
 		createLogsTable();
-		createLogsInsTrigger();
 	}
 
 	public void dropDb() {
@@ -35,7 +84,7 @@ public class LogDaoImpl implements LogDao {
 		LogContainer logs = new LogContainer(tail);
 
 		try {
-			conn = ConnectionFactory.CONNECTION.getConnection();
+			conn = ConnectionPool.CONNECTION_POOL.getConnection();
 			preparedStatement = conn.prepareStatement(queryString);
 			preparedStatement.setInt(1, tail);
 			result = preparedStatement.executeQuery();
@@ -66,28 +115,12 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	public void insert(Log log) {
-		String queryString = "INSERT INTO logs "
-				+ "("
-				+ LogFieldName.CATEGORY.getName()
-				+ ", " + LogFieldName.CLASS.getName()
-				+ ", " + LogFieldName.DATE.getName()
-				+ ", " + LogFieldName.FILE.getName()
-				+ ", " + LogFieldName.LOCATION_INFO.getName()
-				+ ", " + LogFieldName.LINE.getName()
-				+ ", " + LogFieldName.METHOD.getName()
-				+ ", " + LogFieldName.LEVEL.getName()
-				+ ", " + LogFieldName.MILLISECONDS.getName()
-				+ ", " + LogFieldName.THREAD.getName()
-				+ ", " + LogFieldName.MESSAGE.getName()
-				+ ", " + LogFieldName.THROWABLE.getName()
-				+ ") "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 
 		try {
-			conn = ConnectionFactory.CONNECTION.getConnection();
-			preparedStatement = conn.prepareStatement(queryString);
+			conn = ConnectionPool.CONNECTION_POOL.getConnection();
+			preparedStatement = conn.prepareStatement(insertLogQueryString);
 			preparedStatement.setString(1, log.getCategoryName());
 			preparedStatement.setString(2, log.getClassName());
 			preparedStatement.setString(3, log.getDate());
@@ -103,6 +136,7 @@ public class LogDaoImpl implements LogDao {
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			logger.error("", e);
+			throw new IllegalStateException(e);
 		} finally {
 			DaoUtil.close(conn, preparedStatement);
 		}
@@ -115,29 +149,7 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	private void createLogsTable() {
-		String createTableQueryString = "CREATE TABLE logs("
-				+ "ID BIGINT AUTO_INCREMENT,"
-				+ LogFieldName.CATEGORY.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.CLASS.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.DATE.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.FILE.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.LOCATION_INFO.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.LINE.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.METHOD.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.LEVEL.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.THREAD.getName() + " VARCHAR(100) DEFAULT '',"
-				+ LogFieldName.MESSAGE.getName() + " VARCHAR(1000) DEFAULT '',"
-				+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
-				+ ")";
 		DaoUtil.executeQuery(createTableQueryString);
 		logger.info("Logs table was created");
-	}
-
-	private void createLogsInsTrigger() {
-		String createTriggerQueryString = "CREATE TRIGGER IF NOT EXISTS logs_ins AFTER INSERT ON logs "
-				+ "FOR EACH ROW CALL \"com.rdiachenko.jlv.log4j.dao.LogsInsTrigger\"";
-		DaoUtil.executeQuery(createTriggerQueryString);
-		logger.info("Logs table insertion trigger was created");
 	}
 }
