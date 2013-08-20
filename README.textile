@@ -2,9 +2,9 @@ h3. Information
 
 Java logging viewer is available as a plugin for Eclipse IDE. Currently, it supports log4j logging system.
 
-h5. Main features:
+h5. Current main features:
 * Getting logs by socket
-* Quick filtering
+* Quick filtering by any log's field
 * Detailed information about selected log
 * Preferences page for controlling and saving plugin state
 
