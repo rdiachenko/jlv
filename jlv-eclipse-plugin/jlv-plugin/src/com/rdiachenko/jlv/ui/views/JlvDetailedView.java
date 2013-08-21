@@ -91,7 +91,7 @@ public class JlvDetailedView extends ViewPart implements ISelectionListener {
 		int fieldLinesNumber = 1;
 
 		if (logField == LogFieldName.MESSAGE) {
-			fieldLinesNumber = 2;
+			fieldLinesNumber = 7;
 		} else if (logField == LogFieldName.THROWABLE) {
 			fieldLinesNumber = 10;
 		}
