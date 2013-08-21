@@ -8,6 +8,41 @@ h5. Current main features:
 * Detailed information about selected log
 * Preferences page for controlling and saving plugin state
 
+h3. Log4j configuration
+
+JLV uses socket connection to receive logs from clients. Clients should configure their log4j properties file for successful interaction. Default port is 4445, but you may also change it in JLV's preferences. Add this configuration to your log4j properties file:
+
+h5. XML Format
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+ 
+ <appender name="Log4jViewer" class="org.apache.log4j.net.SocketAppender">
+    <param name="remoteHost" value="localhost"/>
+    <param name="port" value="4445"/>
+    <param name="locationInfo" value="true"/>
+  </appender>
+  
+  <root>
+    <priority value="debug"/>
+    <appender-ref ref="Log4jViewer"/>
+  </root>
+	
+</log4j:configuration>
+```
+
+h5. Properties Format
+```
+log4j.rootCategory=DEBUG, jlv
+
+log4j.appender.jlv=org.apache.log4j.net.SocketAppender
+log4j.appender.jlv.remoteHost=localhost
+log4j.appender.jlv.port=4445
+log4j.appender.jlv.locationInfo=true
+```
+
 h3. Eclipse update site
 
 @https://github.com/rdiachenko/JLV/raw/repo/eclipse@
