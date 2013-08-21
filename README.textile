@@ -18,8 +18,7 @@ JLV uses socket connection to receive logs from clients. Clients should configur
 
 h5. XML Format
 
-```
-<?xml version="1.0" encoding="UTF-8"?>
+bc.. <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
  <appender name="Log4jViewer" class="org.apache.log4j.net.SocketAppender">
@@ -32,19 +31,16 @@ h5. XML Format
     <appender-ref ref="Log4jViewer"/>
   </root>
 </log4j:configuration>
-```
 
-h5. Properties Format
+p. h5. Properties Format
 
-```
-log4j.rootCategory=DEBUG, jlv
+bc.. log4j.rootCategory=DEBUG, jlv
 log4j.appender.jlv=org.apache.log4j.net.SocketAppender
 log4j.appender.jlv.remoteHost=localhost
 log4j.appender.jlv.port=4445
 log4j.appender.jlv.locationInfo=true
-```
 
-h3. Screenshots
+p. h3. Screenshots
 
 h4. Show JLV's view in Eclipse (Window > Show View > Other)
 
