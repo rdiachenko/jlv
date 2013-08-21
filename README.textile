@@ -32,7 +32,7 @@ bc.. <?xml version="1.0" encoding="UTF-8"?>
   </root>
 </log4j:configuration>
 
-p. h5. Properties Format
+h5. Properties Format
 
 bc.. log4j.rootCategory=DEBUG, jlv
 log4j.appender.jlv=org.apache.log4j.net.SocketAppender
@@ -40,7 +40,7 @@ log4j.appender.jlv.remoteHost=localhost
 log4j.appender.jlv.port=4445
 log4j.appender.jlv.locationInfo=true
 
-p. h3. Screenshots
+h3. Screenshots
 
 h4. Show JLV's view in Eclipse (Window > Show View > Other)
 
