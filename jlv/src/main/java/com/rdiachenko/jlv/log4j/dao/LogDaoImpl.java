@@ -16,7 +16,7 @@ public class LogDaoImpl implements LogDao {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private String insertLogQueryString = "INSERT INTO logs "
+	private String insertLogQueryString = "INSERT INTO log4j1x "
 			+ "("
 			+ LogFieldName.CATEGORY.getName()
 			+ ", " + LogFieldName.CLASS.getName()
@@ -33,7 +33,7 @@ public class LogDaoImpl implements LogDao {
 			+ ") "
 			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	private String createTableQueryString = "CREATE TABLE logs("
+	private String createTableQueryString = "CREATE TABLE log4j1x("
 			+ "ID BIGINT AUTO_INCREMENT,"
 			+ LogFieldName.CATEGORY.getName() + " VARCHAR(1000) DEFAULT '',"
 			+ LogFieldName.CLASS.getName() + " VARCHAR(1000) DEFAULT '',"
@@ -60,7 +60,7 @@ public class LogDaoImpl implements LogDao {
 
 	public LogContainer getTailingLogs(int tail) {
 		logger.info("Selection {} tailing logs from db...", tail);
-		String queryString = "SELECT * FROM logs ORDER BY id DESC LIMIT ?";
+		String queryString = "SELECT * FROM log4j1x ORDER BY id DESC LIMIT ?";
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
@@ -126,13 +126,13 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	private void dropLogsTable() {
-		String dropTableQueryString = "DROP TABLE logs IF EXISTS";
+		String dropTableQueryString = "DROP TABLE log4j1x IF EXISTS";
 		DaoUtil.executeQuery(dropTableQueryString);
-		logger.info("Logs table was dropped");
+		logger.info("log4j1x table was dropped");
 	}
 
 	private void createLogsTable() {
 		DaoUtil.executeQuery(createTableQueryString);
-		logger.info("Logs table was created");
+		logger.info("log4j1x table was created");
 	}
 }
