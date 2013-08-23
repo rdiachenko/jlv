@@ -10,15 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
-import com.rdiachenko.jlv.log4j.domain.LogEventContainer;
-import com.rdiachenko.jlv.log4j.domain.LogEventListener;
 import com.rdiachenko.jlv.log4j.domain.LogFieldName;
 
 public class LogDaoImpl implements LogDao {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private final LogEventListener logEventListener;
 
 	private String insertLogQueryString = "INSERT INTO logs "
 			+ "("
@@ -39,32 +35,19 @@ public class LogDaoImpl implements LogDao {
 
 	private String createTableQueryString = "CREATE TABLE logs("
 			+ "ID BIGINT AUTO_INCREMENT,"
-			+ LogFieldName.CATEGORY.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.CLASS.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.CATEGORY.getName() + " VARCHAR(1000) DEFAULT '',"
+			+ LogFieldName.CLASS.getName() + " VARCHAR(1000) DEFAULT '',"
 			+ LogFieldName.DATE.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.FILE.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.LOCATION_INFO.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.FILE.getName() + " VARCHAR(1000) DEFAULT '',"
+			+ LogFieldName.LOCATION_INFO.getName() + " VARCHAR(1000) DEFAULT '',"
 			+ LogFieldName.LINE.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.METHOD.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.LEVEL.getName() + " VARCHAR(10) DEFAULT '',"
-			+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.THREAD.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.METHOD.getName() + " VARCHAR(1000) DEFAULT '',"
+			+ LogFieldName.LEVEL.getName() + " VARCHAR(100) DEFAULT '',"
+			+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(1000) DEFAULT '',"
+			+ LogFieldName.THREAD.getName() + " VARCHAR(1000) DEFAULT '',"
 			+ LogFieldName.MESSAGE.getName() + " VARCHAR(MAX) DEFAULT '',"
 			+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
 			+ ")";
-
-	public LogDaoImpl() {
-		logEventListener = new LogEventListener() {
-			public void handleLogEvent(final Log log) {
-
-			}
-
-			public void endLogEvent() {
-
-			}
-		};
-		LogEventContainer.addListener(logEventListener);
-	}
 
 	public void initDb() {
 		dropLogsTable();
