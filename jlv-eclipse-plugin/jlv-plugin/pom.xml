@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.rdiachenko.jlv</groupId>
-			<artifactId>jlv</artifactId>
+			<artifactId>jlv-core</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -37,7 +37,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>com.rdiachenko.jlv</groupId>
-									<artifactId>jlv</artifactId>
+									<artifactId>jlv-core</artifactId>
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>${basedir}/dependencies</outputDirectory>
