@@ -1,6 +1,9 @@
 h3. Information
 
-Java logging viewer is available as a plugin for Eclipse IDE. Currently, it supports log4j logging system.
+Java logging viewer is available as a plugin for Eclipse IDE.
+
+Currently it supports the following logging system clients:
+* log4j v1.x
 
 h5. Current main features:
 * Getting logs by socket
@@ -10,7 +13,13 @@ h5. Current main features:
 
 h3. Eclipse update site
 
-@https://github.com/rdiachenko/JLV/raw/repo/eclipse@
+bc.. https://github.com/rdiachenko/JLV/raw/repo/eclipse
+
+h3. Release notes
+
+h5. "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
+
+h5. "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
 
 h3. Client's log4j configuration
 
@@ -54,3 +63,8 @@ h4. JLV's main log view and detailed log view
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
 
+h3. How to contribute
+
+* "Install and configure your Eclipse":https://github.com/rdiachenko/JLV/wiki/Eclipse-installation-and-configuration
+* Read article about "development workflow with git":https://github.com/rdiachenko/JLV/wiki/Development-workflow-with-Git%3A-Fork%2C-Branching%2C-Commits-and-Pull-Request
+* "Create jlv run configuration within Eclipse":https://github.com/rdiachenko/JLV/wiki/JLV-Eclipse-plugin%27s-run-configuration
