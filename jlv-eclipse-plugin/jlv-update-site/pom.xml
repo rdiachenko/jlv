@@ -6,7 +6,7 @@
 		<relativePath>../pom.xml</relativePath>
 		<groupId>com.rdiachenko.jlv</groupId>
 		<artifactId>com.rdiachenko.jlv.parent</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.2.2</version>
 	</parent>
 	
 	<artifactId>com.rdiachenko.jlv.updatesite</artifactId>
