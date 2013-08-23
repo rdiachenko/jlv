@@ -20,7 +20,7 @@ h3. Release notes
 * "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
 * "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
 
-h3. Client's log4j configuration
+h3. Client's log4j v1.x configuration
 
 JLV uses socket connection to receive logs from clients. Clients should configure their log4j properties file for successful interaction. Default port is 4445, but you may also change it in JLV's preferences. Add this configuration to your log4j properties file:
 
