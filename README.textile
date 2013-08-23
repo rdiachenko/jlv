@@ -17,8 +17,8 @@ bc.. https://github.com/rdiachenko/JLV/raw/repo/eclipse
 
 h3. Release notes
 
-* h5. "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
-* h5. "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
+* "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
+* "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
 
 h3. Client's log4j configuration
 
