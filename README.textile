@@ -17,9 +17,8 @@ bc.. https://github.com/rdiachenko/JLV/raw/repo/eclipse
 
 h3. Release notes
 
-h5. "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
-
-h5. "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
+* h5. "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
+* h5. "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
 
 h3. Client's log4j configuration
 
@@ -51,15 +50,15 @@ log4j.appender.jlv.locationInfo=true
 
 h3. Screenshots
 
-h4. Show JLV's view in Eclipse (Window > Show View > Other)
+h5. Show JLV's view in Eclipse (Window > Show View > Other)
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/show_jlv_view.png!
 
-h4. JLV's main preferences page (Window > Preferences > JLV)
+h5. JLV's main preferences page (Window > Preferences > JLV)
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_main_preferences.png!
 
-h4. JLV's main log view and detailed log view
+h5. JLV's main log view and detailed log view
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
 
