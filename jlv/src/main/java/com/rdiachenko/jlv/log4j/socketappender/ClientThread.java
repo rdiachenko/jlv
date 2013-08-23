@@ -34,10 +34,15 @@ public class ClientThread {
 
 		try {
 			inputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+			Object logObj = null;
 
-			while (!socket.isClosed()) {
-				LoggingEvent log = (LoggingEvent) inputStream.readObject();
-				append(log);
+			if (!socket.isClosed() && (logObj = inputStream.readObject()) instanceof LoggingEvent) {
+				append((LoggingEvent) logObj);
+
+				while (!socket.isClosed()) {
+					LoggingEvent log = (LoggingEvent) inputStream.readObject();
+					append(log);
+				}
 			}
 
 		} catch (EOFException e) {
