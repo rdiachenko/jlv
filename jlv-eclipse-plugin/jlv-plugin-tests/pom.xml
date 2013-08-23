@@ -6,7 +6,7 @@
 		<relativePath>../pom.xml</relativePath>
 		<groupId>com.rdiachenko.jlv</groupId>
 		<artifactId>com.rdiachenko.jlv.parent</artifactId>
-		<version>1.2.2</version>
+		<version>1.2.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>com.rdiachenko.jlv.plugin.tests</artifactId>

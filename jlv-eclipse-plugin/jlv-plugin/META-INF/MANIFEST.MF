@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jlv-plugin
 Bundle-SymbolicName: com.rdiachenko.jlv.plugin;singleton:=true
-Bundle-Version: 1.2.2
+Bundle-Version: 1.2.3.qualifier
 Bundle-Activator: com.rdiachenko.jlv.JlvActivator
 Bundle-Vendor: Ruslan Diachenko
 Require-Bundle: org.eclipse.ui,
