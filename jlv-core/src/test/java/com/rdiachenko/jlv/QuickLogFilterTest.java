@@ -8,7 +8,7 @@ public class QuickLogFilterTest {
 	@Test
 	public void testSinglelineMessage() {
 		String message = "java.lang.ArrayIndexOutOfBoundsException: 3 at com.rdiachenko.jlv.log4j.socketappender.ClientRunner.main(ClientRunner.java:20)";
-		String regex = "(?i)(?s).*(lang).*";
+		String regex = "(?i)(?s).*( 3 at).*";
 		Assert.assertTrue(message.matches(regex));
 	}
 

@@ -42,16 +42,11 @@ public final class LogConverter {
 				strBuilder.append(exception).append(lineSeparator);
 			}
 			builder.throwable(Strings.nullToEmpty(strBuilder.toString()));
-		} else {
-			builder.throwable("");
 		}
 
 		long time = le.getTimeStamp();
 
-		if (time == 0) {
-			builder.date("");
-			builder.ms("");
-		} else {
+		if (time > 0) {
 			builder.ms(String.valueOf(time));
 			builder.date(new Timestamp(time).toString());
 		}
