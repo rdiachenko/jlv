@@ -98,6 +98,10 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	public void insert(Log log) {
+		if (log == null) {
+			throw new IllegalArgumentException("log is null");
+		}
+
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 
