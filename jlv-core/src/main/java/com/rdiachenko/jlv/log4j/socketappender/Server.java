@@ -27,7 +27,8 @@ public class Server extends Thread {
 		}
 	}
 
-	public void runServer() {
+	@Override
+	public void run() {
 		logger.debug("Server was started");
 
 		try {

@@ -2,9 +2,6 @@ package com.rdiachenko.jlv.ui.views;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
@@ -33,8 +30,6 @@ public class JlvViewController {
 
 	private Server server;
 
-	private ExecutorService executor;
-
 	public JlvViewController(JlvView view) {
 		this.view = view;
 		logDao = DaoProvider.LOG_DAO.getLogDao();
@@ -56,7 +51,7 @@ public class JlvViewController {
 			}
 
 			@Override
-			public void endLogEvent() {
+			public void lastLogEvent() {
 				refreshViewer();
 				startTime = Calendar.getInstance().getTimeInMillis();
 			}
@@ -71,38 +66,16 @@ public class JlvViewController {
 	public void startServer() {
 		try {
 			server = new Server(PreferenceManager.getServerPortNumber());
-			executor = Executors.newSingleThreadExecutor();
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
-					logger.debug("Starting server from Jlv view...");
-					server.start();
-					logger.debug("Start is completed");
-				}
-			});
+			server.start();
 		} catch (IOException e) {
 			logger.error("", e);
 		}
 	}
 
 	public void stopServer() {
-		try {
-			logger.debug("Stopping server from Jlv view...");
-
-			if (server != null && executor != null) {
-				server.stop();
-				executor.shutdown();
-
-				if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-					executor.shutdownNow();
-				}
-				logger.debug("Stop is completed");
-			}
-		} catch (InterruptedException e) {
-			logger.error("", e);
-		} finally {
+		if (server != null) {
+			server.stopServer();
 			server = null;
-			executor = null;
 		}
 	}
 
