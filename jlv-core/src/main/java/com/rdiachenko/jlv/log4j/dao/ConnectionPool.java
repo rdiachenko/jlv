@@ -7,15 +7,17 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public enum ConnectionPool {
-
-	CONNECTION_POOL("org.h2.Driver", "jdbc:h2:src/main/resources/jlv", "jlv", "jlv");
+public class ConnectionPool {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private JdbcConnectionPool connectionPool;
 
-	private ConnectionPool(String dbDriver, String dbUrl, String user, String password) {
+	public ConnectionPool() {
+		this("org.h2.Driver", "jdbc:h2:src/main/resources/jlv", "jlv", "jlv");
+	}
+
+	public ConnectionPool(String dbDriver, String dbUrl, String user, String password) {
 		try {
 			Class.forName(dbDriver);
 			connectionPool = JdbcConnectionPool.create(dbUrl, user, password);
@@ -25,8 +27,13 @@ public enum ConnectionPool {
 		}
 	}
 
-	public Connection getConnection() throws SQLException {
-		return connectionPool.getConnection();
+	public Connection getConnection() {
+		try {
+			return connectionPool.getConnection();
+		} catch (SQLException e) {
+			logger.error("Exception occurs while getting connection from the connection pool:", e);
+			throw new IllegalStateException("Exception occurs while getting connection from the connection pool:", e);
+		}
 	}
 
 	public void dispose() {

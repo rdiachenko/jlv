@@ -11,7 +11,7 @@ public class Server extends Thread {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private ServerSocket serverSocket = null;
+	private ServerSocket serverSocket;
 
 	private volatile boolean listening = true;
 

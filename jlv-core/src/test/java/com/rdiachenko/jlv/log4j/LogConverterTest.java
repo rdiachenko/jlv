@@ -99,8 +99,13 @@ public class LogConverterTest {
 
 	@Test
 	public void testFullTimestamp() {
-		Category mockCategory = mock(Category.class);
-		when(mockCategory.getName()).thenReturn(null);
+		class CategoryExt extends Category {
+			protected CategoryExt(String name) {
+				super(name);
+			}
+		}
+
+		Category mockCategory = new CategoryExt(null);
 		LoggingEvent mockLoggingEvent = new LoggingEvent(null, mockCategory, 1234567L, Level.FATAL, null, null);
 		Log log = LogConverter.convert(mockLoggingEvent);
 

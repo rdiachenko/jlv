@@ -21,7 +21,6 @@ public class LogDaoImplTest {
 	@AfterClass
 	public static void drop() {
 		logDao.dropDb();
-		ConnectionPool.CONNECTION_POOL.dispose();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
