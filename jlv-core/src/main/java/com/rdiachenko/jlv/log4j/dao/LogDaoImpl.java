@@ -49,6 +49,12 @@ public class LogDaoImpl implements LogDao {
 			+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
 			+ ")";
 
+	private ConnectionPool connectionPool;
+
+	public LogDaoImpl() {
+		connectionPool = new ConnectionPool();
+	}
+
 	public void initDb() {
 		dropLogsTable();
 		createLogsTable();
@@ -67,7 +73,7 @@ public class LogDaoImpl implements LogDao {
 		LogContainer logs = new LogContainer(tail);
 
 		try {
-			conn = ConnectionPool.CONNECTION_POOL.getConnection();
+			conn = connectionPool.getConnection();
 			preparedStatement = conn.prepareStatement(queryString);
 			preparedStatement.setInt(1, tail);
 			result = preparedStatement.executeQuery();
@@ -98,11 +104,15 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	public void insert(Log log) {
+		if (log == null) {
+			throw new IllegalArgumentException("log is null");
+		}
+
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 
 		try {
-			conn = ConnectionPool.CONNECTION_POOL.getConnection();
+			conn = connectionPool.getConnection();
 			preparedStatement = conn.prepareStatement(insertLogQueryString);
 			preparedStatement.setString(1, log.getCategoryName());
 			preparedStatement.setString(2, log.getClassName());
@@ -127,12 +137,12 @@ public class LogDaoImpl implements LogDao {
 
 	private void dropLogsTable() {
 		String dropTableQueryString = "DROP TABLE log4j1x IF EXISTS";
-		DaoUtil.executeQuery(dropTableQueryString);
+		DaoUtil.executeQuery(connectionPool.getConnection(), dropTableQueryString);
 		logger.info("log4j1x table was dropped");
 	}
 
 	private void createLogsTable() {
-		DaoUtil.executeQuery(createTableQueryString);
+		DaoUtil.executeQuery(connectionPool.getConnection(), createTableQueryString);
 		logger.info("log4j1x table was created");
 	}
 }

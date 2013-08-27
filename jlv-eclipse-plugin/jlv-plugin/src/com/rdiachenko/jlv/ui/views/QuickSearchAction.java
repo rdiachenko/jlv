@@ -14,13 +14,13 @@ public class QuickSearchAction extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IViewPart part = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-				.findView(UiStringConstants.JLV_MAIN_VIEW_ID);
+				.findView(UiStringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
-			JlvView view = (JlvView) part;
-			boolean isVisible = !PreferenceManager.getQuickSearchFieldStatus();
+			LogListView view = (LogListView) part;
+			boolean isVisible = !PreferenceManager.getLogListViewQuickSearchFieldStatus();
 			view.setSearchFieldVisible(isVisible);
-			PreferenceManager.setQuickSearchFieldStatus(isVisible);
+			PreferenceManager.setLogListViewQuickSearchFieldStatus(isVisible);
 		}
 		return null;
 	}

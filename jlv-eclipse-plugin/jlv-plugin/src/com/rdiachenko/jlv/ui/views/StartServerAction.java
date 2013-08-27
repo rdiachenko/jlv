@@ -22,10 +22,10 @@ public class StartServerAction extends AbstractHandler {
 		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
 				.getSourceProvider(UiStringConstants.SERVER_STATE_VARIABLE_ID);
 
-		IViewPart part = window.getActivePage().findView(UiStringConstants.JLV_MAIN_VIEW_ID);
+		IViewPart part = window.getActivePage().findView(UiStringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
-			JlvView view = (JlvView) part;
+			LogListView view = (LogListView) part;
 			view.getController().startServer();
 			viewSourceProvider.setServerStarted(true);
 		}

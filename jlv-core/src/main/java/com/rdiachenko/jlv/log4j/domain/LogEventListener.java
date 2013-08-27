@@ -4,5 +4,5 @@ public interface LogEventListener {
 
 	void handleLogEvent(Log log);
 
-	void endLogEvent();
+	void lastLogEvent();
 }

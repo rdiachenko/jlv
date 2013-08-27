@@ -22,18 +22,18 @@
       </category>
       <view
             category="com.rdiachenko.jlv.ui.views.category"
-            class="com.rdiachenko.jlv.ui.views.JlvView"
-            icon="icons/jlv_view.png"
-            id="com.rdiachenko.jlv.ui.views.view"
-            name="Main view"
+            class="com.rdiachenko.jlv.ui.views.LogListView"
+            icon="icons/jlvLogListViewIcon.png"
+            id="com.rdiachenko.jlv.ui.views.loglistview"
+            name="JLV log list"
             restorable="true">
       </view>
       <view
             category="com.rdiachenko.jlv.ui.views.category"
-            class="com.rdiachenko.jlv.ui.views.JlvDetailedView"
-            icon="icons/jlv_detailed_view.png"
-            id="com.rdiachenko.jlv.ui.views.detailedview"
-            name="Detailed view"
+            class="com.rdiachenko.jlv.ui.views.LogDetailsView"
+            icon="icons/jlvLogDetailsViewIcon.png"
+            id="com.rdiachenko.jlv.ui.views.logdetailsview"
+            name="JLV log details"
             restorable="true">
       </view>
    </extension>
@@ -76,31 +76,31 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:com.rdiachenko.jlv.ui.views.view">
+            locationURI="toolbar:com.rdiachenko.jlv.ui.views.loglistview">
          <command
                commandId="com.rdiachenko.jlv.ui.views.quickSearchAction"
-               icon="icons/quick_search.png"
+               icon="icons/quickSearchIcon.png"
                label="Quick search"
                style="push"
                tooltip="Quick search">
          </command>
          <command
                commandId="com.rdiachenko.jlv.ui.views.stopServerAction"
-               icon="icons/stop_server.png"
+               icon="icons/stopServerIcon.png"
                label="Stop server"
                style="push"
                tooltip="Stop server">
          </command>
          <command
                commandId="com.rdiachenko.jlv.ui.views.startServerAction"
-               icon="icons/start_server.png"
+               icon="icons/startServerIcon.png"
                label="Start server"
                style="push"
                tooltip="Start server">
          </command>
          <command
                commandId="com.rdiachenko.jlv.ui.views.clearViewAction"
-               icon="icons/clear.png"
+               icon="icons/clearLogsIcon.png"
                label="Clear view"
                style="push"
                tooltip="Clear view">
