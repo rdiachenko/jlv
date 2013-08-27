@@ -33,4 +33,8 @@ public final class LogContainer {
 	public void clear() {
 		container.clear();
 	}
+
+	public boolean contains(Log log) {
+		return container.contains(log);
+	}
 }

@@ -52,16 +52,16 @@ public class ClientThread implements Runnable {
 			logger.error("IOException occurs, closing client's connection:", e);
 		} catch (ClassNotFoundException e) {
 			logger.error("ClassNotFoundException occurs, closing client's connection:", e);
+		} finally {
+			try {
+				logger.debug("Closing client's connection...");
+				client.close();
+				logger.debug("Client's connection was closed");
+			} catch (IOException e) {
+				logger.error("IOException occurs while closing client's connection:", e);
+			}
+			LogEventContainer.lastLogEvent();
 		}
-
-		try {
-			logger.debug("Closing client's connection...");
-			client.close();
-			logger.debug("Client's connection was closed");
-		} catch (IOException e) {
-			logger.error("IOException occurs while closing client's connection:", e);
-		}
-		LogEventContainer.lastLogEvent();
 	}
 
 	private void append(LoggingEvent le) {
