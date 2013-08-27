@@ -2,7 +2,7 @@
 <feature
       id="com.rdiachenko.jlv.feature"
       label="jlv"
-      version="1.2.3"
+      version="1.2.4.qualifier"
       provider-name="Ruslan Diachenko">
 
    <description url="https://github.com/rdiachenko/JLV">
