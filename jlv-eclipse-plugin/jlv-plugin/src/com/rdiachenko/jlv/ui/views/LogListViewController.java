@@ -16,11 +16,11 @@ import com.rdiachenko.jlv.log4j.domain.LogEventListener;
 import com.rdiachenko.jlv.log4j.socketappender.Server;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
-public class JlvViewController {
+public class LogListViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final JlvView view;
+	private final LogListView view;
 
 	private final LogContainer logContainer;
 
@@ -30,11 +30,11 @@ public class JlvViewController {
 
 	private Server server;
 
-	public JlvViewController(JlvView view) {
+	public LogListViewController(LogListView view) {
 		this.view = view;
 		logDao = DaoProvider.LOG_DAO.getLogDao();
 		logDao.initDb();
-		logContainer = new LogContainer(PreferenceManager.getLogViewBufferSize());
+		logContainer = new LogContainer(PreferenceManager.getLogListViewBufferSize());
 
 		logEventListener = new LogEventListener() {
 			private long startTime = Calendar.getInstance().getTimeInMillis();
@@ -44,7 +44,7 @@ public class JlvViewController {
 				logContainer.add(log);
 				long updateTime = Calendar.getInstance().getTimeInMillis() - startTime;
 
-				if (updateTime >= PreferenceManager.getLogViewRefreshingTime()) {
+				if (updateTime >= PreferenceManager.getLogListViewRefreshingTime()) {
 					refreshViewer();
 					startTime = Calendar.getInstance().getTimeInMillis();
 				}
@@ -68,7 +68,7 @@ public class JlvViewController {
 			server = new Server(PreferenceManager.getServerPortNumber());
 			server.start();
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error("IOException occurred while starting server:", e);
 		}
 	}
 

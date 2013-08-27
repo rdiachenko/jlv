@@ -13,9 +13,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.JLV_SERVER_PORT_NUMBER, 4445);
 		store.setDefault(PreferenceManager.JLV_SERVER_AUTO_START, true);
 
-		store.setDefault(PreferenceManager.JLV_QUICK_SEARCH_FIELD_STATUS, true);
+		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_QUICK_SEARCH_FIELD_STATUS, true);
 
-		store.setDefault(PreferenceManager.JLV_LOGVIEW_BUFFER_SIZE, 1000);
-		store.setDefault(PreferenceManager.JLV_LOGVIEW_REFRESHING_TIME, 500);
+		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_BUFFER_SIZE, 1000);
+		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_REFRESHING_TIME, 500);
 	}
 }

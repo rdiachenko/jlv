@@ -8,7 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogContainer;
 
-public class JlvViewContentProvider implements IStructuredContentProvider {
+public class LogListViewContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {

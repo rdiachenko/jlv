@@ -30,11 +30,11 @@ import com.rdiachenko.jlv.model.LogField;
 import com.rdiachenko.jlv.ui.UiStringConstants;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
-public class JlvView extends ViewPart {
+public class LogListView extends ViewPart {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final JlvViewController controller;
+	private final LogListViewController controller;
 
 	private Text quickSearchField;
 	private String quickSearchText;
@@ -44,12 +44,12 @@ public class JlvView extends ViewPart {
 
 	private ViewLifecycleListener viewLifecycleListener;
 
-	public JlvView() {
-		controller = new JlvViewController(this);
+	public LogListView() {
+		controller = new LogListViewController(this);
 		quickFilter = new QuickLogFilter();
 	}
 
-	public JlvViewController getController() {
+	public LogListViewController getController() {
 		return controller;
 	}
 
@@ -66,9 +66,9 @@ public class JlvView extends ViewPart {
 
 		viewLifecycleListener = new ViewLifecycleListener();
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
-		logger.debug("Lifecycle listener was added to Jlv view");
+		logger.debug("Lifecycle listener was added to Jlv log list view");
 
-		if (PreferenceManager.getQuickSearchFieldStatus()) {
+		if (PreferenceManager.getLogListViewQuickSearchFieldStatus()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}
@@ -76,7 +76,7 @@ public class JlvView extends ViewPart {
 	@Override
 	public void setFocus() {
 		getViewSite().getPage().activate(this);
-		logger.debug("Focus has been set on jlv view.");
+		logger.debug("Focus has been set on jlv log list view.");
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class JlvView extends ViewPart {
 
 		getController().dispose();
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
-		logger.debug("Lifecycle listener was removed from Jlv view");
+		logger.debug("Lifecycle listener was removed from Jlv log list view");
 	}
 
 	public void setSearchFieldVisible(boolean isVisible) {
@@ -148,7 +148,7 @@ public class JlvView extends ViewPart {
 		table.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				ViewUtils.openView(UiStringConstants.JLV_DETAILED_VIEW_ID);
+				ViewUtils.openView(UiStringConstants.JLV_LOG_DETAILS_VIEW_ID);
 				setFocus();
 			}
 		});
@@ -160,8 +160,8 @@ public class JlvView extends ViewPart {
 		createColumns(viewer);
 
 		viewer.setUseHashlookup(true);
-		viewer.setContentProvider(new JlvViewContentProvider());
-		viewer.setLabelProvider(new JlvViewLabelProvider());
+		viewer.setContentProvider(new LogListViewContentProvider());
+		viewer.setLabelProvider(new LogListViewLabelProvider());
 		viewer.setInput(getController().getLogContainer());
 		viewer.addFilter(quickFilter);
 
@@ -203,8 +203,8 @@ public class JlvView extends ViewPart {
 		public void partClosed(final IWorkbenchPart part) {
 			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
-				if (part instanceof JlvView) {
-					logger.debug("Jlv view was closed.");
+				if (part instanceof LogListView) {
+					logger.debug("Jlv log list view was closed.");
 				}
 			}
 		}
@@ -218,14 +218,14 @@ public class JlvView extends ViewPart {
 		public void partOpened(final IWorkbenchPart part) {
 			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
-				if (part instanceof JlvView) {
+				if (part instanceof LogListView) {
 					boolean isServerAutoStart = PreferenceManager.getServerAutoStart();
 					logger.debug("Server auto start option: {}", isServerAutoStart);
 
 					if (isServerAutoStart) {
 						getController().startServer();
 					}
-					logger.debug("Jlv view was opened.");
+					logger.debug("Jlv log list view was opened.");
 				}
 			}
 		}

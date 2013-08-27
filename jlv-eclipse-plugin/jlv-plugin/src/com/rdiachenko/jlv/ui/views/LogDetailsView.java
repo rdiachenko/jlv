@@ -15,22 +15,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.log4j.domain.LogFieldName;
 import com.rdiachenko.jlv.ui.UiStringConstants;
 
-public class JlvDetailedView extends ViewPart implements ISelectionListener {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+public class LogDetailsView extends ViewPart implements ISelectionListener {
 
 	private Map<LogFieldName, Text> logFields = new HashMap<LogFieldName, Text>();
 
 	@Override
 	public void createPartControl(Composite parent) {
-		getSite().getPage().addSelectionListener(UiStringConstants.JLV_MAIN_VIEW_ID, this);
+		getSite().getPage().addSelectionListener(UiStringConstants.JLV_LOG_LIST_VIEW_ID, this);
 
 		ExpandBar bar = new ExpandBar(parent, SWT.V_SCROLL);
 
@@ -57,7 +53,7 @@ public class JlvDetailedView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void dispose() {
-		getSite().getPage().removeSelectionListener(UiStringConstants.JLV_MAIN_VIEW_ID, this);
+		getSite().getPage().removeSelectionListener(UiStringConstants.JLV_LOG_LIST_VIEW_ID, this);
 	}
 
 	@Override

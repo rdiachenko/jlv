@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
 
-public class JlvViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+public class LogListViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 //	To enhance the Favorites view with different fonts and colors, implement
 //	IFontProvider and IColorProvider respectively (see Section 13.2.5, ICol-
@@ -27,7 +27,7 @@ public class JlvViewLabelProvider extends LabelProvider implements ITableLabelPr
 		String columnText = logField.getValue(log);
 
 		if (logField == LogField.MESSAGE || logField == LogField.THROWABLE) {
-			columnText = columnText.replaceAll("\\r|\\n|\\t", " ");
+			columnText = columnText.replaceAll("\\r|\\n", " ");
 
 			if (columnText.length() > TEXT_LENGTH_LIMIT) {
 				columnText = columnText.substring(0, TEXT_LENGTH_LIMIT) + "...";
