@@ -39,7 +39,7 @@ public final class Log4j1ClientApp {
 					logger.error("illegal state:", e);
 				}
 			}
-//			Thread.sleep(1000);
+			Thread.sleep(1000);
 		}
 	}
 

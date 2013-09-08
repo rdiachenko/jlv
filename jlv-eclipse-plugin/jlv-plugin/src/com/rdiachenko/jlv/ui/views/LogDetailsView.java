@@ -86,9 +86,7 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 		GridData fieldGridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		int fieldLinesNumber = 1;
 
-		if (logField == LogFieldName.MESSAGE) {
-			fieldLinesNumber = 7;
-		} else if (logField == LogFieldName.THROWABLE) {
+		if (logField == LogFieldName.MESSAGE || logField == LogFieldName.THROWABLE) {
 			fieldLinesNumber = 10;
 		}
 		fieldGridData.heightHint = fieldLinesNumber * field.getLineHeight();

@@ -3,6 +3,7 @@ package com.rdiachenko.jlv.log4j.socketappender;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Iterator;
 
 import org.apache.log4j.Category;
@@ -84,10 +85,10 @@ public class ServerTest {
 		mockOutputStream.writeObject(mockLoggingEvent2);
 		mockOutputStream.flush();
 		client.close();
+		Thread.sleep(1000);
 		server.stopServer();
 
 		// Logs from db
-		Thread.sleep(1000);
 		LogContainer logContainer = logDao.getTailingLogs(2);
 
 		Assert.assertTrue(logContainer.size() == 2);
@@ -100,14 +101,10 @@ public class ServerTest {
 		Assert.assertArrayEquals(expectedLogList, logsFromDb);
 	}
 
-	@Test
+	@Test(expected = SocketException.class)
 	public void testForceServerStop() throws IOException, InterruptedException {
 		LoggingEvent mockLoggingEvent1 = generateLoggingEventByMessage("message1");
 		LoggingEvent mockLoggingEvent2 = generateLoggingEventByMessage("message2");
-		Log[] expectedLogList = {
-				LogConverter.convert(mockLoggingEvent1),
-				LogConverter.convert(mockLoggingEvent2),
-		};
 
 		Server server = new Server(port);
 		server.start();
@@ -117,24 +114,16 @@ public class ServerTest {
 		mockOutputStream.writeObject(mockLoggingEvent1);
 		mockOutputStream.flush();
 
+		Thread.sleep(1000);
 		server.stopServer();
 
-		mockOutputStream.writeObject(mockLoggingEvent2);
-		mockOutputStream.flush();
-		client.close();
-
 		// Logs from db
-		Thread.sleep(1000);
 		LogContainer logContainer = logDao.getTailingLogs(3);
+		Assert.assertTrue(logContainer.size() == 1);
+		Assert.assertEquals(LogConverter.convert(mockLoggingEvent1), logContainer.get());
 
-		Assert.assertTrue(logContainer.size() == 2);
-
-		Log[] logsFromDb = new Log[2];
-		Iterator<Log> iter = logContainer.iterator();
-		logsFromDb[1] = iter.next();
-		logsFromDb[0] = iter.next();
-
-		Assert.assertArrayEquals(expectedLogList, logsFromDb);
+		mockOutputStream.writeObject(mockLoggingEvent2);
+		client.close();
 	}
 
 	@Test
@@ -162,12 +151,12 @@ public class ServerTest {
 		mockOutputStream1.writeObject(mockLoggingEvent3);
 		mockOutputStream1.flush();
 
+		Thread.sleep(1000);
 		client2.close();
 		server.stopServer();
 		client1.close();
 
 		// Logs from db
-		Thread.sleep(1000);
 		LogContainer logContainer = logDao.getTailingLogs(8);
 
 		Assert.assertTrue(logContainer.size() == 4);

@@ -3,6 +3,9 @@ package com.rdiachenko.jlv.log4j.socketappender;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,8 @@ public class Server extends Thread {
 	private ServerSocket serverSocket;
 
 	private volatile boolean listening = true;
+
+	private List<ClientThread> clients = Collections.synchronizedList(new ArrayList<ClientThread>());
 
 	public Server(int port) throws IOException {
 		if (port < 0) {
@@ -34,9 +39,11 @@ public class Server extends Thread {
 		try {
 			while (listening) {
 				logger.debug("Waiting for a new connection");
-				Socket client = serverSocket.accept();
-				logger.debug("Connection has been accepted from " + client.getInetAddress().getHostName());
-				Thread clientThread = new Thread(new ClientThread(client));
+				Socket clientSocket = serverSocket.accept();
+				logger.debug("Connection has been accepted from " + clientSocket.getInetAddress().getHostName());
+				ClientThread client = new ClientThread(clientSocket);
+				clients.add(client);
+				Thread clientThread = new Thread(client);
 				clientThread.setDaemon(true);
 				clientThread.start();
 			}
@@ -47,6 +54,11 @@ public class Server extends Thread {
 
 	public void stopServer() {
 		listening = false;
+		synchronized (clients) {
+			for (ClientThread client : clients) {
+				client.stopClient();
+			}
+		}
 		try {
 			serverSocket.close();
 			logger.debug("Server was stopped");

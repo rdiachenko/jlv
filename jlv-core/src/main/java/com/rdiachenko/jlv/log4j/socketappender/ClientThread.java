@@ -37,7 +37,7 @@ public class ClientThread implements Runnable {
 			if (logObj instanceof LoggingEvent) {
 				append((LoggingEvent) logObj);
 
-				while (true) {
+				while (!client.isClosed()) {
 					LoggingEvent log = (LoggingEvent) inputStream.readObject();
 					append(log);
 				}
@@ -53,6 +53,13 @@ public class ClientThread implements Runnable {
 		} catch (ClassNotFoundException e) {
 			logger.error("ClassNotFoundException occurs, closing client's connection:", e);
 		} finally {
+			LogEventContainer.lastLogEvent();
+			stopClient();
+		}
+	}
+
+	public void stopClient() {
+		if (!client.isClosed()) {
 			try {
 				logger.debug("Closing client's connection...");
 				client.close();
@@ -60,7 +67,6 @@ public class ClientThread implements Runnable {
 			} catch (IOException e) {
 				logger.error("IOException occurs while closing client's connection:", e);
 			}
-			LogEventContainer.lastLogEvent();
 		}
 	}
 
