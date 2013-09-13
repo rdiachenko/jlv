@@ -53,7 +53,6 @@ public class ClientThread implements Runnable {
 		} catch (ClassNotFoundException e) {
 			logger.error("ClassNotFoundException occurs, closing client's connection:", e);
 		} finally {
-			LogEventContainer.lastLogEvent();
 			stopClient();
 		}
 	}

@@ -1,7 +1,6 @@
 package com.rdiachenko.jlv.ui.views;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
@@ -20,43 +19,31 @@ public class LogListViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final LogListView view;
-
 	private final LogContainer logContainer;
 
 	private final LogEventListener logEventListener;
+
+	private final Timer viewUpdater;
 
 	private final LogDao logDao;
 
 	private Server server;
 
 	public LogListViewController(LogListView view) {
-		this.view = view;
 		logDao = DaoProvider.LOG_DAO.getLogDao();
 		logDao.initDb();
 		logContainer = new LogContainer(PreferenceManager.getLogListViewBufferSize());
 
 		logEventListener = new LogEventListener() {
-			private long startTime = Calendar.getInstance().getTimeInMillis();
-
 			@Override
 			public void handleLogEvent(final Log log) {
 				logContainer.add(log);
-				long updateTime = Calendar.getInstance().getTimeInMillis() - startTime;
-
-				if (updateTime >= PreferenceManager.getLogListViewRefreshingTime()) {
-					refreshViewer();
-					startTime = Calendar.getInstance().getTimeInMillis();
-				}
-			}
-
-			@Override
-			public void lastLogEvent() {
-				refreshViewer();
-				startTime = Calendar.getInstance().getTimeInMillis();
 			}
 		};
 		LogEventContainer.addListener(logEventListener);
+
+		viewUpdater = new Timer(view);
+		viewUpdater.start();
 	}
 
 	public LogContainer getLogContainer() {
@@ -81,6 +68,7 @@ public class LogListViewController {
 
 	public void dispose() {
 		LogEventContainer.removeListener(logEventListener);
+		viewUpdater.stopTimer();
 		stopServer();
 		logDao.dropDb();
 	}
@@ -89,12 +77,41 @@ public class LogListViewController {
 		logContainer.clear();
 	}
 
-	private void refreshViewer() {
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				view.refreshViewer();
+	private static class Timer extends Thread {
+
+		private final Logger logger = LoggerFactory.getLogger(getClass());
+
+		private volatile boolean running = true;
+
+		private LogListView view;
+
+		public Timer(LogListView view) {
+			this.view = view;
+			setDaemon(true);
+		}
+
+		@Override
+		public void run() {
+			logger.debug("Log list view updater was run");
+			while (running) {
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						view.refreshViewer();
+					}
+				});
+				try {
+					sleep(PreferenceManager.getLogListViewRefreshingTime());
+				} catch (InterruptedException e) {
+					logger.error("Timer thread was interrupted:", e);
+				}
 			}
-		});
+			logger.debug("Log list view updater was stopped");
+		}
+
+		public void stopTimer() {
+			running = false;
+			logger.debug("Stopping log list view updater...");
+		}
 	}
 }

@@ -17,12 +17,6 @@ public final class LogEventContainer {
 		}
 	}
 
-	public static void lastLogEvent() {
-		for (LogEventListener listener : LISTENERS) {
-			listener.lastLogEvent();
-		}
-	}
-
 	public static void addListener(final LogEventListener listener) {
 		if (listener != null) {
 			LISTENERS.add(listener);
