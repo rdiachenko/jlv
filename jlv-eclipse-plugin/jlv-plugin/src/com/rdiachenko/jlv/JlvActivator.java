@@ -1,21 +1,25 @@
 package com.rdiachenko.jlv;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
+
 import org.apache.log4j.PropertyConfigurator;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class JlvActivator extends AbstractUIPlugin {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+//	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String PLUGIN_ID = "com.rdiachenko.jlv.plugin";
 
-	public static final String LOG4J_CONFIG_KEY = "log4j.configuration";
+	private static final String LOG4J_PROPERTIES_PATH = "config/log4j.properties";
 
 	private static JlvActivator plugin;
 
@@ -24,11 +28,11 @@ public class JlvActivator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-		if (System.getProperties().containsKey(LOG4J_CONFIG_KEY)) {
-			String file = System.getProperties().getProperty(LOG4J_CONFIG_KEY);
-			PropertyConfigurator.configure(file);
-			logger.debug("Log4j's configuration was loaded from: {}", file);
-		}
+		Properties fileProperties = new Properties();
+		fileProperties.load(new FileInputStream(getAbsolutePath(LOG4J_PROPERTIES_PATH)));
+		String logLocation = plugin.getStateLocation().toString();
+		fileProperties.put("log.dir", logLocation);
+		PropertyConfigurator.configure(fileProperties);
 	}
 
 	@Override
@@ -39,5 +43,10 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	public static JlvActivator getDefault() {
 		return plugin;
+	}
+
+	public static String getAbsolutePath(String filePath) throws IOException {
+		URL confUrl = getDefault().getBundle().getEntry(filePath);
+		return FileLocator.toFileURL(confUrl).getFile();
 	}
 }
