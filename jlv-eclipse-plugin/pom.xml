@@ -16,7 +16,7 @@
 	</modules>
 
 	<properties>
-		<tycho-version>0.17.0</tycho-version>
+		<tycho-version>0.18.1</tycho-version>
 		<jlv-core.version>1.0.0-SNAPSHOT</jlv-core.version>
 		<juno-repo.url>http://download.eclipse.org/releases/juno</juno-repo.url>
 	</properties>
