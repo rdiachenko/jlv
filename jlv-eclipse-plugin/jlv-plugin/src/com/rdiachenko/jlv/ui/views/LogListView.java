@@ -76,7 +76,6 @@ public class LogListView extends ViewPart {
 	@Override
 	public void setFocus() {
 		getViewSite().getPage().activate(this);
-		logger.debug("Focus has been set on jlv log list view.");
 	}
 
 	@Override
@@ -114,7 +113,7 @@ public class LogListView extends ViewPart {
 
 	public void clear() {
 		viewer.getTable().removeAll();
-		logger.debug("Log's table was cleared.");
+		logger.debug("log list view was cleared.");
 		getController().clearLogContainer();
 		logger.debug("Log's container was cleared.");
 	}

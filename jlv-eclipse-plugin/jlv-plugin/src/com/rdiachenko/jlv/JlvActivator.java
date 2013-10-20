@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -48,5 +49,9 @@ public class JlvActivator extends AbstractUIPlugin {
 	public static String getAbsolutePath(String filePath) throws IOException {
 		URL confUrl = getDefault().getBundle().getEntry(filePath);
 		return FileLocator.toFileURL(confUrl).getFile();
+	}
+
+	public static ImageDescriptor getImageDescriptor(String relativePath) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, relativePath);
 	}
 }

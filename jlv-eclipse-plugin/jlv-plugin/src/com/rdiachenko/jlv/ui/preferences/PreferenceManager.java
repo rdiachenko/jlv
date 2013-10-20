@@ -14,6 +14,9 @@ public final class PreferenceManager {
 	public static final String JLV_LOG_LIST_VIEW_BUFFER_SIZE = "jlv.loglistview.buffer.size";
 	public static final String JLV_LOG_LIST_VIEW_REFRESHING_TIME = "jlv.loglistview.refreshing.time";
 
+	public static final String JLV_LOG_LIST_VIEW_TABLE_STRUCTURE_SETTINGS = "jlv.loglistview.table.structure";
+	public static final String JLV_LOG_LIST_VIEW_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
+
 	private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
 
 	private PreferenceManager() {

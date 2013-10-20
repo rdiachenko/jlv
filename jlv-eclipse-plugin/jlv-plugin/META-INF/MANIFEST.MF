@@ -7,7 +7,7 @@ Bundle-Activator: com.rdiachenko.jlv.JlvActivator
 Bundle-Vendor: Ruslan Diachenko
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6, JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: dependencies/jlv-core-1.0.0-SNAPSHOT.jar,
  .

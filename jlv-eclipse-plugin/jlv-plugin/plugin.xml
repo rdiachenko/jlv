@@ -7,6 +7,12 @@
             id="com.rdiachenko.jlv.ui.preferences.general"
             name="JLV">
       </page>
+      <page
+            category="com.rdiachenko.jlv.ui.preferences.general"
+            class="com.rdiachenko.jlv.ui.preferences.additional.AdditionalPreferencePage"
+            id="com.rdiachenko.jlv.ui.preferences.additional"
+            name="Additional">
+      </page>
    </extension>
    
    <extension point="org.eclipse.core.runtime.preferences">
