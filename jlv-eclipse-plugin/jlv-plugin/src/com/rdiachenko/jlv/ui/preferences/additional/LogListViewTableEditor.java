@@ -2,31 +2,36 @@ package com.rdiachenko.jlv.ui.preferences.additional;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.model.LogField;
 
 public class LogListViewTableEditor extends FieldEditor {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+//	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final Image CHECKED = JlvActivator.getImageDescriptor(
 			"icons/checkboxChecked.gif").createImage();
@@ -35,35 +40,30 @@ public class LogListViewTableEditor extends FieldEditor {
 			"icons/checkboxUnchecked.gif").createImage();
 
 	private static final String NAME_LABEL = "Name";
-
 	private static final String WIDTH_LABEL = "Width";
-
 	private static final String DISPLAY_LABEL = "Display";
-
 	private static final String[] COLUMN_NAMES = { NAME_LABEL, WIDTH_LABEL, DISPLAY_LABEL };
 
 	private static final int NAME_COLUMN_WIDTH = 120;
-
 	private static final int WIDTH_COLUMN_WIDTH = 120;
-
 	private static final int DISPLAY_COLUMN_WIDTH = 50;
-
 	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH, DISPLAY_COLUMN_WIDTH };
 
 	private TableViewer tableViewer;
 
 	private Composite buttonBox;
-
 	private Button upButton;
-
 	private Button downButton;
 
 	private SelectionListener selectionListener;
 
 	private LogListViewTableStructureModel[] tableModel;
 
+	private TableModelLoader modelLoader;
+
 	public LogListViewTableEditor(String name, Composite parent) {
 		init(name, "");
+		modelLoader = new TableModelLoader();
 		createControl(parent);
 	}
 
@@ -81,7 +81,7 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	@Override
 	public int getNumberOfControls() {
-		return 2;
+		return 2; // Table and Button box are 2 controls
 	}
 
 	@Override
@@ -98,17 +98,28 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		// nothing
+		doLoad(modelLoader.loadModel());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		// nothing
+		doLoad(modelLoader.loadDefaultModel());
 	}
 
 	@Override
 	public void doStore() {
-		// nothing
+		if (tableViewer != null) {
+			modelLoader.storeModel(tableModel);
+		}
+	}
+
+	private void doLoad(LogListViewTableStructureModel[] model) {
+		if (tableViewer != null) {
+			for (int i = 0; i < model.length; i++) {
+				tableModel[i] = model[i];
+			}
+			tableViewer.refresh();
+		}
 	}
 
 	private SelectionListener getSelectionListener() {
@@ -134,8 +145,8 @@ public class LogListViewTableEditor extends FieldEditor {
 			});
 
 			createTableColumns(tableViewer);
-			tableViewer.setContentProvider(new ArrayContentProvider());
 			tableModel = createTableModel();
+			tableViewer.setContentProvider(new ArrayContentProvider());
 			tableViewer.setInput(tableModel);
 		} else {
 			checkParent(tableViewer.getControl(), parent);
@@ -178,6 +189,7 @@ public class LogListViewTableEditor extends FieldEditor {
 						return Integer.toString(column.getWidth());
 					}
 				});
+				viewerColumn.setEditingSupport(new WidthCellEditor(tableViewer));
 				break;
 			case DISPLAY_LABEL:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -193,6 +205,7 @@ public class LogListViewTableEditor extends FieldEditor {
 						return image;
 					}
 				});
+				viewerColumn.setEditingSupport(new DisplayCellEditor(tableViewer));
 				break;
 			default:
 				throw new IllegalArgumentException("No column with such name: " + COLUMN_NAMES[i]
@@ -206,6 +219,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			buttonBox = new Composite(parent, SWT.NULL);
 			GridLayout layout = new GridLayout();
 			layout.marginWidth = 0;
+			layout.marginHeight = 0;
 			buttonBox.setLayout(layout);
 			createButtons(buttonBox);
 			buttonBox.addDisposeListener(new DisposeListener() {
@@ -231,6 +245,9 @@ public class LogListViewTableEditor extends FieldEditor {
 		Button button = new Button(parent, SWT.PUSH);
 		button.setText(name);
 		button.addSelectionListener(getSelectionListener());
+		GridData gridData = new GridData(SWT.NONE);
+		gridData.widthHint = 95;
+		button.setLayoutData(gridData);
 		return button;
 	}
 
@@ -267,7 +284,6 @@ public class LogListViewTableEditor extends FieldEditor {
 	}
 
 	private void swap(boolean up) {
-		setPresentsDefaultValue(false);
 		int index = tableViewer.getTable().getSelectionIndex();
 		int target = up ? index - 1 : index + 1;
 
@@ -280,5 +296,126 @@ public class LogListViewTableEditor extends FieldEditor {
 			tableViewer.getTable().setSelection(target);
 		}
 		selectionChanged();
+	}
+
+	private static class WidthCellEditor extends EditingSupport {
+
+		private TableViewer viewer;
+
+		public WidthCellEditor(TableViewer viewer) {
+			super(viewer);
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			CellEditor cellEditor = new TextCellEditor(viewer.getTable());
+
+			((Text) cellEditor.getControl()).addVerifyListener(new VerifyListener() {
+				@Override
+				public void verifyText(final VerifyEvent e) {
+					e.doit = e.text.matches("[\\d]*");
+				}
+			});
+			return cellEditor;
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			return Integer.toString(model.getWidth());
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			int width = Integer.valueOf((String) value);
+			model.setWidth(width);
+			viewer.update(element, null);
+		}
+	}
+
+	private static class DisplayCellEditor extends EditingSupport {
+
+		private final TableViewer viewer;
+
+		public DisplayCellEditor(TableViewer viewer) {
+			super(viewer);
+			this.viewer = viewer;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(final Object element) {
+			return new CheckboxCellEditor(viewer.getTable(), SWT.CHECK | SWT.CENTER);
+		}
+
+		@Override
+		protected boolean canEdit(final Object element) {
+			return true;
+		}
+
+		@Override
+		protected Object getValue(final Object element) {
+			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			return model.isDisplay();
+		}
+
+		@Override
+		protected void setValue(final Object element, final Object value) {
+			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			model.setDisplay((Boolean) value);
+			viewer.update(element, null);
+		}
+	}
+
+	private class TableModelLoader {
+
+		private static final String COLUMN_SEPARATOR = ":";
+		private static final String SEMICOLUMN_SEPARATOR = ";";
+
+		public LogListViewTableStructureModel[] loadModel() {
+			String prefs = getPreferenceStore().getString(getPreferenceName());
+			return stringToModel(prefs);
+		}
+
+		public LogListViewTableStructureModel[] loadDefaultModel() {
+			String property = getPreferenceStore().getDefaultString(getPreferenceName());
+			return stringToModel(property);
+		}
+
+		public void storeModel(LogListViewTableStructureModel[] model) {
+			String prefs = modelToString(model);
+			getPreferenceStore().setValue(getPreferenceName(), prefs);
+		}
+
+		private LogListViewTableStructureModel[] stringToModel(String prefs) {
+			String[] modelItems = prefs.split(SEMICOLUMN_SEPARATOR);
+			LogListViewTableStructureModel[] model = new LogListViewTableStructureModel[modelItems.length];
+
+			for (int i = 0; i < model.length; i++) {
+				String[] modelItem = modelItems[i].split(COLUMN_SEPARATOR);
+				String name = modelItem[0];
+				int width = Integer.valueOf(modelItem[1]);
+				boolean display = Boolean.valueOf(modelItem[2]);
+				model[i] = new LogListViewTableStructureModel(name, width, display);
+			}
+			return model;
+		}
+
+		private String modelToString(LogListViewTableStructureModel[] model) {
+			StringBuilder builder = new StringBuilder();
+
+			for (LogListViewTableStructureModel modelItem : model) {
+				builder.append(modelItem.getName()).append(COLUMN_SEPARATOR)
+						.append(modelItem.getWidth()).append(COLUMN_SEPARATOR)
+						.append(modelItem.isDisplay()).append(SEMICOLUMN_SEPARATOR);
+			}
+			return builder.toString();
+		}
 	}
 }

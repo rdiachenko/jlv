@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.rdiachenko.jlv.JlvActivator;
+import com.rdiachenko.jlv.model.LogField;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -19,12 +20,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_REFRESHING_TIME, 500);
 
 		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_TABLE_STRUCTURE_SETTINGS,
-				"0:level:100:true;"
-						+ "1:category:100:true;"
-						+ "2:message:100:true;"
-						+ "3:line:100:true;"
-						+ "4:date:100:true;"
-						+ "5:throwable:100:true;");
+				LogField.LEVEL.getName() + ":100:true;"
+						+ LogField.CATEGORY.getName() + ":100:true;"
+						+ LogField.MESSAGE.getName() + ":100:true;"
+						+ LogField.LINE.getName() + ":100:true;"
+						+ LogField.DATE.getName() + ":100:true;"
+						+ LogField.THROWABLE.getName() + ":100:true;");
 		store.setDefault(PreferenceManager.JLV_LOG_LIST_VIEW_TABLE_PRESENTATION_SETTINGS, "");
 	}
 }
