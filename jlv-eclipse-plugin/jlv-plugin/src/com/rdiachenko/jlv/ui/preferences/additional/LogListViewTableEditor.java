@@ -26,18 +26,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
+import com.rdiachenko.jlv.ImageType;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.model.LogField;
 
 public class LogListViewTableEditor extends FieldEditor {
 
 //	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private static final Image CHECKED = JlvActivator.getImageDescriptor(
-			"icons/checkboxChecked.gif").createImage();
-
-	private static final Image UNCHECKED = JlvActivator.getImageDescriptor(
-			"icons/checkboxUnchecked.gif").createImage();
 
 	private static final String NAME_LABEL = "Name";
 	private static final String WIDTH_LABEL = "Width";
@@ -201,7 +196,8 @@ public class LogListViewTableEditor extends FieldEditor {
 					@Override
 					public Image getImage(final Object element) {
 						LogListViewTableStructureModel column = (LogListViewTableStructureModel) element;
-						Image image = (column.isDisplay()) ? CHECKED : UNCHECKED;
+						Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
+								: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
 						return image;
 					}
 				});

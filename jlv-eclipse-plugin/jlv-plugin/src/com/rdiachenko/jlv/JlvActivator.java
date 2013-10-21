@@ -3,11 +3,14 @@ package com.rdiachenko.jlv;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -23,6 +26,8 @@ public class JlvActivator extends AbstractUIPlugin {
 	private static final String LOG4J_PROPERTIES_PATH = "config/log4j.properties";
 
 	private static JlvActivator plugin;
+
+	private static Map<ImageType, Image> images = new HashMap<>();
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -51,7 +56,14 @@ public class JlvActivator extends AbstractUIPlugin {
 		return FileLocator.toFileURL(confUrl).getFile();
 	}
 
-	public static ImageDescriptor getImageDescriptor(String relativePath) {
+	public static Image getImage(ImageType imageType) {
+		if (!images.containsKey(imageType)) {
+			images.put(imageType, getImageDescriptor(imageType.getPath()).createImage());
+		}
+		return images.get(imageType);
+	}
+
+	private static ImageDescriptor getImageDescriptor(String relativePath) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, relativePath);
 	}
 }
