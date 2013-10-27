@@ -68,7 +68,7 @@ public class LogListView extends ViewPart {
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv log list view");
 
-		if (PreferenceManager.getLogListViewQuickSearchFieldStatus()) {
+		if (PreferenceManager.getQuickSearchFieldStatus()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}

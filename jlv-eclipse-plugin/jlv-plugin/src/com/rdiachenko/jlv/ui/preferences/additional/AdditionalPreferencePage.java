@@ -26,7 +26,7 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 		Group logListViewTableSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Log list view table columns");
 		LogListViewTableEditor logListViewTableEditor = new LogListViewTableEditor(
-				PreferenceManager.JLV_LOG_LIST_VIEW_TABLE_STRUCTURE_SETTINGS,
+				PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
 				PreferencePageUtils.createFieldEditorComposite(logListViewTableSettingsGroup));
 		addField(logListViewTableEditor);
 

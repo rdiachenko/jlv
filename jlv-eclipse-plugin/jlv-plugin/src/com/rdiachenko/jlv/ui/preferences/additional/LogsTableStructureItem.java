@@ -1,6 +1,6 @@
 package com.rdiachenko.jlv.ui.preferences.additional;
 
-public class LogListViewTableStructureModel {
+public class LogsTableStructureItem {
 
 	private String name;
 
@@ -8,7 +8,7 @@ public class LogListViewTableStructureModel {
 
 	private boolean display;
 
-	public LogListViewTableStructureModel(String name, int width, boolean display) {
+	public LogsTableStructureItem(String name, int width, boolean display) {
 		this.name = name;
 		this.width = width;
 		this.display = display;

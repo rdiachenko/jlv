@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Widget;
 import com.rdiachenko.jlv.ImageType;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.model.LogField;
+import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class LogListViewTableEditor extends FieldEditor {
 
@@ -52,13 +53,10 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	private SelectionListener selectionListener;
 
-	private LogListViewTableStructureModel[] tableModel;
-
-	private TableModelLoader modelLoader;
+	private LogsTableStructureItem[] tableModel;
 
 	public LogListViewTableEditor(String name, Composite parent) {
 		init(name, "");
-		modelLoader = new TableModelLoader();
 		createControl(parent);
 	}
 
@@ -93,22 +91,22 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(modelLoader.loadModel());
+		doLoad(PreferenceManager.getLogsTableStructure());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(modelLoader.loadDefaultModel());
+		doLoad(PreferenceManager.getLogsTableDefaultStructure());
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			modelLoader.storeModel(tableModel);
+			PreferenceManager.setLogsTableStructure(tableModel);
 		}
 	}
 
-	private void doLoad(LogListViewTableStructureModel[] model) {
+	private void doLoad(LogsTableStructureItem[] model) {
 		if (tableViewer != null) {
 			for (int i = 0; i < model.length; i++) {
 				tableModel[i] = model[i];
@@ -149,12 +147,12 @@ public class LogListViewTableEditor extends FieldEditor {
 		return tableViewer;
 	}
 
-	private LogListViewTableStructureModel[] createTableModel() {
-		LogListViewTableStructureModel[] model = new LogListViewTableStructureModel[LogField.values().length];
+	private LogsTableStructureItem[] createTableModel() {
+		LogsTableStructureItem[] model = new LogsTableStructureItem[LogField.values().length];
 		int index = 0;
 
 		for (LogField logField : LogField.values()) {
-			model[index] = new LogListViewTableStructureModel(logField.getName(), 100, true);
+			model[index] = new LogsTableStructureItem(logField.getName(), 100, true);
 			index++;
 		}
 		return model;
@@ -171,7 +169,7 @@ public class LogListViewTableEditor extends FieldEditor {
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
 					public String getText(final Object element) {
-						LogListViewTableStructureModel column = (LogListViewTableStructureModel) element;
+						LogsTableStructureItem column = (LogsTableStructureItem) element;
 						return column.getName();
 					}
 				});
@@ -180,7 +178,7 @@ public class LogListViewTableEditor extends FieldEditor {
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
 					public String getText(final Object element) {
-						LogListViewTableStructureModel column = (LogListViewTableStructureModel) element;
+						LogsTableStructureItem column = (LogsTableStructureItem) element;
 						return Integer.toString(column.getWidth());
 					}
 				});
@@ -195,7 +193,7 @@ public class LogListViewTableEditor extends FieldEditor {
 
 					@Override
 					public Image getImage(final Object element) {
-						LogListViewTableStructureModel column = (LogListViewTableStructureModel) element;
+						LogsTableStructureItem column = (LogsTableStructureItem) element;
 						Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
 								: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
 						return image;
@@ -284,7 +282,7 @@ public class LogListViewTableEditor extends FieldEditor {
 		int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			LogListViewTableStructureModel currentModel = tableModel[index];
+			LogsTableStructureItem currentModel = tableModel[index];
 			tableModel[index] = tableModel[target];
 			tableModel[target] = currentModel;
 			currentModel = null;
@@ -323,13 +321,13 @@ public class LogListViewTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(Object element) {
-			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			LogsTableStructureItem model = (LogsTableStructureItem) element;
 			return Integer.toString(model.getWidth());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			LogsTableStructureItem model = (LogsTableStructureItem) element;
 			int width = Integer.valueOf((String) value);
 			model.setWidth(width);
 			viewer.update(element, null);
@@ -357,61 +355,15 @@ public class LogListViewTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(final Object element) {
-			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			LogsTableStructureItem model = (LogsTableStructureItem) element;
 			return model.isDisplay();
 		}
 
 		@Override
 		protected void setValue(final Object element, final Object value) {
-			LogListViewTableStructureModel model = (LogListViewTableStructureModel) element;
+			LogsTableStructureItem model = (LogsTableStructureItem) element;
 			model.setDisplay((Boolean) value);
 			viewer.update(element, null);
-		}
-	}
-
-	private class TableModelLoader {
-
-		private static final String COLUMN_SEPARATOR = ":";
-		private static final String SEMICOLUMN_SEPARATOR = ";";
-
-		public LogListViewTableStructureModel[] loadModel() {
-			String prefs = getPreferenceStore().getString(getPreferenceName());
-			return stringToModel(prefs);
-		}
-
-		public LogListViewTableStructureModel[] loadDefaultModel() {
-			String property = getPreferenceStore().getDefaultString(getPreferenceName());
-			return stringToModel(property);
-		}
-
-		public void storeModel(LogListViewTableStructureModel[] model) {
-			String prefs = modelToString(model);
-			getPreferenceStore().setValue(getPreferenceName(), prefs);
-		}
-
-		private LogListViewTableStructureModel[] stringToModel(String prefs) {
-			String[] modelItems = prefs.split(SEMICOLUMN_SEPARATOR);
-			LogListViewTableStructureModel[] model = new LogListViewTableStructureModel[modelItems.length];
-
-			for (int i = 0; i < model.length; i++) {
-				String[] modelItem = modelItems[i].split(COLUMN_SEPARATOR);
-				String name = modelItem[0];
-				int width = Integer.valueOf(modelItem[1]);
-				boolean display = Boolean.valueOf(modelItem[2]);
-				model[i] = new LogListViewTableStructureModel(name, width, display);
-			}
-			return model;
-		}
-
-		private String modelToString(LogListViewTableStructureModel[] model) {
-			StringBuilder builder = new StringBuilder();
-
-			for (LogListViewTableStructureModel modelItem : model) {
-				builder.append(modelItem.getName()).append(COLUMN_SEPARATOR)
-						.append(modelItem.getWidth()).append(COLUMN_SEPARATOR)
-						.append(modelItem.isDisplay()).append(SEMICOLUMN_SEPARATOR);
-			}
-			return builder.toString();
 		}
 	}
 }

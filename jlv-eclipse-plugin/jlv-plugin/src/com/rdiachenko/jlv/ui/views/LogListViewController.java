@@ -32,7 +32,7 @@ public class LogListViewController {
 	public LogListViewController(LogListView view) {
 		logDao = DaoProvider.LOG_DAO.getLogDao();
 		logDao.initDb();
-		logContainer = new LogContainer(PreferenceManager.getLogListViewBufferSize());
+		logContainer = new LogContainer(PreferenceManager.getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -101,7 +101,7 @@ public class LogListViewController {
 					}
 				});
 				try {
-					sleep(PreferenceManager.getLogListViewRefreshingTime());
+					sleep(PreferenceManager.getLogsRefreshingTime());
 				} catch (InterruptedException e) {
 					logger.error("Timer thread was interrupted:", e);
 				}
