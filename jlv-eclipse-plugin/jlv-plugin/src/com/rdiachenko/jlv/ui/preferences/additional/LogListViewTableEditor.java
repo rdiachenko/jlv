@@ -285,7 +285,6 @@ public class LogListViewTableEditor extends FieldEditor {
 			LogsTableStructureItem currentModel = tableModel[index];
 			tableModel[index] = tableModel[target];
 			tableModel[target] = currentModel;
-			currentModel = null;
 			tableViewer.refresh();
 			tableViewer.getTable().setSelection(target);
 		}

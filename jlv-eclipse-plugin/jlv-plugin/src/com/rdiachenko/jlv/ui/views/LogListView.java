@@ -1,5 +1,10 @@
 package com.rdiachenko.jlv.ui.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -29,6 +34,7 @@ import com.rdiachenko.jlv.log4j.domain.Log;
 import com.rdiachenko.jlv.model.LogField;
 import com.rdiachenko.jlv.ui.UiStringConstants;
 import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
+import com.rdiachenko.jlv.ui.preferences.additional.LogsTableStructureItem;
 
 public class LogListView extends ViewPart {
 
@@ -41,8 +47,10 @@ public class LogListView extends ViewPart {
 	private QuickLogFilter quickFilter;
 
 	private TableViewer viewer;
+	private Map<String, Integer> columnOrderMap;
 
 	private ViewLifecycleListener viewLifecycleListener;
+	private IPropertyChangeListener preferenceListener;
 
 	public LogListView() {
 		controller = new LogListViewController(this);
@@ -68,6 +76,19 @@ public class LogListView extends ViewPart {
 		getViewSite().getPage().addPartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was added to Jlv log list view");
 
+		preferenceListener = new IPropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS.equals(event.getProperty())) {
+					String structure = event.getNewValue().toString();
+					LogsTableStructureItem[] columnStructure = PreferenceManager.getLogsTableStructure(structure);
+					updateColumns(columnStructure);
+				}
+			}
+		};
+		PreferenceManager.addPropertyChangeListener(preferenceListener);
+		logger.debug("PropertyChange listener was added to Jlv log list view");
+
 		if (PreferenceManager.getQuickSearchFieldStatus()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
@@ -91,6 +112,9 @@ public class LogListView extends ViewPart {
 		getController().dispose();
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was removed from Jlv log list view");
+
+		PreferenceManager.removePropertyChangeListener(preferenceListener);
+		logger.debug("PropertyChange listener was removed from Jlv log list view");
 	}
 
 	public void setSearchFieldVisible(boolean isVisible) {
@@ -160,7 +184,6 @@ public class LogListView extends ViewPart {
 
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(new LogListViewContentProvider());
-		viewer.setLabelProvider(new LogListViewLabelProvider());
 		viewer.setInput(getController().getLogContainer());
 		viewer.addFilter(quickFilter);
 
@@ -168,21 +191,79 @@ public class LogListView extends ViewPart {
 	}
 
 	private void createColumns(TableViewer viewer) {
-		for (final LogField logField : LogField.values()) {
-			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+		columnOrderMap = new HashMap<>();
+		LogsTableStructureItem[] columnStructure = PreferenceManager.getLogsTableStructure();
+
+//		To enhance the Favorites view with different fonts and colors, implement
+//		IFontProvider and IColorProvider respectively (see Section 13.2.5, ICol-
+//		orProvider, on page 523)
+
+		for (int i = 0; i < columnStructure.length; i++) {
+			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.LEAD);
 			TableColumn column = viewerColumn.getColumn();
-			column.setText(logField.getName());
-			column.setWidth(100);
-			viewerColumn.setLabelProvider(new ColumnLabelProvider() {
-				@Override
-				public String getText(Object element) {
-					Log log = (Log) element;
-					String value = logField.getValue(log);
-//					logger.debug("Log's field name=value: {}={}", logField.getName(), value);
-					return value;
-				}
-			});
+			column.setText(columnStructure[i].getName());
+			columnOrderMap.put(columnStructure[i].getName(), i);
+
+			if (columnStructure[i].isDisplay()) {
+				column.setWidth(columnStructure[i].getWidth());
+			} else {
+				column.setWidth(0);
+			}
+
+			final LogField logField = LogField.getLogFieldByName(columnStructure[i].getName());
+
+			switch (logField) {
+			case MESSAGE:
+			case THROWABLE:
+				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
+					private static final int TEXT_LENGTH_LIMIT = 200;
+
+					@Override
+					public String getText(Object element) {
+						Log log = (Log) element;
+						String value = logField.getValue(log);
+						value = value.replaceAll("\\r|\\n", " ");
+
+						if (value.length() > TEXT_LENGTH_LIMIT) {
+							value = value.substring(0, TEXT_LENGTH_LIMIT) + "...";
+						}
+						return value;
+					}
+				});
+				break;
+			default:
+				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
+					@Override
+					public String getText(Object element) {
+						Log log = (Log) element;
+						String value = logField.getValue(log);
+						return value;
+					}
+				});
+			}
 		}
+	}
+
+	private void updateColumns(LogsTableStructureItem[] columnStructure) {
+		Table table = viewer.getTable();
+		int[] columnOrder = table.getColumnOrder();
+		int[] newColumnOrder = new int[columnOrder.length];
+
+		for (int i = 0; i < columnStructure.length; i++) {
+			int position = columnOrderMap.get(columnStructure[i].getName());
+			newColumnOrder[i] = columnOrder[position];
+			columnOrderMap.put(columnStructure[i].getName(), i);
+
+			TableColumn column = table.getColumn(newColumnOrder[i]);
+
+			if (columnStructure[i].isDisplay()) {
+				column.setWidth(columnStructure[i].getWidth());
+			} else {
+				column.setWidth(0);
+			}
+		}
+		table.setColumnOrder(newColumnOrder);
+		table.redraw();
 	}
 
 	// Inner class represents handler for LogView life cycle actions: close/open view, activate/deactivate view, etc.

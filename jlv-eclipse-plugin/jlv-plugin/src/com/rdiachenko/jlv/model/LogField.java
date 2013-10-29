@@ -51,23 +51,29 @@ public enum LogField {
 		return value;
 	}
 
-	public static LogField getLogFieldByIndex(int index) {
-		switch (index) {
-		case 0:
+	public static LogField getLogFieldByName(String name) {
+		switch (name) {
+		case "Level":
+		case "level":
 			return LogField.LEVEL;
-		case 1:
+		case "Category":
+		case "category":
 			return LogField.CATEGORY;
-		case 2:
+		case "Message":
+		case "message":
 			return LogField.MESSAGE;
-		case 3:
+		case "Line":
+		case "line":
 			return LogField.LINE;
-		case 4:
+		case "Date":
+		case "date":
 			return LogField.DATE;
-		case 5:
+		case "Throwable":
+		case "throwable":
 			return LogField.THROWABLE;
 		default:
-			throw new IllegalArgumentException("No log field with such index: " + index
-					+ ". Available index range is [0..5]");
+			throw new IllegalArgumentException("No log field with such name: " + name
+					+ ". Available index range is [Level, Category, Message, Line, Date, Throwable]");
 		}
 	}
 }

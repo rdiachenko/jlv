@@ -1,6 +1,7 @@
 package com.rdiachenko.jlv.ui.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 
 import com.google.common.base.Strings;
 import com.rdiachenko.jlv.JlvActivator;
@@ -23,6 +24,14 @@ public final class PreferenceManager {
 
 	private PreferenceManager() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
+	}
+
+	public static void addPropertyChangeListener(IPropertyChangeListener listener) {
+		STORE.addPropertyChangeListener(listener);
+	}
+
+	public static void removePropertyChangeListener(IPropertyChangeListener listener) {
+		STORE.removePropertyChangeListener(listener);
 	}
 
 	public static int getServerPortNumber() {
@@ -51,6 +60,10 @@ public final class PreferenceManager {
 
 	public static LogsTableStructureItem[] getLogsTableStructure() {
 		return LogsTableStructureLoader.loadStructure();
+	}
+
+	public static LogsTableStructureItem[] getLogsTableStructure(String structure) {
+		return LogsTableStructureLoader.stringToStructure(structure);
 	}
 
 	public static LogsTableStructureItem[] getLogsTableDefaultStructure() {
@@ -86,7 +99,7 @@ public final class PreferenceManager {
 			STORE.setValue(LOGS_TABLE_STRUCTURE_SETTINGS, prefs);
 		}
 
-		private static LogsTableStructureItem[] stringToStructure(String prefs) {
+		public static LogsTableStructureItem[] stringToStructure(String prefs) {
 			String[] structureItems = prefs.split(SEMICOLUMN_SEPARATOR);
 			LogsTableStructureItem[] structure = new LogsTableStructureItem[structureItems.length];
 
@@ -100,7 +113,7 @@ public final class PreferenceManager {
 			return structure;
 		}
 
-		private static String structureToString(LogsTableStructureItem[] structure) {
+		public static String structureToString(LogsTableStructureItem[] structure) {
 			StringBuilder builder = new StringBuilder();
 
 			for (LogsTableStructureItem structureItem : structure) {
