@@ -19,6 +19,7 @@ public final class PreferenceManager {
 
 	public static final String LOGS_TABLE_STRUCTURE_SETTINGS = "jlv.loglistview.table.structure";
 	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
+	public static final String IMAGE_INSTEAD_TEXT_LEVEL_STATE = "jlv.loglistview.table.presentation.level.image";
 
 	private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
 
