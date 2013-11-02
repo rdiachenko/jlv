@@ -43,5 +43,9 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 				"Log's font size",
 				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
 		addField(logFontSizeEditor);
+		LogListViewDisplayEditor logListViewDisplayEditor = new LogListViewDisplayEditor(
+				PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS,
+				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
+		addField(logListViewDisplayEditor);
 	}
 }

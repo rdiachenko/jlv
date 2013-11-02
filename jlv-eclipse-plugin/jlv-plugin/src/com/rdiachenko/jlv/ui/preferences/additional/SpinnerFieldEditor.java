@@ -3,6 +3,8 @@ package com.rdiachenko.jlv.ui.preferences.additional;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -107,6 +109,12 @@ public class SpinnerFieldEditor extends FieldEditor {
 					if (!Strings.isNullOrEmpty(stringValue)) {
 						value = Integer.parseInt(stringValue);
 					}
+				}
+			});
+
+			spinner.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					spinner = null;
 				}
 			});
 		} else {

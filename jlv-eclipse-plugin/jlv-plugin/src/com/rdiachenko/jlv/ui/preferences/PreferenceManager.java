@@ -18,9 +18,9 @@ public final class PreferenceManager {
 	public static final String LOGS_REFRESHING_TIME = "jlv.loglistview.refreshing.time";
 
 	public static final String LOGS_TABLE_STRUCTURE_SETTINGS = "jlv.loglistview.table.structure";
+	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
 	public static final String IMAGE_INSTEAD_TEXT_LEVEL_STATE = "jlv.loglistview.table.presentation.level.image";
 	public static final String LOGS_FONT_SIZE = "jlv.loglistview.table.presentation.font.size";
-	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
 
 	private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
 	private static LogsTableStructureManager logsTableStructureManager;
