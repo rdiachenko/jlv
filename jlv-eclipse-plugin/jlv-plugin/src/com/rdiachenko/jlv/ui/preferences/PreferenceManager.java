@@ -3,9 +3,9 @@ package com.rdiachenko.jlv.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 
-import com.google.common.base.Strings;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.ui.preferences.additional.LogsTableStructureItem;
+import com.rdiachenko.jlv.ui.preferences.additional.LogsTableStructureManager;
 
 public final class PreferenceManager {
 
@@ -18,10 +18,16 @@ public final class PreferenceManager {
 	public static final String LOGS_REFRESHING_TIME = "jlv.loglistview.refreshing.time";
 
 	public static final String LOGS_TABLE_STRUCTURE_SETTINGS = "jlv.loglistview.table.structure";
-	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
 	public static final String IMAGE_INSTEAD_TEXT_LEVEL_STATE = "jlv.loglistview.table.presentation.level.image";
+	public static final String LOGS_FONT_SIZE = "jlv.loglistview.table.presentation.font.size";
+	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
 
 	private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
+	private static LogsTableStructureManager logsTableStructureManager;
+
+	static {
+		logsTableStructureManager = new LogsTableStructureManager(STORE, LOGS_TABLE_STRUCTURE_SETTINGS);
+	}
 
 	private PreferenceManager() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
@@ -60,69 +66,14 @@ public final class PreferenceManager {
 	}
 
 	public static LogsTableStructureItem[] getLogsTableStructure() {
-		return LogsTableStructureLoader.loadStructure();
+		return logsTableStructureManager.loadStructure();
 	}
 
 	public static LogsTableStructureItem[] getLogsTableStructure(String structure) {
-		return LogsTableStructureLoader.stringToStructure(structure);
+		return logsTableStructureManager.loadStructure(structure);
 	}
 
-	public static LogsTableStructureItem[] getLogsTableDefaultStructure() {
-		return LogsTableStructureLoader.loadDefaultStructure();
-	}
-
-	public static void setLogsTableStructure(LogsTableStructureItem[] structure) {
-		LogsTableStructureLoader.storeStructure(structure);
-	}
-
-	private static class LogsTableStructureLoader {
-
-		private static final String COLUMN_SEPARATOR = ":";
-		private static final String SEMICOLUMN_SEPARATOR = ";";
-
-		public static LogsTableStructureItem[] loadStructure() {
-			String prefs = STORE.getString(LOGS_TABLE_STRUCTURE_SETTINGS);
-
-			if (Strings.isNullOrEmpty(prefs)) {
-				return loadDefaultStructure();
-			} else {
-				return stringToStructure(prefs);
-			}
-		}
-
-		public static LogsTableStructureItem[] loadDefaultStructure() {
-			String prefs = STORE.getDefaultString(LOGS_TABLE_STRUCTURE_SETTINGS);
-			return stringToStructure(prefs);
-		}
-
-		public static void storeStructure(LogsTableStructureItem[] structure) {
-			String prefs = structureToString(structure);
-			STORE.setValue(LOGS_TABLE_STRUCTURE_SETTINGS, prefs);
-		}
-
-		public static LogsTableStructureItem[] stringToStructure(String prefs) {
-			String[] structureItems = prefs.split(SEMICOLUMN_SEPARATOR);
-			LogsTableStructureItem[] structure = new LogsTableStructureItem[structureItems.length];
-
-			for (int i = 0; i < structure.length; i++) {
-				String[] structureItem = structureItems[i].split(COLUMN_SEPARATOR);
-				String name = structureItem[0];
-				int width = Integer.valueOf(structureItem[1]);
-				boolean display = Boolean.valueOf(structureItem[2]);
-				structure[i] = new LogsTableStructureItem(name, width, display);
-			}
-			return structure;
-		}
-
-		public static String structureToString(LogsTableStructureItem[] structure) {
-			StringBuilder builder = new StringBuilder();
-
-			for (LogsTableStructureItem structureItem : structure) {
-				builder.append(structureItem.getName()).append(COLUMN_SEPARATOR)
-						.append(structureItem.getWidth()).append(COLUMN_SEPARATOR)
-						.append(structureItem.isDisplay()).append(SEMICOLUMN_SEPARATOR);
-			}
-			return builder.toString();
-		}
+	public static int getLogsFontSize() {
+		return STORE.getInt(LOGS_FONT_SIZE);
 	}
 }

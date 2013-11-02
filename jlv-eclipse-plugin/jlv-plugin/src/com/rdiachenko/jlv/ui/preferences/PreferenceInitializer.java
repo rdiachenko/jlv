@@ -28,5 +28,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 						+ LogField.THROWABLE.getName() + ":100:true;");
 		store.setDefault(PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS, "");
 		store.setDefault(PreferenceManager.IMAGE_INSTEAD_TEXT_LEVEL_STATE, true);
+		store.setDefault(PreferenceManager.LOGS_FONT_SIZE, 11);
 	}
 }

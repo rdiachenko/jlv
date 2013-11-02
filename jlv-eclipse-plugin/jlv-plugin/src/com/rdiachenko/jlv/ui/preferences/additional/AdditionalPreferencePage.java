@@ -38,5 +38,10 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 				"Use image to display log level",
 				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
 		addField(imageInsteadTextPrefEditor);
+		SpinnerFieldEditor logFontSizeEditor = new SpinnerFieldEditor(
+				PreferenceManager.LOGS_FONT_SIZE,
+				"Log's font size",
+				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
+		addField(logFontSizeEditor);
 	}
 }

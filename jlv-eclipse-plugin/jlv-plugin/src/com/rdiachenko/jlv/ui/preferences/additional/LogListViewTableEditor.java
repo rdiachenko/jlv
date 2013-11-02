@@ -1,6 +1,7 @@
 package com.rdiachenko.jlv.ui.preferences.additional;
 
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -29,7 +30,6 @@ import org.eclipse.swt.widgets.Widget;
 import com.rdiachenko.jlv.ImageType;
 import com.rdiachenko.jlv.JlvActivator;
 import com.rdiachenko.jlv.model.LogField;
-import com.rdiachenko.jlv.ui.preferences.PreferenceManager;
 
 public class LogListViewTableEditor extends FieldEditor {
 
@@ -55,16 +55,14 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	private LogsTableStructureItem[] tableModel;
 
+	private IPreferenceStore store;
+	private LogsTableStructureManager logsTableStructureManager;
+
 	public LogListViewTableEditor(String name, Composite parent) {
 		init(name, "");
+		this.store = JlvActivator.getDefault().getPreferenceStore();
+		logsTableStructureManager = new LogsTableStructureManager(store, name);
 		createControl(parent);
-	}
-
-	@Override
-	public void setFocus() {
-		if (tableViewer != null) {
-			tableViewer.getControl().setFocus();
-		}
 	}
 
 	@Override
@@ -91,18 +89,18 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(PreferenceManager.getLogsTableStructure());
+		doLoad(logsTableStructureManager.loadStructure());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(PreferenceManager.getLogsTableDefaultStructure());
+		doLoad(logsTableStructureManager.loadDefaultStructure());
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			PreferenceManager.setLogsTableStructure(tableModel);
+			logsTableStructureManager.storeTableStructure(tableModel);
 		}
 	}
 
