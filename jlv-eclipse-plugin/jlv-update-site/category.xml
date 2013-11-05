@@ -2,7 +2,7 @@
 <site>
 	<category-def name="jlv" label="JLV Eclipse plugin" />
 	
-	<feature url="features/com.rdiachenko.jlv.feature_1.0.0.qualifier.jar" id="com.rdiachenko.jlv.feature">
+	<feature url="features/com.github.incode.jlv.feature_1.0.0.qualifier.jar" id="com.github.incode.jlv.feature">
 		<category name="jlv" />
 	</feature>
 </site>

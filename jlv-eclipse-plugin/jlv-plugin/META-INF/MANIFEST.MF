@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jlv-plugin
-Bundle-SymbolicName: com.rdiachenko.jlv.plugin;singleton:=true
+Bundle-SymbolicName: com.github.incode.jlv.plugin;singleton:=true
 Bundle-Version: 1.2.5.qualifier
-Bundle-Activator: com.rdiachenko.jlv.JlvActivator
-Bundle-Vendor: Ruslan Diachenko
+Bundle-Activator: com.github.incode.jlv.JlvActivator
+Bundle-Vendor: In-Code
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

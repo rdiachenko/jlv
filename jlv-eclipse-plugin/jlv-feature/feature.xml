@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.rdiachenko.jlv.feature"
+      id="com.github.incode.jlv.feature"
       label="jlv"
       version="1.2.5.qualifier"
-      provider-name="Ruslan Diachenko">
+      provider-name="In-Code">
 
    <description url="https://github.com/rdiachenko/JLV">
       Java logging viewer (plugin for Eclipse IDE)
@@ -18,7 +18,7 @@
    </license>
 
    <plugin
-         id="com.rdiachenko.jlv.plugin"
+         id="com.github.incode.jlv.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"

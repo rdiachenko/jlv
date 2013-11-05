@@ -4,12 +4,12 @@
 
 	<parent>
 		<relativePath>../pom.xml</relativePath>
-		<groupId>com.rdiachenko.jlv</groupId>
-		<artifactId>com.rdiachenko.jlv.parent</artifactId>
+		<groupId>com.github.incode.jlv</groupId>
+		<artifactId>com.github.incode.jlv.parent</artifactId>
 		<version>1.2.5-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.rdiachenko.jlv.feature</artifactId>
+	<artifactId>com.github.incode.jlv.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 
     <name>JLV Eclipse feature</name>

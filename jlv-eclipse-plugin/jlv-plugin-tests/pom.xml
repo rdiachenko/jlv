@@ -4,12 +4,12 @@
 
 	<parent>
 		<relativePath>../pom.xml</relativePath>
-		<groupId>com.rdiachenko.jlv</groupId>
-		<artifactId>com.rdiachenko.jlv.parent</artifactId>
+		<groupId>com.github.incode.jlv</groupId>
+		<artifactId>com.github.incode.jlv.parent</artifactId>
 		<version>1.2.5-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.rdiachenko.jlv.plugin.tests</artifactId>
+	<artifactId>com.github.incode.jlv.plugin.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 	
 	<name>JLV Eclipse plugin tests</name>
