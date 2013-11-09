@@ -56,12 +56,12 @@ public class LogListViewTableEditor extends FieldEditor {
 	private LogsTableStructureItem[] tableModel;
 
 	private IPreferenceStore store;
-	private LogsTableStructureManager logsTableStructureManager;
+	private LogsTableStructurePreferenceManager preferenceManager;
 
 	public LogListViewTableEditor(String name, Composite parent) {
 		init(name, "");
 		this.store = JlvActivator.getDefault().getPreferenceStore();
-		logsTableStructureManager = new LogsTableStructureManager(store, name);
+		preferenceManager = new LogsTableStructurePreferenceManager(store, name);
 		createControl(parent);
 	}
 
@@ -89,18 +89,18 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(logsTableStructureManager.loadStructure());
+		doLoad(preferenceManager.loadStructure());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(logsTableStructureManager.loadDefaultStructure());
+		doLoad(preferenceManager.loadDefaultStructure());
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			logsTableStructureManager.storeTableStructure(tableModel);
+			preferenceManager.storeTableStructure(tableModel);
 		}
 	}
 

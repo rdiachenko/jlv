@@ -13,9 +13,11 @@ public class LogLevelItem {
 
 	private RGB background;
 
-	public LogLevelItem(String name, Image image) {
+	public LogLevelItem(String name, Image image, RGB foreground, RGB background) {
 		this.name = name;
 		this.image = image;
+		this.foreground = foreground;
+		this.background = background;
 	}
 
 	public RGB getForeground() {

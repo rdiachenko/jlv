@@ -45,6 +45,10 @@ public class SpinnerFieldEditor extends FieldEditor {
 		createControl(parent);
 	}
 
+	public int getIntValue() {
+		return value;
+	}
+
 	@Override
 	protected void adjustForNumColumns(int numColumns) {
 		((GridData) spinner.getLayoutData()).horizontalSpan = numColumns;
@@ -91,6 +95,14 @@ public class SpinnerFieldEditor extends FieldEditor {
 		}
 	}
 
+	private void valueChanged(int oldValue, int newValue) {
+		setPresentsDefaultValue(false);
+
+		if (oldValue != newValue) {
+			fireValueChanged(VALUE, oldValue, newValue);
+		}
+	}
+
 	private Spinner getSpinnerControl(Composite parent) {
 		if (spinner == null) {
 			spinner = new Spinner(parent, SWT.BORDER);
@@ -107,6 +119,8 @@ public class SpinnerFieldEditor extends FieldEditor {
 					String stringValue = spinner.getText();
 
 					if (!Strings.isNullOrEmpty(stringValue)) {
+						int newValue = Integer.parseInt(stringValue);
+						valueChanged(value, newValue);
 						value = Integer.parseInt(stringValue);
 					}
 				}

@@ -4,7 +4,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.google.common.base.Strings;
 
-public class LogLevelManager {
+public class LogsTableStructurePreferenceManager {
 
 	private static final String COLUMN_SEPARATOR = ":";
 	private static final String SEMICOLUMN_SEPARATOR = ";";
@@ -12,7 +12,7 @@ public class LogLevelManager {
 	private IPreferenceStore store;
 	private String preferenceName;
 
-	public LogLevelManager(IPreferenceStore store, String preferenceName) {
+	public LogsTableStructurePreferenceManager(IPreferenceStore store, String preferenceName) {
 		this.store = store;
 		this.preferenceName = preferenceName;
 	}

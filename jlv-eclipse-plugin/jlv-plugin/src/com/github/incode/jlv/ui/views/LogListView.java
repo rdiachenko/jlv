@@ -89,7 +89,7 @@ public class LogListView extends ViewPart {
 		PreferenceManager.addPropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was added to Jlv log list view");
 
-		if (PreferenceManager.getQuickSearchFieldStatus()) {
+		if (PreferenceManager.isQuickSearchFieldVisible()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}
@@ -299,7 +299,7 @@ public class LogListView extends ViewPart {
 			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
-					boolean isServerAutoStart = PreferenceManager.getServerAutoStart();
+					boolean isServerAutoStart = PreferenceManager.isServerAutoStart();
 					logger.debug("Server auto start option: {}", isServerAutoStart);
 
 					if (isServerAutoStart) {

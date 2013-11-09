@@ -42,4 +42,22 @@ public enum LogLevel {
 	public RGB background() {
 		return background;
 	}
+
+	public static ImageType getImageByName(String name) {
+		switch (name) {
+		case "DEBUG":
+			return LogLevel.DEBUG.image();
+		case "INFO":
+			return LogLevel.INFO.image();
+		case "WARN":
+			return LogLevel.WARN.image();
+		case "ERROR":
+			return LogLevel.ERROR.image();
+		case "FATAL":
+			return LogLevel.FATAL.image();
+		default:
+			throw new IllegalArgumentException("No log level with such name: " + name
+					+ ". Available range is [DEBUG, INFO, WARN, ERROR, FATAL]");
+		}
+	}
 }

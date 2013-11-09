@@ -1,6 +1,6 @@
 package com.github.incode.jlv.ui.preferences.additional;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -26,24 +26,14 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 
 		Group logListTableSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Log list view table columns");
-		LogListViewTableEditor logListViewTableEditor = new LogListViewTableEditor(
+		FieldEditor logListViewTableEditor = new LogListViewTableEditor(
 				PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
 				PreferencePageUtils.createFieldEditorComposite(logListTableSettingsGroup));
 		addField(logListViewTableEditor);
 
 		Group logListDisplaySettingGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Log list view log display");
-		BooleanFieldEditor imageInsteadTextPrefEditor = new BooleanFieldEditor(
-				PreferenceManager.IMAGE_INSTEAD_OF_TEXT_LEVEL_STATE,
-				"Use image to display log level",
-				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
-		addField(imageInsteadTextPrefEditor);
-		SpinnerFieldEditor logFontSizeEditor = new SpinnerFieldEditor(
-				PreferenceManager.LOGS_FONT_SIZE,
-				"Log's font size",
-				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
-		addField(logFontSizeEditor);
-		LogListViewDisplayEditor logListViewDisplayEditor = new LogListViewDisplayEditor(
+		FieldEditor logListViewDisplayEditor = new LogListViewDisplayEditor(
 				PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS,
 				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
 		addField(logListViewDisplayEditor);

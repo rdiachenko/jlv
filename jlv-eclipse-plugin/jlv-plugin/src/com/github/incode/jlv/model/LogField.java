@@ -73,7 +73,7 @@ public enum LogField {
 			return LogField.THROWABLE;
 		default:
 			throw new IllegalArgumentException("No log field with such name: " + name
-					+ ". Available index range is [Level, Category, Message, Line, Date, Throwable]");
+					+ ". Available range is [Level, Category, Message, Line, Date, Throwable]");
 		}
 	}
 }
