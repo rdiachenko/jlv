@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.incode.jlv.JlvActivator;
 import com.github.incode.jlv.log4j.dao.DaoProvider;
 import com.github.incode.jlv.log4j.dao.LogDao;
 import com.github.incode.jlv.log4j.domain.Log;
@@ -13,7 +14,6 @@ import com.github.incode.jlv.log4j.domain.LogContainer;
 import com.github.incode.jlv.log4j.domain.LogEventContainer;
 import com.github.incode.jlv.log4j.domain.LogEventListener;
 import com.github.incode.jlv.log4j.socketappender.Server;
-import com.github.incode.jlv.ui.preferences.PreferenceManager;
 
 public class LogListViewController {
 
@@ -32,7 +32,7 @@ public class LogListViewController {
 	public LogListViewController(LogListView view) {
 		logDao = DaoProvider.LOG_DAO.getLogDao();
 		logDao.initDb();
-		logContainer = new LogContainer(PreferenceManager.getLogsBufferSize());
+		logContainer = new LogContainer(JlvActivator.getPreferenceManager().getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -52,7 +52,7 @@ public class LogListViewController {
 
 	public void startServer() {
 		try {
-			server = new Server(PreferenceManager.getServerPortNumber());
+			server = new Server(JlvActivator.getPreferenceManager().getServerPortNumber());
 			server.start();
 		} catch (IOException e) {
 			logger.error("IOException occurred while starting server:", e);
@@ -101,7 +101,7 @@ public class LogListViewController {
 					}
 				});
 				try {
-					sleep(PreferenceManager.getLogsRefreshingTime());
+					sleep(JlvActivator.getPreferenceManager().getLogsRefreshingTime());
 				} catch (InterruptedException e) {
 					logger.error("Timer thread was interrupted:", e);
 				}

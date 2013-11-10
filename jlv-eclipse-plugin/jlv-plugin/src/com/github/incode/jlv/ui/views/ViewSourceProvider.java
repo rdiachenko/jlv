@@ -8,14 +8,14 @@ import org.eclipse.ui.ISources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.incode.jlv.JlvActivator;
 import com.github.incode.jlv.ui.UiStringConstants;
-import com.github.incode.jlv.ui.preferences.PreferenceManager;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private boolean isServerStarted = PreferenceManager.isServerAutoStart();
+	private boolean isServerStarted = JlvActivator.getPreferenceManager().isServerAutoStart();
 
 	public void setServerStarted(boolean state) {
 		isServerStarted = state;
@@ -24,7 +24,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public void dispose() {
-		setServerStarted(PreferenceManager.isServerAutoStart());
+		setServerStarted(JlvActivator.getPreferenceManager().isServerAutoStart());
 		logger.debug("View source provider has been disposed.");
 	}
 

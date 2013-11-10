@@ -14,6 +14,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.github.incode.jlv.ui.preferences.PreferenceManager;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -27,12 +29,15 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	private static JlvActivator plugin;
 
+	private static PreferenceManager preferenceManager;
+
 	private static Map<ImageType, Image> images = new HashMap<>();
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		preferenceManager = new PreferenceManager(getPreferenceStore());
 
 		Properties fileProperties = new Properties();
 		fileProperties.load(new FileInputStream(getAbsolutePath(LOG4J_PROPERTIES_PATH)));
@@ -43,12 +48,17 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		preferenceManager.dispose();
 		plugin = null;
 		super.stop(context);
 	}
 
 	public static JlvActivator getDefault() {
 		return plugin;
+	}
+
+	public static PreferenceManager getPreferenceManager() {
+		return preferenceManager;
 	}
 
 	public static String getAbsolutePath(String filePath) throws IOException {

@@ -1,5 +1,8 @@
 package com.github.incode.jlv.ui.preferences.additional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.RGB;
 
@@ -45,23 +48,37 @@ public class LogsDisplayPreferenceManager {
 		store.setValue(preferenceName, prefs);
 	}
 
+	public LogsDisplayModel createDefaultModel() {
+		Map<LogLevel, LogLevelItem> logLevelPrefsMap = new HashMap<>();
+
+		for (LogLevel level : LogLevel.values()) {
+			LogLevelItem logLevelItem = new LogLevelItem(level.getName(), JlvActivator.getImage(level.image()),
+					level.foreground(), level.background());
+			logLevelPrefsMap.put(level, logLevelItem);
+		}
+		LogsDisplayModel model = new LogsDisplayModel(true, 11, logLevelPrefsMap);
+		return model;
+	}
+
 	private LogsDisplayModel stringToModel(String prefs) {
 		String[] modelParams = prefs.split(SEMICOLUMN_SEPARATOR);
 		boolean levelImageSubstitutesTextParam = Boolean.parseBoolean(modelParams[0]);
 		int fontSizeParam = Integer.parseInt(modelParams[1]);
 		int logLevelItemsParamStartIndex = 2;
-		LogLevelItem[] logLevelItems = new LogLevelItem[modelParams.length - logLevelItemsParamStartIndex];
+		Map<LogLevel, LogLevelItem> logLevelPrefsMap = new HashMap<>();
 
 		for (int i = 0; i < modelParams.length - logLevelItemsParamStartIndex; i++) {
 			String[] logLevelItemsParams = modelParams[i + logLevelItemsParamStartIndex].split(COLUMN_SEPARATOR);
 			String name = logLevelItemsParams[0];
 			RGB foreground = stringToRgb(logLevelItemsParams[1]);
 			RGB background = stringToRgb(logLevelItemsParams[2]);
-			logLevelItems[i] = new LogLevelItem(name, JlvActivator.getImage(LogLevel.getImageByName(name)), foreground,
-					background);
+
+			LogLevel level = LogLevel.getLogLevelByName(name);
+			LogLevelItem logItem = new LogLevelItem(name, LogLevel.getImageByName(name), foreground, background);
+			logLevelPrefsMap.put(level, logItem);
 		}
 		LogsDisplayModel model = new LogsDisplayModel(levelImageSubstitutesTextParam, fontSizeParam,
-				logLevelItems);
+				logLevelPrefsMap);
 		return model;
 	}
 

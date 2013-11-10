@@ -11,9 +11,15 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -31,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.github.incode.jlv.JlvActivator;
 import com.github.incode.jlv.log4j.domain.Log;
 import com.github.incode.jlv.model.LogField;
+import com.github.incode.jlv.model.LogLevel;
 import com.github.incode.jlv.ui.UiStringConstants;
 import com.github.incode.jlv.ui.preferences.PreferenceManager;
 import com.github.incode.jlv.ui.preferences.additional.LogsTableStructureItem;
@@ -81,15 +88,16 @@ public class LogListView extends ViewPart {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS.equals(event.getProperty())) {
 					String structure = event.getNewValue().toString();
-					LogsTableStructureItem[] columnStructure = PreferenceManager.getLogsTableStructure(structure);
+					LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager()
+							.getLogsTableStructure(structure);
 					updateColumns(columnStructure);
 				}
 			}
 		};
-		PreferenceManager.addPropertyChangeListener(preferenceListener);
+		JlvActivator.getPreferenceManager().addPropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was added to Jlv log list view");
 
-		if (PreferenceManager.isQuickSearchFieldVisible()) {
+		if (JlvActivator.getPreferenceManager().isQuickSearchFieldVisible()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}
@@ -113,7 +121,7 @@ public class LogListView extends ViewPart {
 		getViewSite().getPage().removePartListener(viewLifecycleListener);
 		logger.debug("Lifecycle listener was removed from Jlv log list view");
 
-		PreferenceManager.removePropertyChangeListener(preferenceListener);
+		JlvActivator.getPreferenceManager().removePropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was removed from Jlv log list view");
 	}
 
@@ -192,11 +200,7 @@ public class LogListView extends ViewPart {
 
 	private void createColumns(TableViewer viewer) {
 		columnOrderMap = new HashMap<>();
-		LogsTableStructureItem[] columnStructure = PreferenceManager.getLogsTableStructure();
-
-//		To enhance the Favorites view with different fonts and colors, implement
-//		IFontProvider and IColorProvider respectively (see Section 13.2.5, ICol-
-//		orProvider, on page 523)
+		LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager().getLogsTableStructure();
 
 		for (int i = 0; i < columnStructure.length; i++) {
 			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.LEAD);
@@ -209,38 +213,8 @@ public class LogListView extends ViewPart {
 			} else {
 				column.setWidth(0);
 			}
-
-			final LogField logField = LogField.getLogFieldByName(columnStructure[i].getName());
-
-			switch (logField) {
-			case MESSAGE:
-			case THROWABLE:
-				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
-					private static final int TEXT_LENGTH_LIMIT = 200;
-
-					@Override
-					public String getText(Object element) {
-						Log log = (Log) element;
-						String value = logField.getValue(log);
-						value = value.replaceAll("\\r|\\n", " ");
-
-						if (value.length() > TEXT_LENGTH_LIMIT) {
-							value = value.substring(0, TEXT_LENGTH_LIMIT) + "...";
-						}
-						return value;
-					}
-				});
-				break;
-			default:
-				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
-					@Override
-					public String getText(Object element) {
-						Log log = (Log) element;
-						String value = logField.getValue(log);
-						return value;
-					}
-				});
-			}
+			LogField logField = LogField.getLogFieldByName(columnStructure[i].getName());
+			viewerColumn.setLabelProvider(new CustomColumnLabelProvider(viewer.getTable(), logField));
 		}
 	}
 
@@ -264,6 +238,89 @@ public class LogListView extends ViewPart {
 		}
 		table.setColumnOrder(newColumnOrder);
 		table.redraw();
+	}
+
+	private static class CustomColumnLabelProvider extends ColumnLabelProvider {
+
+		private Table table;
+
+		private LogField logField;
+
+		public CustomColumnLabelProvider(Table table, LogField logField) {
+			super();
+			this.table = table;
+			this.logField = logField;
+		}
+
+		@Override
+		public String getText(Object element) {
+			Log log = (Log) element;
+
+			switch (logField) {
+			case MESSAGE:
+			case THROWABLE:
+				String value = logField.getValue(log);
+				value = value.replaceAll("\\r|\\n", " ");
+				int textLengthLimit = 200;
+
+				if (value.length() > textLengthLimit) {
+					value = value.substring(0, textLengthLimit) + "...";
+				}
+				return value;
+			case LEVEL:
+				if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
+					return null;
+				} else {
+					return log.getLevel();
+				}
+			default:
+				return logField.getValue(log);
+			}
+		}
+
+		@Override
+		public Image getImage(Object element) {
+			Log log = (Log) element;
+
+			if (logField == LogField.LEVEL) {
+				if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
+					return LogLevel.getImageByName(log.getLevel());
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+
+		@Override
+		public Color getForeground(Object element) {
+			Log log = (Log) element;
+			RGB rgb = JlvActivator.getPreferenceManager().getLogsForeground(
+					LogLevel.getLogLevelByName(log.getLevel()));
+			Color color = new Color(Display.getCurrent(), rgb);
+			return color;
+		}
+
+		@Override
+		public Color getBackground(Object element) {
+			Log log = (Log) element;
+			RGB rgb = JlvActivator.getPreferenceManager().getLogsBackground(
+					LogLevel.getLogLevelByName(log.getLevel()));
+			Color color = new Color(Display.getCurrent(), rgb);
+			return color;
+		}
+
+		@Override
+		public Font getFont(Object element) {
+			FontData[] fontData = table.getFont().getFontData();
+
+			for (int i = 0; i < fontData.length; ++i) {
+				fontData[i].setHeight(JlvActivator.getPreferenceManager().getLogsFontSize());
+			}
+			Font font = new Font(Display.getCurrent(), fontData);
+			return font;
+		}
 	}
 
 	// Inner class represents handler for LogView life cycle actions: close/open view, activate/deactivate view, etc.
@@ -299,7 +356,7 @@ public class LogListView extends ViewPart {
 			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
-					boolean isServerAutoStart = PreferenceManager.isServerAutoStart();
+					boolean isServerAutoStart = JlvActivator.getPreferenceManager().isServerAutoStart();
 					logger.debug("Server auto start option: {}", isServerAutoStart);
 
 					if (isServerAutoStart) {

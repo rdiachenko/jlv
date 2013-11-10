@@ -6,8 +6,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.github.incode.jlv.JlvActivator;
 import com.github.incode.jlv.ui.UiStringConstants;
-import com.github.incode.jlv.ui.preferences.PreferenceManager;
 
 public class QuickSearchAction extends AbstractHandler {
 
@@ -18,9 +18,9 @@ public class QuickSearchAction extends AbstractHandler {
 
 		if (part != null) {
 			LogListView view = (LogListView) part;
-			boolean isVisible = !PreferenceManager.isQuickSearchFieldVisible();
+			boolean isVisible = !JlvActivator.getPreferenceManager().isQuickSearchFieldVisible();
 			view.setSearchFieldVisible(isVisible);
-			PreferenceManager.setQuickSearchFieldVisible(isVisible);
+			JlvActivator.getPreferenceManager().setQuickSearchFieldVisible(isVisible);
 		}
 		return null;
 	}

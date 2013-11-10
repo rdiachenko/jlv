@@ -28,10 +28,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 						+ LogField.DATE.getName() + ":100:true;"
 						+ LogField.THROWABLE.getName() + ":100:true;");
 		store.setDefault(PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS, "true;11;"
-				+ LogLevel.DEBUG.getName() + ":0-0-0:237-236-235;"
-				+ LogLevel.INFO.getName() + ":0-255-0:237-236-235;"
-				+ LogLevel.WARN.getName() + ":255-128-0:237-236-235;"
-				+ LogLevel.ERROR.getName() + ":255-0-0:237-236-235;"
-				+ LogLevel.FATAL.getName() + ":165-42-42:237-236-235;");
+				+ LogLevel.DEBUG.getName() + ":0-0-0:255-255-255;"
+				+ LogLevel.INFO.getName() + ":0-255-0:255-255-255;"
+				+ LogLevel.WARN.getName() + ":255-128-0:255-255-255;"
+				+ LogLevel.ERROR.getName() + ":255-0-0:255-255-255;"
+				+ LogLevel.FATAL.getName() + ":165-42-42:255-255-255;");
 	}
 }

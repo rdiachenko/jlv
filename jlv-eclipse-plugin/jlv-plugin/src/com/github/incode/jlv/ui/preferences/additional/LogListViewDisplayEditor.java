@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.incode.jlv.JlvActivator;
-import com.github.incode.jlv.model.LogLevel;
 import com.google.common.base.Strings;
 
 public class LogListViewDisplayEditor extends FieldEditor {
@@ -70,7 +69,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		init(name, "");
 		this.store = JlvActivator.getDefault().getPreferenceStore();
 		preferenceManager = new LogsDisplayPreferenceManager(store, name);
-		model = createModel();
+		model = preferenceManager.createDefaultModel();
 		createControl(parent);
 	}
 
@@ -169,20 +168,6 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			checkParent(tableViewer.getControl(), parent);
 		}
 		return tableViewer;
-	}
-
-	private LogsDisplayModel createModel() {
-		LogLevelItem[] logLevelItems = new LogLevelItem[LogLevel.values().length];
-		int index = 0;
-
-		for (LogLevel level : LogLevel.values()) {
-			LogLevelItem logLevelItem = new LogLevelItem(level.getName(), JlvActivator.getImage(level.image()),
-					level.foreground(), level.background());
-			logLevelItems[index] = logLevelItem;
-			index++;
-		}
-		LogsDisplayModel model = new LogsDisplayModel(true, 11, logLevelItems);
-		return model;
 	}
 
 	private void createTableColumns(TableViewer tableViewer, LogsDisplayModel model) {
@@ -318,7 +303,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 
 		@Override
-		public String getText(final Object element) {
+		public String getText(Object element) {
 			if (column == Column.LEVEL) {
 				return null;
 			} else {
@@ -327,7 +312,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 
 		@Override
-		public Image getImage(final Object element) {
+		public Image getImage(Object element) {
 			if (column == Column.LEVEL) {
 				return null;
 			} else {
@@ -336,7 +321,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 
 		@Override
-		public Color getForeground(final Object element) {
+		public Color getForeground(Object element) {
 			if (column == Column.LEVEL) {
 				return super.getForeground(element);
 			} else {
@@ -347,7 +332,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 
 		@Override
-		public Color getBackground(final Object element) {
+		public Color getBackground(Object element) {
 			if (column == Column.BACKGROUND) {
 				LogLevelItem logLevelItem = (LogLevelItem) element;
 				Color color = new Color(Display.getCurrent(), logLevelItem.getBackground());
@@ -397,7 +382,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 
 		@Override
-		protected void setValue(final Object element, final Object value) {
+		protected void setValue(Object element, Object value) {
 			LogLevelItem logLevelItem = (LogLevelItem) element;
 
 			if (colorState == ColorState.FOREGROUND) {
