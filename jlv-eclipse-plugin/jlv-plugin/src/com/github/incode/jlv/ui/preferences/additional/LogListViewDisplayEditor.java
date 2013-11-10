@@ -19,14 +19,18 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -44,9 +48,9 @@ public class LogListViewDisplayEditor extends FieldEditor {
 	private static final String BACKGROUND_LABEL = "Background";
 	private static final String[] COLUMN_NAMES = { LEVEL_LABEL, FOREGROUND_LABEL, BACKGROUND_LABEL };
 
-	private static final int NAME_COLUMN_WIDTH = 60;
-	private static final int WIDTH_COLUMN_WIDTH = 300;
-	private static final int DISPLAY_COLUMN_WIDTH = 300;
+	private static final int NAME_COLUMN_WIDTH = 70;
+	private static final int WIDTH_COLUMN_WIDTH = 250;
+	private static final int DISPLAY_COLUMN_WIDTH = 250;
 	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH, DISPLAY_COLUMN_WIDTH };
 
 	private Composite imageSwitcherBox;
@@ -125,12 +129,36 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
 					| SWT.HIDE_SELECTION);
 			tableViewer.setUseHashlookup(true);
-			Table table = tableViewer.getTable();
+			final Table table = tableViewer.getTable();
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 			table.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent event) {
 					tableViewer = null;
+				}
+			});
+			table.addListener(SWT.PaintItem, new Listener() {
+				@Override
+				public void handleEvent(Event event) {
+					int imageColumnIndex = 0;
+
+					if ((event.index == imageColumnIndex) && (event.type == SWT.PaintItem)) {
+						TableItem item = (TableItem) event.item;
+						LogLevelItem logLevelItem = (LogLevelItem) item.getData();
+
+						if (model.isLevelImageSubstitutesText()) {
+							Image image = logLevelItem.getImage();
+							Rectangle imageBounds = image.getBounds();
+							int xOffset = (table.getColumn(imageColumnIndex).getWidth() - imageBounds.width) / 2;
+							int yOffset = (item.getBounds().height - imageBounds.height + 1) / 2;
+							event.gc.drawImage(image, event.x + xOffset, event.y + yOffset);
+						} else {
+							FontMetrics fontMetrics = event.gc.getFontMetrics();
+							int xOffset = fontMetrics.getAverageCharWidth();
+							int yOffset = model.getFontSize() / 2;
+							event.gc.drawText(logLevelItem.getName(), event.x + xOffset, event.y + yOffset, true);
+						}
+					}
 				}
 			});
 
@@ -165,18 +193,17 @@ public class LogListViewDisplayEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case LEVEL_LABEL:
-				viewerColumn.setLabelProvider(new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.LEVEL,
-						model));
+				viewerColumn.setLabelProvider(new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.LEVEL));
 				break;
 			case FOREGROUND_LABEL:
 				viewerColumn.setLabelProvider(
-						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.FOREGROUND, model));
+						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.FOREGROUND));
 				viewerColumn.setEditingSupport(new CustomColorCellEditor(tableViewer,
 						CustomColorCellEditor.ColorState.FOREGROUND));
 				break;
 			case BACKGROUND_LABEL:
 				viewerColumn.setLabelProvider(
-						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.BACKGROUND, model));
+						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.BACKGROUND));
 				viewerColumn.setEditingSupport(new CustomColorCellEditor(tableViewer,
 						CustomColorCellEditor.ColorState.BACKGROUND));
 				break;
@@ -222,7 +249,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			GridLayout layout = new GridLayout();
 			layout.numColumns = 2;
 			spinnerBox.setLayout(layout);
-			GridData layoutData = new GridData(SWT.BEGINNING, SWT.NONE, true, false);
+			GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 			layoutData.horizontalIndent = -5;
 			spinnerBox.setLayoutData(layoutData);
 			spinnerBox.addDisposeListener(new DisposeListener() {
@@ -250,6 +277,9 @@ public class LogListViewDisplayEditor extends FieldEditor {
 					}
 				}
 			});
+			layoutData = new GridData();
+			layoutData.widthHint = 20;
+			spinner.setLayoutData(layoutData);
 
 			Label label = new Label(spinner.getParent(), SWT.NONE);
 			label.setText("Log's font size");
@@ -274,8 +304,6 @@ public class LogListViewDisplayEditor extends FieldEditor {
 
 	private static class CustomColumnLabelProvider extends ColumnLabelProvider {
 
-		private LogsDisplayModel model;
-
 		private enum Column {
 			LEVEL,
 			FOREGROUND,
@@ -284,21 +312,15 @@ public class LogListViewDisplayEditor extends FieldEditor {
 
 		private Column column;
 
-		public CustomColumnLabelProvider(Column column, LogsDisplayModel model) {
+		public CustomColumnLabelProvider(Column column) {
 			super();
 			this.column = column;
-			this.model = model;
 		}
 
 		@Override
 		public String getText(final Object element) {
 			if (column == Column.LEVEL) {
-				if (model.isLevelImageSubstitutesText()) {
-					return null;
-				} else {
-					LogLevelItem logLevelItem = (LogLevelItem) element;
-					return logLevelItem.getName();
-				}
+				return null;
 			} else {
 				return "The quick brown fox jumps over the lazy dog";
 			}
@@ -307,12 +329,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		@Override
 		public Image getImage(final Object element) {
 			if (column == Column.LEVEL) {
-				if (model.isLevelImageSubstitutesText()) {
-					LogLevelItem logLevelItem = (LogLevelItem) element;
-					return logLevelItem.getImage();
-				} else {
-					return null;
-				}
+				return null;
 			} else {
 				return super.getImage(element);
 			}

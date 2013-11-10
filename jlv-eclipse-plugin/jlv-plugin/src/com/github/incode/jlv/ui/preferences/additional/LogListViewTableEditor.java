@@ -19,11 +19,15 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
@@ -42,7 +46,7 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	private static final int NAME_COLUMN_WIDTH = 120;
 	private static final int WIDTH_COLUMN_WIDTH = 120;
-	private static final int DISPLAY_COLUMN_WIDTH = 50;
+	private static final int DISPLAY_COLUMN_WIDTH = 70;
 	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH, DISPLAY_COLUMN_WIDTH };
 
 	private TableViewer tableViewer;
@@ -125,13 +129,32 @@ public class LogListViewTableEditor extends FieldEditor {
 			tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
 					| SWT.HIDE_SELECTION);
 			tableViewer.setUseHashlookup(true);
-			Table table = tableViewer.getTable();
+			final Table table = tableViewer.getTable();
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 			table.addSelectionListener(getSelectionListener());
 			table.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(DisposeEvent event) {
 					tableViewer = null;
+				}
+			});
+			table.addListener(SWT.PaintItem, new Listener() {
+				@Override
+				public void handleEvent(Event event) {
+					int imageColumnIndex = 2;
+
+					if ((event.index == imageColumnIndex) && (event.type == SWT.PaintItem)) {
+						TableItem item = (TableItem) event.item;
+						LogsTableStructureItem column = (LogsTableStructureItem) item.getData();
+						Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
+								: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
+
+						Rectangle imageBounds = image.getBounds();
+						int xOffset = (table.getColumn(imageColumnIndex).getWidth() - imageBounds.width) / 2;
+						int yOffset = (item.getBounds().height - imageBounds.height) / 2;
+
+						event.gc.drawImage(image, event.x + xOffset, event.y + yOffset);
+					}
 				}
 			});
 
@@ -166,7 +189,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			case NAME_LABEL:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
-					public String getText(final Object element) {
+					public String getText(Object element) {
 						LogsTableStructureItem column = (LogsTableStructureItem) element;
 						return column.getName();
 					}
@@ -175,7 +198,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			case WIDTH_LABEL:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
-					public String getText(final Object element) {
+					public String getText(Object element) {
 						LogsTableStructureItem column = (LogsTableStructureItem) element;
 						return Integer.toString(column.getWidth());
 					}
@@ -185,16 +208,8 @@ public class LogListViewTableEditor extends FieldEditor {
 			case DISPLAY_LABEL:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
-					public String getText(final Object element) {
+					public String getText(Object element) {
 						return null;
-					}
-
-					@Override
-					public Image getImage(final Object element) {
-						LogsTableStructureItem column = (LogsTableStructureItem) element;
-						Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
-								: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
-						return image;
 					}
 				});
 				viewerColumn.setEditingSupport(new DisplayCellEditor(tableViewer));
