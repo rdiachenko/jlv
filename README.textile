@@ -1,3 +1,5 @@
+"!https://api.travis-ci.org/rdiachenko/JLV.png!":http://travis-ci.org/rdiachenko/JLV
+
 h3. Information
 
 Java logging viewer is available as a plugin for Eclipse IDE.
