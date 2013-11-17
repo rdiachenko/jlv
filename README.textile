@@ -12,6 +12,7 @@ h5. Current main features:
 * Quick filtering by any log's field
 * Detailed information about selected log
 * Preferences page for controlling and saving plugin state
+* Additional preference page for customizing logs' representaion
 
 h3. Eclipse update site
 
@@ -60,6 +61,10 @@ h5. JLV's main preferences page (Window > Preferences > JLV)
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_main_preferences.png!
 
+h5. JLV's additional preferences page (Window > Preferences > JLV > Additional)
+
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_additional_preferences.png!
+
 h5. JLV's main log view and detailed log view
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
@@ -69,3 +74,7 @@ h3. How to contribute
 * "Install and configure your Eclipse":https://github.com/rdiachenko/JLV/wiki/Eclipse-installation-and-configuration
 * Read article about "development workflow with git":https://github.com/rdiachenko/JLV/wiki/Development-workflow-with-Git%3A-Fork%2C-Branching%2C-Commits-and-Pull-Request
 * "Create jlv run configuration within Eclipse":https://github.com/rdiachenko/JLV/wiki/JLV-Eclipse-plugin%27s-run-configuration
+
+h3. Contributors
+
+"Ruslan Diachenko":https://github.com/rdiachenko
