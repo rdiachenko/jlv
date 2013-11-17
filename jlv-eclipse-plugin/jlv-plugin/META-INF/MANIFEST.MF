@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jlv-plugin
 Bundle-SymbolicName: com.github.incode.jlv.plugin;singleton:=true
-Bundle-Version: 1.2.5.qualifier
+Bundle-Version: 1.3.0
 Bundle-Activator: com.github.incode.jlv.JlvActivator
 Bundle-Vendor: In-Code
 Require-Bundle: org.eclipse.ui,
