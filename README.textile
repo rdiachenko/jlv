@@ -65,7 +65,7 @@ h5. JLV's additional preferences page (Window > Preferences > JLV > Additional)
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_additional_preferences.png!
 
-h5. JLV's main log view and detailed log view
+h5. JLV's log list view and log details view
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
 
