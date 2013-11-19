@@ -14,6 +14,10 @@ h5. Current main features:
 * Preferences page for controlling and saving plugin state
 * Additional preference page for customizing logs' representaion
 
+h5. Recuirements:
+* Supported Eclipse Version - 4.x
+* Java 1.7
+
 h3. Eclipse update site
 
 bc.. https://github.com/rdiachenko/JLV/raw/repo/eclipse
