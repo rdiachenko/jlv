@@ -15,7 +15,7 @@ h5. Current main features:
 * Additional preference page for customizing logs' representaion
 
 h5. Recuirements:
-* Supported Eclipse Version - 4.x
+* Eclipse 4.x
 * Java 1.7
 
 h3. Eclipse update site
