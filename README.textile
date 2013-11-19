@@ -14,7 +14,7 @@ h5. Current main features:
 * Preferences page for controlling and saving plugin state
 * Additional preference page for customizing logs' representaion
 
-h5. Recuirements:
+h5. Requirements:
 * Eclipse 4.x
 * Java 1.7
 
