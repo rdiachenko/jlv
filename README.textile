@@ -1,4 +1,4 @@
-"!https://api.travis-ci.org/rdiachenko/JLV.png!":http://travis-ci.org/rdiachenko/JLV "!https://d2weczhvl823v0.cloudfront.net/rdiachenko/jlv/trend.png!":https://bitdeli.com/free
+"!https://api.travis-ci.org/rdiachenko/jlv.png!":http://travis-ci.org/rdiachenko/jlv "!https://d2weczhvl823v0.cloudfront.net/rdiachenko/jlv/trend.png!":https://bitdeli.com/free
 
 h3. Information
 
