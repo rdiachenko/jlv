@@ -1,6 +1,8 @@
-package com.github.rd.jlv.ui;
+package com.github.rd.jlv;
 
-public final class UiStringConstants {
+public final class StringConstants {
+
+	public static final String JLV_PLUGIN_ID = "com.github.rd.jlv.plugin";
 
 	public static final String JLV_LOG_LIST_VIEW_ID = "com.github.rd.jlv.ui.views.loglistview";
 
@@ -8,7 +10,7 @@ public final class UiStringConstants {
 
 	public static final String SERVER_STATE_VARIABLE_ID = "com.github.rd.jlv.ui.views.view.serverStarted";
 
-	private UiStringConstants() {
+	private StringConstants() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
 }

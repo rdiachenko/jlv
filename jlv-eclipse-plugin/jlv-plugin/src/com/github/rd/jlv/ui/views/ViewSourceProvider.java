@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ui.UiStringConstants;
+import com.github.rd.jlv.StringConstants;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
 
@@ -19,7 +19,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	public void setServerStarted(boolean state) {
 		isServerStarted = state;
-		fireSourceChanged(ISources.WORKBENCH, UiStringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
+		fireSourceChanged(ISources.WORKBENCH, StringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 	@Override
 	public Map<String, Boolean> getCurrentState() {
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
-		map.put(UiStringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
+		map.put(StringConstants.SERVER_STATE_VARIABLE_ID, isServerStarted);
 		return map;
 	}
 
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[] { UiStringConstants.SERVER_STATE_VARIABLE_ID };
+		return new String[] { StringConstants.SERVER_STATE_VARIABLE_ID };
 	}
 }

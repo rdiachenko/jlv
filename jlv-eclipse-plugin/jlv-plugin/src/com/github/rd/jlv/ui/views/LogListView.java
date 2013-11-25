@@ -35,10 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.StringConstants;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.model.LogField;
 import com.github.rd.jlv.model.LogLevel;
-import com.github.rd.jlv.ui.UiStringConstants;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;
 import com.google.common.base.Strings;
@@ -114,7 +114,7 @@ public class LogListView extends ViewPart {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
 		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
-				.getSourceProvider(UiStringConstants.SERVER_STATE_VARIABLE_ID);
+				.getSourceProvider(StringConstants.SERVER_STATE_VARIABLE_ID);
 		viewSourceProvider.dispose();
 
 		getController().dispose();
@@ -179,7 +179,7 @@ public class LogListView extends ViewPart {
 		table.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				ViewUtils.openView(UiStringConstants.JLV_LOG_DETAILS_VIEW_ID);
+				ViewUtils.openView(StringConstants.JLV_LOG_DETAILS_VIEW_ID);
 				setFocus();
 			}
 		});
@@ -338,7 +338,7 @@ public class LogListView extends ViewPart {
 
 		@Override
 		public void partClosed(final IWorkbenchPart part) {
-			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
+			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
 					logger.debug("Jlv log list view was closed.");
@@ -353,7 +353,7 @@ public class LogListView extends ViewPart {
 
 		@Override
 		public void partOpened(final IWorkbenchPart part) {
-			if (JlvActivator.PLUGIN_ID.equals(part.getSite().getPluginId())) {
+			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
 					boolean isServerAutoStart = JlvActivator.getPreferenceManager().isServerAutoStart();

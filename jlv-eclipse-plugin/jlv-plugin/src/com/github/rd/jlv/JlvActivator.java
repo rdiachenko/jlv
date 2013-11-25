@@ -23,8 +23,6 @@ public class JlvActivator extends AbstractUIPlugin {
 
 //	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static final String PLUGIN_ID = "com.github.rd.jlv.plugin";
-
 	private static final String LOG4J_PROPERTIES_PATH = "config/log4j.properties";
 
 	private static JlvActivator plugin;
@@ -74,6 +72,6 @@ public class JlvActivator extends AbstractUIPlugin {
 	}
 
 	private static ImageDescriptor getImageDescriptor(String relativePath) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, relativePath);
+		return imageDescriptorFromPlugin(StringConstants.JLV_PLUGIN_ID, relativePath);
 	}
 }

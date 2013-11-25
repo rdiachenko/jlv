@@ -16,9 +16,9 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import com.github.rd.jlv.StringConstants;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.log4j.domain.LogFieldName;
-import com.github.rd.jlv.ui.UiStringConstants;
 
 public class LogDetailsView extends ViewPart implements ISelectionListener {
 
@@ -26,7 +26,7 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		getSite().getPage().addSelectionListener(UiStringConstants.JLV_LOG_LIST_VIEW_ID, this);
+		getSite().getPage().addSelectionListener(StringConstants.JLV_LOG_LIST_VIEW_ID, this);
 
 		ExpandBar bar = new ExpandBar(parent, SWT.V_SCROLL);
 
@@ -53,7 +53,7 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void dispose() {
-		getSite().getPage().removeSelectionListener(UiStringConstants.JLV_LOG_LIST_VIEW_ID, this);
+		getSite().getPage().removeSelectionListener(StringConstants.JLV_LOG_LIST_VIEW_ID, this);
 	}
 
 	@Override
