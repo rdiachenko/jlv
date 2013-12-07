@@ -39,15 +39,15 @@ public class LogListViewTableEditor extends FieldEditor {
 
 //	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private static final String DISPLAY_LABEL = "Display";
 	private static final String NAME_LABEL = "Name";
 	private static final String WIDTH_LABEL = "Width";
-	private static final String DISPLAY_LABEL = "Display";
-	private static final String[] COLUMN_NAMES = { NAME_LABEL, WIDTH_LABEL, DISPLAY_LABEL };
+	private static final String[] COLUMN_NAMES = { DISPLAY_LABEL, NAME_LABEL, WIDTH_LABEL };
 
+	private static final int DISPLAY_COLUMN_WIDTH = 70;
 	private static final int NAME_COLUMN_WIDTH = 120;
 	private static final int WIDTH_COLUMN_WIDTH = 120;
-	private static final int DISPLAY_COLUMN_WIDTH = 70;
-	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH, DISPLAY_COLUMN_WIDTH };
+	private static final int[] COLUMN_WIDTHS = { DISPLAY_COLUMN_WIDTH, NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
 
 	private TableViewer tableViewer;
 
@@ -134,6 +134,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			table.setHeaderVisible(true);
 			table.addSelectionListener(getSelectionListener());
 			table.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					tableViewer = null;
 				}
@@ -141,7 +142,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			table.addListener(SWT.PaintItem, new Listener() {
 				@Override
 				public void handleEvent(Event event) {
-					int imageColumnIndex = 2;
+					int imageColumnIndex = 0;
 
 					if ((event.index == imageColumnIndex) && (event.type == SWT.PaintItem)) {
 						TableItem item = (TableItem) event.item;
@@ -186,6 +187,15 @@ public class LogListViewTableEditor extends FieldEditor {
 			viewerColumn.getColumn().setWidth(COLUMN_WIDTHS[i]);
 
 			switch (COLUMN_NAMES[i]) {
+			case DISPLAY_LABEL:
+				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
+					@Override
+					public String getText(Object element) {
+						return null;
+					}
+				});
+				viewerColumn.setEditingSupport(new DisplayCellEditor(tableViewer));
+				break;
 			case NAME_LABEL:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
@@ -205,15 +215,6 @@ public class LogListViewTableEditor extends FieldEditor {
 				});
 				viewerColumn.setEditingSupport(new WidthCellEditor(tableViewer));
 				break;
-			case DISPLAY_LABEL:
-				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
-					@Override
-					public String getText(Object element) {
-						return null;
-					}
-				});
-				viewerColumn.setEditingSupport(new DisplayCellEditor(tableViewer));
-				break;
 			default:
 				throw new IllegalArgumentException("No column with such name: " + COLUMN_NAMES[i]
 						+ ". Only [Name, Width, Display] are allowed.");
@@ -230,6 +231,7 @@ public class LogListViewTableEditor extends FieldEditor {
 			buttonBox.setLayout(layout);
 			createButtons(buttonBox);
 			buttonBox.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					upButton = null;
 					downButton = null;
@@ -260,6 +262,7 @@ public class LogListViewTableEditor extends FieldEditor {
 
 	private void createSelectionListener() {
 		selectionListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Widget widget = event.widget;
 
