@@ -286,7 +286,7 @@
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="info"/>
     </module>
     <module name="MultipleStringLiteralsExtended">
-      <property name="severity" value="ignore"/>
+      <property name="severity" value="info"/>
       <property name="highlightAllDuplicates" value="true"/>
       <property name="ignoreStringsRegexp" value="(&quot;&quot;)|(&quot;\\n&quot;)|(&quot;&lt;\w&gt;&quot;)|(&quot;Yes&quot;)|(&quot;No&quot;)"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="info"/>
@@ -319,10 +319,7 @@
       <property name="checkCloneMethod" value="true"/>
       <property name="checkReadObjectMethod" value="true"/>
     </module>
-    <module name="VariableDeclarationUsageDistance">
-      <property name="severity" value="ignore"/>
-      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
-    </module>
+    <module name="VariableDeclarationUsageDistance"/>
     <module name="AbbreviationAsWordInName">
       <property name="severity" value="warning"/>
       <property name="allowedAbbreviationLength" value="1"/>
@@ -351,15 +348,14 @@
       <property name="blockTypes" value="LITERAL_IF,LITERAL_ELSE,LITERAL_WHILE,LITERAL_DO,LITERAL_FOR,LITERAL_SWITCH,LITERAL_TRY,LITERAL_CATCH"/>
     </module>
     <module name="ForbidCertainImports">
-      <property name="severity" value="ignore"/>
+      <property name="severity" value="warning"/>
       <property name="packageNameRegexp" value=".+.ui..+"/>
-      <property name="forbiddenImportRegexp" value=".+.dao..+"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="warning"/>
     </module>
-    <module name="InterfaceTypeParameterNameCheck"/>
+    <module name="InterfaceTypeParameterName"/>
     <module name="NestedTernary"/>
-    <module name="LogicConditionNeedOptimizationCheck"/>
-    <module name="ForbidReturnInFinalBlockCheck"/>
+    <module name="LogicConditionNeedOptimization"/>
+    <module name="ForbidReturnInFinalBlock"/>
     <module name="ForbidCCommentsInMethods"/>
     <module name="AvoidDefaultSerializableInInnerClasses"/>
   </module>
