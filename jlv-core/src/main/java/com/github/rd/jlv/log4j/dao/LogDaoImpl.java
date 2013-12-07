@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.log4j.domain.LogContainer;
-import com.github.rd.jlv.log4j.domain.LogFieldName;
 
 public class LogDaoImpl implements LogDao {
 
@@ -18,35 +18,35 @@ public class LogDaoImpl implements LogDao {
 
 	private String insertLogQueryString = "INSERT INTO log4j1x "
 			+ "("
-			+ LogFieldName.CATEGORY.getName()
-			+ ", " + LogFieldName.CLASS.getName()
-			+ ", " + LogFieldName.DATE.getName()
-			+ ", " + LogFieldName.FILE.getName()
-			+ ", " + LogFieldName.LOCATION_INFO.getName()
-			+ ", " + LogFieldName.LINE.getName()
-			+ ", " + LogFieldName.METHOD.getName()
-			+ ", " + LogFieldName.LEVEL.getName()
-			+ ", " + LogFieldName.MILLISECONDS.getName()
-			+ ", " + LogFieldName.THREAD.getName()
-			+ ", " + LogFieldName.MESSAGE.getName()
-			+ ", " + LogFieldName.THROWABLE.getName()
+			+ LogConstants.CATEGORY
+			+ ", " + LogConstants.CLASS
+			+ ", " + LogConstants.DATE
+			+ ", " + LogConstants.FILE
+			+ ", " + LogConstants.LOCATION_INFO
+			+ ", " + LogConstants.LINE
+			+ ", " + LogConstants.METHOD
+			+ ", " + LogConstants.LEVEL
+			+ ", " + LogConstants.MILLISECONDS
+			+ ", " + LogConstants.THREAD
+			+ ", " + LogConstants.MESSAGE
+			+ ", " + LogConstants.THROWABLE
 			+ ") "
 			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private String createTableQueryString = "CREATE TABLE log4j1x("
 			+ "ID BIGINT AUTO_INCREMENT,"
-			+ LogFieldName.CATEGORY.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.CLASS.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.DATE.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.FILE.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.LOCATION_INFO.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.LINE.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.METHOD.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.LEVEL.getName() + " VARCHAR(100) DEFAULT '',"
-			+ LogFieldName.MILLISECONDS.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.THREAD.getName() + " VARCHAR(1000) DEFAULT '',"
-			+ LogFieldName.MESSAGE.getName() + " VARCHAR(MAX) DEFAULT '',"
-			+ LogFieldName.THROWABLE.getName() + " VARCHAR(MAX) DEFAULT ''"
+			+ LogConstants.CATEGORY + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.CLASS + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.DATE + " VARCHAR(100) DEFAULT '',"
+			+ LogConstants.FILE + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.LOCATION_INFO + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.LINE + " VARCHAR(100) DEFAULT '',"
+			+ LogConstants.METHOD + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.LEVEL + " VARCHAR(100) DEFAULT '',"
+			+ LogConstants.MILLISECONDS + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.THREAD + " VARCHAR(1000) DEFAULT '',"
+			+ LogConstants.MESSAGE + " VARCHAR(MAX) DEFAULT '',"
+			+ LogConstants.THROWABLE + " VARCHAR(MAX) DEFAULT ''"
 			+ ")";
 
 	private ConnectionPool connectionPool;
@@ -55,15 +55,18 @@ public class LogDaoImpl implements LogDao {
 		connectionPool = new ConnectionPool();
 	}
 
+	@Override
 	public void initDb() {
 		dropLogsTable();
 		createLogsTable();
 	}
 
+	@Override
 	public void dropDb() {
 		dropLogsTable();
 	}
 
+	@Override
 	public LogContainer getTailingLogs(int tail) {
 		logger.info("Selection {} tailing logs from db...", tail);
 		String queryString = "SELECT * FROM log4j1x ORDER BY id DESC LIMIT ?";
@@ -79,18 +82,18 @@ public class LogDaoImpl implements LogDao {
 			result = preparedStatement.executeQuery();
 
 			while (result.next()) {
-				Log log = (new Log.Builder()).categoryName(result.getString(LogFieldName.CATEGORY.getName()))
-						.className(result.getString(LogFieldName.CLASS.getName()))
-						.date(result.getString(LogFieldName.DATE.getName()))
-						.fileName(result.getString(LogFieldName.FILE.getName()))
-						.locationInfo(result.getString(LogFieldName.LOCATION_INFO.getName()))
-						.lineNumber(result.getString(LogFieldName.LINE.getName()))
-						.methodName(result.getString(LogFieldName.METHOD.getName()))
-						.level(result.getString(LogFieldName.LEVEL.getName()))
-						.ms(result.getString(LogFieldName.MILLISECONDS.getName()))
-						.threadName(result.getString(LogFieldName.THREAD.getName()))
-						.message(result.getString(LogFieldName.MESSAGE.getName()))
-						.throwable(result.getString(LogFieldName.THROWABLE.getName()))
+				Log log = (new Log.Builder()).categoryName(result.getString(LogConstants.CATEGORY))
+						.className(result.getString(LogConstants.CLASS))
+						.date(result.getString(LogConstants.DATE))
+						.fileName(result.getString(LogConstants.FILE))
+						.locationInfo(result.getString(LogConstants.LOCATION_INFO))
+						.lineNumber(result.getString(LogConstants.LINE))
+						.methodName(result.getString(LogConstants.METHOD))
+						.level(result.getString(LogConstants.LEVEL))
+						.ms(result.getString(LogConstants.MILLISECONDS))
+						.threadName(result.getString(LogConstants.THREAD))
+						.message(result.getString(LogConstants.MESSAGE))
+						.throwable(result.getString(LogConstants.THROWABLE))
 						.build();
 				logs.add(log);
 			}
@@ -103,6 +106,7 @@ public class LogDaoImpl implements LogDao {
 		return logs;
 	}
 
+	@Override
 	public void insert(Log log) {
 		if (log == null) {
 			throw new IllegalArgumentException("log is null");
