@@ -12,7 +12,7 @@ h5. Current main features:
 * Quick filtering by any log's field
 * Detailed information about selected log
 * Preferences page for controlling and saving plugin state
-* Additional preference page for customizing logs' representaion
+* Additional preference page for customizing logs' representation
 
 h5. Requirements:
 * Eclipse 4.x
