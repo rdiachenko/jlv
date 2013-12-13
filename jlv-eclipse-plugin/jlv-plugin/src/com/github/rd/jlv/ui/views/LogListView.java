@@ -36,8 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.ui.LogField;
 import com.github.rd.jlv.ui.LogLevel;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;
@@ -213,8 +214,8 @@ public class LogListView extends ViewPart {
 			} else {
 				column.setWidth(0);
 			}
-			LogField logField = LogField.getLogFieldByName(columnStructure[i].getName());
-			viewerColumn.setLabelProvider(new CustomColumnLabelProvider(viewer.getTable(), logField));
+			viewerColumn
+					.setLabelProvider(new CustomColumnLabelProvider(viewer.getTable(), columnStructure[i].getName()));
 		}
 	}
 
@@ -244,22 +245,22 @@ public class LogListView extends ViewPart {
 
 		private Table table;
 
-		private LogField logField;
+		private String logFieldName;
 
-		public CustomColumnLabelProvider(Table table, LogField logField) {
+		public CustomColumnLabelProvider(Table table, String logField) {
 			super();
 			this.table = table;
-			this.logField = logField;
+			this.logFieldName = logField;
 		}
 
 		@Override
 		public String getText(Object element) {
 			Log log = (Log) element;
 
-			switch (logField) {
-			case MESSAGE:
-			case THROWABLE:
-				String value = logField.getValue(log);
+			switch (logFieldName) {
+			case LogConstants.MESSAGE_FIELD_NAME:
+			case LogConstants.THROWABLE_FIELD_NAME:
+				String value = LogUtil.getValue(log, logFieldName);
 				value = value.replaceAll("\\r|\\n", " ");
 				int textLengthLimit = 200;
 
@@ -267,14 +268,14 @@ public class LogListView extends ViewPart {
 					value = value.substring(0, textLengthLimit) + "...";
 				}
 				return value;
-			case LEVEL:
+			case LogConstants.LEVEL_FIELD_NAME:
 				if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
 					return null;
 				} else {
-					return log.getLevel();
+					return LogUtil.getValue(log, logFieldName);
 				}
 			default:
-				return logField.getValue(log);
+				return LogUtil.getValue(log, logFieldName);
 			}
 		}
 
@@ -282,9 +283,9 @@ public class LogListView extends ViewPart {
 		public Image getImage(Object element) {
 			Log log = (Log) element;
 
-			if (logField == LogField.LEVEL) {
+			if (LogConstants.LEVEL_FIELD_NAME.equals(logFieldName)) {
 				if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
-					return LogLevel.getImageByName(log.getLevel());
+					return LogLevel.getImageByName(LogUtil.getValue(log, logFieldName));
 				} else {
 					return null;
 				}

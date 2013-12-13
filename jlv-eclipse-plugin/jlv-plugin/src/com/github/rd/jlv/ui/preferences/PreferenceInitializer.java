@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ui.LogField;
+import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.ui.LogLevel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
@@ -21,12 +21,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.LOGS_REFRESHING_TIME, 500);
 
 		store.setDefault(PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
-				LogField.LEVEL.getName() + ":100:true;"
-						+ LogField.CATEGORY.getName() + ":100:true;"
-						+ LogField.MESSAGE.getName() + ":100:true;"
-						+ LogField.LINE.getName() + ":100:true;"
-						+ LogField.DATE.getName() + ":100:true;"
-						+ LogField.THROWABLE.getName() + ":100:true;");
+				LogConstants.LEVEL_FIELD_NAME + ":100:true;"
+						+ LogConstants.CATEGORY_FIELD_NAME + ":100:true;"
+						+ LogConstants.MESSAGE_FIELD_NAME + ":100:true;"
+						+ LogConstants.LINE_FIELD_NAME + ":100:true;"
+						+ LogConstants.DATE_FIELD_NAME + ":100:true;"
+						+ LogConstants.THROWABLE_FIELD_NAME + ":100:true;");
 		store.setDefault(PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS, "true;11;"
 				+ LogLevel.DEBUG.getName() + ":0-0-0:255-255-255;"
 				+ LogLevel.INFO.getName() + ":0-255-0:255-255-255;"

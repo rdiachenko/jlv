@@ -46,8 +46,8 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		preferenceManager.dispose();
 		plugin = null;
+		releaseResources();
 		super.stop(context);
 	}
 
@@ -73,5 +73,13 @@ public class JlvActivator extends AbstractUIPlugin {
 
 	private static ImageDescriptor getImageDescriptor(String relativePath) {
 		return imageDescriptorFromPlugin(StringConstants.JLV_PLUGIN_ID, relativePath);
+	}
+
+	private void releaseResources() {
+		preferenceManager.dispose();
+
+		for (Image image : images.values()) {
+			image.dispose();
+		}
 	}
 }

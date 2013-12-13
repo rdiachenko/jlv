@@ -1,5 +1,8 @@
 package com.github.rd.jlv.ui.preferences.additional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -33,7 +36,7 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ui.LogField;
+import com.github.rd.jlv.log4j.LogConstants;
 
 public class LogListViewTableEditor extends FieldEditor {
 
@@ -170,14 +173,12 @@ public class LogListViewTableEditor extends FieldEditor {
 	}
 
 	private LogsTableStructureItem[] createTableModel() {
-		LogsTableStructureItem[] model = new LogsTableStructureItem[LogField.values().length];
-		int index = 0;
+		List<LogsTableStructureItem> modelList = new ArrayList<>();
 
-		for (LogField logField : LogField.values()) {
-			model[index] = new LogsTableStructureItem(logField.getName(), 100, true);
-			index++;
+		for (String name : LogConstants.LOG_FIELD_NAMES) {
+			modelList.add(new LogsTableStructureItem(name, 100, true));
 		}
-		return model;
+		return modelList.toArray(new LogsTableStructureItem[modelList.size()]);
 	}
 
 	private void createTableColumns(TableViewer tableViewer) {

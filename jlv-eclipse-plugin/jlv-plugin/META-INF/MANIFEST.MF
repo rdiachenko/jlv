@@ -6,8 +6,7 @@ Bundle-Version: 1.3.1.qualifier
 Bundle-Activator: com.github.rd.jlv.JlvActivator
 Bundle-Vendor: Ruslan Diachenko
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.nebula.widgets.nattable.core;bundle-version="1.0.1"
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: dependencies/jlv-core-1.0.0-SNAPSHOT.jar,

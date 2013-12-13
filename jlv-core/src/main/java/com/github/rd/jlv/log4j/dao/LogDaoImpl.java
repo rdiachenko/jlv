@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.log4j.domain.LogContainer;
 
@@ -18,35 +17,35 @@ public class LogDaoImpl implements LogDao {
 
 	private String insertLogQueryString = "INSERT INTO log4j1x "
 			+ "("
-			+ LogConstants.CATEGORY
-			+ ", " + LogConstants.CLASS
-			+ ", " + LogConstants.DATE
-			+ ", " + LogConstants.FILE
-			+ ", " + LogConstants.LOCATION_INFO
-			+ ", " + LogConstants.LINE
-			+ ", " + LogConstants.METHOD
-			+ ", " + LogConstants.LEVEL
-			+ ", " + LogConstants.MILLISECONDS
-			+ ", " + LogConstants.THREAD
-			+ ", " + LogConstants.MESSAGE
-			+ ", " + LogConstants.THROWABLE
+			+ DbConstants.CATEGORY_FIELD_NAME
+			+ ", " + DbConstants.CLASS_FIELD_NAME
+			+ ", " + DbConstants.DATE_FIELD_NAME
+			+ ", " + DbConstants.FILE_FIELD_NAME
+			+ ", " + DbConstants.LOCATION_INFO_FIELD_NAME
+			+ ", " + DbConstants.LINE_FIELD_NAME
+			+ ", " + DbConstants.METHOD_FIELD_NAME
+			+ ", " + DbConstants.LEVEL_FIELD_NAME
+			+ ", " + DbConstants.MILLISECONDS_FIELD_NAME
+			+ ", " + DbConstants.THREAD_FIELD_NAME
+			+ ", " + DbConstants.MESSAGE_FIELD_NAME
+			+ ", " + DbConstants.THROWABLE_FIELD_NAME
 			+ ") "
 			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private String createTableQueryString = "CREATE TABLE log4j1x("
 			+ "ID BIGINT AUTO_INCREMENT,"
-			+ LogConstants.CATEGORY + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.CLASS + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.DATE + " VARCHAR(100) DEFAULT '',"
-			+ LogConstants.FILE + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.LOCATION_INFO + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.LINE + " VARCHAR(100) DEFAULT '',"
-			+ LogConstants.METHOD + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.LEVEL + " VARCHAR(100) DEFAULT '',"
-			+ LogConstants.MILLISECONDS + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.THREAD + " VARCHAR(1000) DEFAULT '',"
-			+ LogConstants.MESSAGE + " VARCHAR(MAX) DEFAULT '',"
-			+ LogConstants.THROWABLE + " VARCHAR(MAX) DEFAULT ''"
+			+ DbConstants.CATEGORY_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.CLASS_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.DATE_FIELD_NAME + " VARCHAR(100) DEFAULT '',"
+			+ DbConstants.FILE_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.LOCATION_INFO_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.LINE_FIELD_NAME + " VARCHAR(100) DEFAULT '',"
+			+ DbConstants.METHOD_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.LEVEL_FIELD_NAME + " VARCHAR(100) DEFAULT '',"
+			+ DbConstants.MILLISECONDS_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.THREAD_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
+			+ DbConstants.MESSAGE_FIELD_NAME + " VARCHAR(MAX) DEFAULT '',"
+			+ DbConstants.THROWABLE_FIELD_NAME + " VARCHAR(MAX) DEFAULT ''"
 			+ ")";
 
 	private ConnectionPool connectionPool;
@@ -82,18 +81,18 @@ public class LogDaoImpl implements LogDao {
 			result = preparedStatement.executeQuery();
 
 			while (result.next()) {
-				Log log = (new Log.Builder()).categoryName(result.getString(LogConstants.CATEGORY))
-						.className(result.getString(LogConstants.CLASS))
-						.date(result.getString(LogConstants.DATE))
-						.fileName(result.getString(LogConstants.FILE))
-						.locationInfo(result.getString(LogConstants.LOCATION_INFO))
-						.lineNumber(result.getString(LogConstants.LINE))
-						.methodName(result.getString(LogConstants.METHOD))
-						.level(result.getString(LogConstants.LEVEL))
-						.ms(result.getString(LogConstants.MILLISECONDS))
-						.threadName(result.getString(LogConstants.THREAD))
-						.message(result.getString(LogConstants.MESSAGE))
-						.throwable(result.getString(LogConstants.THROWABLE))
+				Log log = (new Log.Builder()).categoryName(result.getString(DbConstants.CATEGORY_FIELD_NAME))
+						.className(result.getString(DbConstants.CLASS_FIELD_NAME))
+						.date(result.getString(DbConstants.DATE_FIELD_NAME))
+						.fileName(result.getString(DbConstants.FILE_FIELD_NAME))
+						.locationInfo(result.getString(DbConstants.LOCATION_INFO_FIELD_NAME))
+						.lineNumber(result.getString(DbConstants.LINE_FIELD_NAME))
+						.methodName(result.getString(DbConstants.METHOD_FIELD_NAME))
+						.level(result.getString(DbConstants.LEVEL_FIELD_NAME))
+						.ms(result.getString(DbConstants.MILLISECONDS_FIELD_NAME))
+						.threadName(result.getString(DbConstants.THREAD_FIELD_NAME))
+						.message(result.getString(DbConstants.MESSAGE_FIELD_NAME))
+						.throwable(result.getString(DbConstants.THROWABLE_FIELD_NAME))
 						.build();
 				logs.add(log);
 			}

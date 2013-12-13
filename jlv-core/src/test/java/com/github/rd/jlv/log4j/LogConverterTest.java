@@ -22,7 +22,7 @@ public class LogConverterTest {
 	@Test(expected = InvocationTargetException.class)
 	public void illegalInstanceCreation() throws NoSuchMethodException, SecurityException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Constructor<LogConverter> instance = LogConverter.class.getDeclaredConstructor();
+		Constructor<LogUtil> instance = LogUtil.class.getDeclaredConstructor();
 		instance.setAccessible(true);
 		instance.newInstance();
 	}
@@ -47,7 +47,7 @@ public class LogConverterTest {
 		when(mockLoggingEvent.getLocationInformation()).thenReturn(mockLocationInfo);
 		when(mockLoggingEvent.getThrowableInformation()).thenReturn(mockThrowableInfo);
 
-		Log log = LogConverter.convert(mockLoggingEvent);
+		Log log = LogUtil.convert(mockLoggingEvent);
 		Assert.assertEquals("Logger name", log.getCategoryName());
 		Assert.assertEquals("Thread name", log.getThreadName());
 		Assert.assertEquals("Rendered message", log.getMessage());
@@ -68,7 +68,7 @@ public class LogConverterTest {
 		when(mockLoggingEvent.getLevel()).thenReturn(Level.ERROR);
 		when(mockLoggingEvent.getLocationInformation()).thenReturn(null);
 		when(mockLoggingEvent.getThrowableInformation()).thenReturn(null);
-		Log log = LogConverter.convert(mockLoggingEvent);
+		Log log = LogUtil.convert(mockLoggingEvent);
 		Assert.assertEquals("", log.getCategoryName());
 		Assert.assertEquals("", log.getThreadName());
 		Assert.assertEquals("", log.getMessage());
@@ -92,7 +92,7 @@ public class LogConverterTest {
 		when(mockLoggingEvent.getLevel()).thenReturn(Level.ALL);
 		when(mockLoggingEvent.getThrowableInformation()).thenReturn(mockThrowableInfo);
 
-		Log log = LogConverter.convert(mockLoggingEvent);
+		Log log = LogUtil.convert(mockLoggingEvent);
 		Assert.assertEquals("", log.getThrowable());
 		Assert.assertEquals("ALL", log.getLevel());
 	}
@@ -107,7 +107,7 @@ public class LogConverterTest {
 
 		Category mockCategory = new CategoryExt(null);
 		LoggingEvent mockLoggingEvent = new LoggingEvent(null, mockCategory, 1234567L, Level.FATAL, null, null);
-		Log log = LogConverter.convert(mockLoggingEvent);
+		Log log = LogUtil.convert(mockLoggingEvent);
 
 		Assert.assertEquals("FATAL", log.getLevel());
 		Assert.assertEquals("1234567", log.getMs());

@@ -10,7 +10,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.log4j.LogConverter;
+import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.dao.DaoProvider;
 import com.github.rd.jlv.log4j.dao.LogDao;
 import com.github.rd.jlv.log4j.domain.Log;
@@ -70,7 +70,7 @@ public class ClientThread implements Runnable {
 	}
 
 	private void append(LoggingEvent le) {
-		Log log = LogConverter.convert(le);
+		Log log = LogUtil.convert(le);
 		logDao.insert(log);
 		LogEventContainer.notifyListeners(log);
 	}

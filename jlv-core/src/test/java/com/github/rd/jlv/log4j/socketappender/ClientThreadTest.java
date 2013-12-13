@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.rd.jlv.log4j.LogConverter;
+import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.dao.DaoProvider;
 import com.github.rd.jlv.log4j.dao.LogDao;
 import com.github.rd.jlv.log4j.domain.Log;
@@ -69,19 +69,19 @@ public class ClientThreadTest {
 		ObjectInputStream inputStream = new ObjectInputStream(client.getInputStream());
 
 		// Wrapping LoggingEvents into Log object in order to compare them
-		Log expectedLog = LogConverter.convert(mockLoggingEvent1);
+		Log expectedLog = LogUtil.convert(mockLoggingEvent1);
 		Object logObj = inputStream.readObject();
-		Log actualLog = LogConverter.convert((LoggingEvent) logObj);
+		Log actualLog = LogUtil.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 
-		expectedLog = LogConverter.convert(mockLoggingEvent2);
+		expectedLog = LogUtil.convert(mockLoggingEvent2);
 		logObj = inputStream.readObject();
-		actualLog = LogConverter.convert((LoggingEvent) logObj);
+		actualLog = LogUtil.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 
-		expectedLog = LogConverter.convert(mockLoggingEvent3);
+		expectedLog = LogUtil.convert(mockLoggingEvent3);
 		logObj = inputStream.readObject();
-		actualLog = LogConverter.convert((LoggingEvent) logObj);
+		actualLog = LogUtil.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 	}
 
@@ -102,10 +102,10 @@ public class ClientThreadTest {
 		LoggingEvent mockLoggingEvent4 = new LoggingEvent(null, mockCategory, 1234567L, Level.FATAL, "message4", null);
 
 		Log[] expectedLogList = {
-				LogConverter.convert(mockLoggingEvent1),
-				LogConverter.convert(mockLoggingEvent2),
-				LogConverter.convert(mockLoggingEvent3),
-				LogConverter.convert(mockLoggingEvent4),
+				LogUtil.convert(mockLoggingEvent1),
+				LogUtil.convert(mockLoggingEvent2),
+				LogUtil.convert(mockLoggingEvent3),
+				LogUtil.convert(mockLoggingEvent4),
 		};
 
 		// Logs from LogEventListener

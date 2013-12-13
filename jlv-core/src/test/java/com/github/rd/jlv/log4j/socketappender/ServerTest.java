@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.rd.jlv.log4j.LogConverter;
+import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.dao.DaoProvider;
 import com.github.rd.jlv.log4j.dao.LogDao;
 import com.github.rd.jlv.log4j.domain.Log;
@@ -72,8 +72,8 @@ public class ServerTest {
 		LoggingEvent mockLoggingEvent1 = generateLoggingEventByMessage("message1");
 		LoggingEvent mockLoggingEvent2 = generateLoggingEventByMessage("message2");
 		Log[] expectedLogList = {
-				LogConverter.convert(mockLoggingEvent1),
-				LogConverter.convert(mockLoggingEvent2),
+				LogUtil.convert(mockLoggingEvent1),
+				LogUtil.convert(mockLoggingEvent2),
 		};
 
 		Server server = new Server(port);
@@ -120,7 +120,7 @@ public class ServerTest {
 		// Logs from db
 		LogContainer logContainer = logDao.getTailingLogs(3);
 		Assert.assertTrue(logContainer.size() == 1);
-		Assert.assertEquals(LogConverter.convert(mockLoggingEvent1), logContainer.get());
+		Assert.assertEquals(LogUtil.convert(mockLoggingEvent1), logContainer.get());
 
 		mockOutputStream.writeObject(mockLoggingEvent2);
 		client.close();
@@ -160,10 +160,10 @@ public class ServerTest {
 		LogContainer logContainer = logDao.getTailingLogs(8);
 
 		Assert.assertTrue(logContainer.size() == 4);
-		Assert.assertTrue(logContainer.contains(LogConverter.convert(mockLoggingEvent1)));
-		Assert.assertTrue(logContainer.contains(LogConverter.convert(mockLoggingEvent2)));
-		Assert.assertTrue(logContainer.contains(LogConverter.convert(mockLoggingEvent3)));
-		Assert.assertTrue(logContainer.contains(LogConverter.convert(mockLoggingEvent4)));
+		Assert.assertTrue(logContainer.contains(LogUtil.convert(mockLoggingEvent1)));
+		Assert.assertTrue(logContainer.contains(LogUtil.convert(mockLoggingEvent2)));
+		Assert.assertTrue(logContainer.contains(LogUtil.convert(mockLoggingEvent3)));
+		Assert.assertTrue(logContainer.contains(LogUtil.convert(mockLoggingEvent4)));
 	}
 
 	private LoggingEvent generateLoggingEventByMessage(String message) {
