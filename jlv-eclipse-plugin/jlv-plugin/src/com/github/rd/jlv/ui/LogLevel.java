@@ -1,4 +1,4 @@
-package com.github.rd.jlv.model;
+package com.github.rd.jlv.ui;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;

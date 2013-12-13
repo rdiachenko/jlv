@@ -5,7 +5,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
 
-import com.github.rd.jlv.model.LogLevel;
+import com.github.rd.jlv.ui.LogLevel;
 import com.github.rd.jlv.ui.preferences.additional.LogsDisplayModel;
 import com.github.rd.jlv.ui.preferences.additional.LogsDisplayPreferenceManager;
 import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;

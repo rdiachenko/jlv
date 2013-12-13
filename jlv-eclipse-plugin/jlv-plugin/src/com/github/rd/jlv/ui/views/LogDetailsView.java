@@ -17,12 +17,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogFieldName;
 
 public class LogDetailsView extends ViewPart implements ISelectionListener {
 
-	private Map<LogFieldName, Text> logFields = new HashMap<LogFieldName, Text>();
+	private Map<String, Text> logFields = new HashMap<String, Text>();
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -31,19 +31,19 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 		ExpandBar bar = new ExpandBar(parent, SWT.V_SCROLL);
 
 		int multiLineStyle = SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER;
-		buildExpandItem(bar, LogFieldName.MESSAGE, multiLineStyle);
-		buildExpandItem(bar, LogFieldName.THROWABLE, multiLineStyle);
+		buildExpandItem(bar, LogConstants.MESSAGE, multiLineStyle);
+		buildExpandItem(bar, LogConstants.THROWABLE, multiLineStyle);
 
 		int singleLineStyle = SWT.BORDER;
-		buildExpandItem(bar, LogFieldName.LEVEL, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.LINE, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.DATE, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.CATEGORY, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.FILE, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.CLASS, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.METHOD, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.LOCATION_INFO, singleLineStyle);
-		buildExpandItem(bar, LogFieldName.THREAD, singleLineStyle);
+		buildExpandItem(bar, LogConstants.LEVEL, singleLineStyle);
+		buildExpandItem(bar, LogConstants.LINE, singleLineStyle);
+		buildExpandItem(bar, LogConstants.DATE, singleLineStyle);
+		buildExpandItem(bar, LogConstants.CATEGORY, singleLineStyle);
+		buildExpandItem(bar, LogConstants.FILE, singleLineStyle);
+		buildExpandItem(bar, LogConstants.CLASS, singleLineStyle);
+		buildExpandItem(bar, LogConstants.METHOD, singleLineStyle);
+		buildExpandItem(bar, LogConstants.LOCATION_INFO, singleLineStyle);
+		buildExpandItem(bar, LogConstants.THREAD, singleLineStyle);
 	}
 
 	@Override
@@ -62,21 +62,21 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 		Log log = (Log) logSelection.getFirstElement();
 
 		if (log != null) {
-			logFields.get(LogFieldName.CATEGORY).setText(log.getCategoryName());
-			logFields.get(LogFieldName.CLASS).setText(log.getClassName());
-			logFields.get(LogFieldName.DATE).setText(log.getDate());
-			logFields.get(LogFieldName.FILE).setText(log.getFileName());
-			logFields.get(LogFieldName.LOCATION_INFO).setText(log.getLocationInfo());
-			logFields.get(LogFieldName.LINE).setText(log.getLineNumber());
-			logFields.get(LogFieldName.METHOD).setText(log.getMethodName());
-			logFields.get(LogFieldName.LEVEL).setText(log.getLevel());
-			logFields.get(LogFieldName.THREAD).setText(log.getThreadName());
-			logFields.get(LogFieldName.MESSAGE).setText(log.getMessage());
-			logFields.get(LogFieldName.THROWABLE).setText(log.getThrowable());
+			logFields.get(LogConstants.CATEGORY).setText(log.getCategoryName());
+			logFields.get(LogConstants.CLASS).setText(log.getClassName());
+			logFields.get(LogConstants.DATE).setText(log.getDate());
+			logFields.get(LogConstants.FILE).setText(log.getFileName());
+			logFields.get(LogConstants.LOCATION_INFO).setText(log.getLocationInfo());
+			logFields.get(LogConstants.LINE).setText(log.getLineNumber());
+			logFields.get(LogConstants.METHOD).setText(log.getMethodName());
+			logFields.get(LogConstants.LEVEL).setText(log.getLevel());
+			logFields.get(LogConstants.THREAD).setText(log.getThreadName());
+			logFields.get(LogConstants.MESSAGE).setText(log.getMessage());
+			logFields.get(LogConstants.THROWABLE).setText(log.getThrowable());
 		}
 	}
 
-	private void buildExpandItem(ExpandBar bar, LogFieldName logField, int logFieldStyle) {
+	private void buildExpandItem(ExpandBar bar, String logFieldName, int logFieldStyle) {
 		Composite composite = new Composite(bar, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
@@ -86,19 +86,19 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 		GridData fieldGridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		int fieldLinesNumber = 1;
 
-		if (logField == LogFieldName.MESSAGE || logField == LogFieldName.THROWABLE) {
+		if (LogConstants.MESSAGE.equals(logFieldName) || LogConstants.THROWABLE.equals(logFieldName)) {
 			fieldLinesNumber = 10;
 		}
 		fieldGridData.heightHint = fieldLinesNumber * field.getLineHeight();
 		field.setLayoutData(fieldGridData);
-		logFields.put(logField, field);
+		logFields.put(logFieldName, field);
 
 		ExpandItem item = new ExpandItem(bar, SWT.NONE);
-		item.setText(logField.getName().toUpperCase());
+		item.setText(logFieldName.toUpperCase());
 		item.setHeight(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 		item.setControl(composite);
 
-		if (logField == LogFieldName.MESSAGE || logField == LogFieldName.THROWABLE) {
+		if (LogConstants.MESSAGE.equals(logFieldName) || LogConstants.THROWABLE.equals(logFieldName)) {
 			item.setExpanded(true);
 		}
 

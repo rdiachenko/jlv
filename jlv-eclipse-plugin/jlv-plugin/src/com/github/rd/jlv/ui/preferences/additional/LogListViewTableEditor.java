@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.LogField;
+import com.github.rd.jlv.ui.LogField;
 
 public class LogListViewTableEditor extends FieldEditor {
 

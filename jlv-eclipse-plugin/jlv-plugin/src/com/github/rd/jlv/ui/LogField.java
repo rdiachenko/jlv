@@ -1,4 +1,4 @@
-package com.github.rd.jlv.model;
+package com.github.rd.jlv.ui;
 
 import com.github.rd.jlv.log4j.domain.Log;
 

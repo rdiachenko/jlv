@@ -7,7 +7,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.RGB;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.LogLevel;
+import com.github.rd.jlv.ui.LogLevel;
 import com.google.common.base.Strings;
 
 public class LogsDisplayPreferenceManager {

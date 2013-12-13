@@ -18,14 +18,14 @@
 	<properties>
 		<tycho-version>0.18.1</tycho-version>
 		<jlv-core.version>1.0.0-SNAPSHOT</jlv-core.version>
-		<juno-repo.url>http://download.eclipse.org/releases/juno</juno-repo.url>
+		<kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
 	</properties>
 
 	<repositories>
 		<repository>
-			<id>juno</id>
+			<id>kepler</id>
 			<layout>p2</layout>
-			<url>${juno-repo.url}</url>
+			<url>${kepler-repo.url}</url>
 		</repository>
 	</repositories>
 

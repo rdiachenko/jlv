@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.model.LogField;
+import com.github.rd.jlv.ui.LogField;
 import com.google.common.base.Strings;
 
 public class QuickLogFilter extends ViewerFilter {

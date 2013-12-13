@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.eclipse.swt.graphics.RGB;
 
-import com.github.rd.jlv.model.LogLevel;
+import com.github.rd.jlv.ui.LogLevel;
 
 public class LogsDisplayModel {
 

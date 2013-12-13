@@ -1,5 +1,8 @@
 package com.github.rd.jlv.log4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class LogConstants {
 
 	// DB Log table fields
@@ -36,6 +39,16 @@ public final class LogConstants {
 
 	public static final String[] LOG_FIELD_NAMES = { LEVEL_FIELD_NAME, CATEGORY_FIELD_NAME, MESSAGE_FIELD_NAME,
 			LINE_FIELD_NAME, DATE_FIELD_NAME, THROWABLE_FIELD_NAME };
+
+	public static final Map<String, String> ID_TO_FIELD_NAME_MAP = new HashMap<>();
+
+	static {
+		ID_TO_FIELD_NAME_MAP.put(LEVEL_ID, LEVEL_FIELD_NAME);
+		ID_TO_FIELD_NAME_MAP.put(CATEGORY_ID, CATEGORY_FIELD_NAME);
+		ID_TO_FIELD_NAME_MAP.put(MESSAGE_ID, MESSAGE_FIELD_NAME);
+		ID_TO_FIELD_NAME_MAP.put(LINE_ID, LINE_FIELD_NAME);
+		ID_TO_FIELD_NAME_MAP.put(DATE_ID, DATE_FIELD_NAME);
+	}
 
 	private LogConstants() {
 		throw new IllegalStateException("Private constructor's call on an util class");

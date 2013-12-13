@@ -4,8 +4,8 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.LogField;
-import com.github.rd.jlv.model.LogLevel;
+import com.github.rd.jlv.ui.LogField;
+import com.github.rd.jlv.ui.LogLevel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
