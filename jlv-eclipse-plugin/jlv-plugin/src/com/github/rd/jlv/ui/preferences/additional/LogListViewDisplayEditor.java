@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -19,8 +20,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -30,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -47,9 +47,9 @@ public class LogListViewDisplayEditor extends FieldEditor {
 	private static final String BACKGROUND_LABEL = "Background";
 	private static final String[] COLUMN_NAMES = { LEVEL_LABEL, FOREGROUND_LABEL, BACKGROUND_LABEL };
 
-	private static final int NAME_COLUMN_WIDTH = 70;
-	private static final int WIDTH_COLUMN_WIDTH = 250;
-	private static final int DISPLAY_COLUMN_WIDTH = 250;
+	private static final int NAME_COLUMN_WIDTH = 60;
+	private static final int WIDTH_COLUMN_WIDTH = 260;
+	private static final int DISPLAY_COLUMN_WIDTH = 260;
 	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH, DISPLAY_COLUMN_WIDTH };
 
 	private Composite imageSwitcherBox;
@@ -132,35 +132,11 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 			table.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					tableViewer = null;
 				}
 			});
-			table.addListener(SWT.PaintItem, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					int imageColumnIndex = 0;
-
-					if ((event.index == imageColumnIndex) && (event.type == SWT.PaintItem)) {
-						TableItem item = (TableItem) event.item;
-						LogLevelItem logLevelItem = (LogLevelItem) item.getData();
-
-						if (model.isLevelImageSubstitutesText()) {
-							Image image = logLevelItem.getImage();
-							Rectangle imageBounds = image.getBounds();
-							int xOffset = (table.getColumn(imageColumnIndex).getWidth() - imageBounds.width) / 2;
-							int yOffset = (item.getBounds().height - imageBounds.height + 1) / 2;
-							event.gc.drawImage(image, event.x + xOffset, event.y + yOffset);
-						} else {
-							FontMetrics fontMetrics = event.gc.getFontMetrics();
-							int xOffset = fontMetrics.getAverageCharWidth();
-							int yOffset = model.getFontSize() / 2;
-							event.gc.drawText(logLevelItem.getName(), event.x + xOffset, event.y + yOffset, true);
-						}
-					}
-				}
-			});
-
 			createTableColumns(tableViewer, model);
 			tableViewer.setContentProvider(new ArrayContentProvider());
 			tableViewer.setInput(model.getLogLevelItems());
@@ -178,19 +154,19 @@ public class LogListViewDisplayEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case LEVEL_LABEL:
-				viewerColumn.setLabelProvider(new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.LEVEL));
+				viewerColumn.setLabelProvider(new DisplayColumnLabelProvider(model));
 				break;
 			case FOREGROUND_LABEL:
 				viewerColumn.setLabelProvider(
-						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.FOREGROUND));
-				viewerColumn.setEditingSupport(new CustomColorCellEditor(tableViewer,
-						CustomColorCellEditor.ColorState.FOREGROUND));
+						new ColorColumnLabelProvider(ColorColumnLabelProvider.Column.FOREGROUND));
+				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer,
+						ColorColumnCellEditor.ColorState.FOREGROUND));
 				break;
 			case BACKGROUND_LABEL:
 				viewerColumn.setLabelProvider(
-						new CustomColumnLabelProvider(CustomColumnLabelProvider.Column.BACKGROUND));
-				viewerColumn.setEditingSupport(new CustomColorCellEditor(tableViewer,
-						CustomColorCellEditor.ColorState.BACKGROUND));
+						new ColorColumnLabelProvider(ColorColumnLabelProvider.Column.BACKGROUND));
+				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer,
+						ColorColumnCellEditor.ColorState.BACKGROUND));
 				break;
 			default:
 				throw new IllegalArgumentException("No column with such name: " + COLUMN_NAMES[i]
@@ -208,6 +184,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			layoutData.horizontalIndent = -5;
 			imageSwitcherBox.setLayoutData(layoutData);
 			imageSwitcherBox.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					imageSwitcher = null;
 					imageSwitcherBox = null;
@@ -217,6 +194,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			imageSwitcher = new Button(imageSwitcherBox, SWT.CHECK);
 			imageSwitcher.setText("Use image to display log level");
 			imageSwitcher.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					model.setLevelImageSubstitutesText(imageSwitcher.getSelection());
 					tableViewer.refresh();
@@ -238,6 +216,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 			layoutData.horizontalIndent = -5;
 			spinnerBox.setLayoutData(layoutData);
 			spinnerBox.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					spinner = null;
 					spinnerBox = null;
@@ -287,48 +266,68 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 	}
 
-	private static class CustomColumnLabelProvider extends ColumnLabelProvider {
+	private static class DisplayColumnLabelProvider extends OwnerDrawLabelProvider {
+
+		private LogsDisplayModel model;
+
+		public DisplayColumnLabelProvider(LogsDisplayModel model) {
+			this.model = model;
+		}
+
+		@Override
+		protected void measure(Event event, Object element) {
+			// no code
+		}
+
+		@Override
+		protected void paint(Event event, Object element) {
+			TableItem item = (TableItem) event.item;
+			LogLevelItem logLevelItem = (LogLevelItem) item.getData();
+			Rectangle bounds = item.getBounds(event.index);
+
+			if (model.isLevelImageSubstitutesText()) {
+				Image image = logLevelItem.getImage();
+				Rectangle imageBounds = image.getBounds();
+				int xOffset = bounds.width / 2 - imageBounds.width / 2;
+				int yOffset = bounds.height / 2 - imageBounds.height / 2;
+				int x = xOffset > 0 ? bounds.x + xOffset : bounds.x;
+				int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
+				event.gc.drawImage(image, x, y);
+			} else {
+				Point point = event.gc.stringExtent(logLevelItem.getName());
+				int xOffset = bounds.width / 2 - point.x / 2;
+				int yOffset = bounds.height / 2 - point.y / 2;
+				int x = xOffset > 0 ? bounds.x + xOffset : bounds.x;
+				int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
+				event.gc.drawText(logLevelItem.getName(), x, y, true);
+			}
+		}
+	}
+
+	private static class ColorColumnLabelProvider extends ColumnLabelProvider {
 
 		private enum Column {
-			LEVEL,
 			FOREGROUND,
 			BACKGROUND
 		}
 
 		private Column column;
 
-		public CustomColumnLabelProvider(Column column) {
+		public ColorColumnLabelProvider(Column column) {
 			super();
 			this.column = column;
 		}
 
 		@Override
 		public String getText(Object element) {
-			if (column == Column.LEVEL) {
-				return null;
-			} else {
-				return "The quick brown fox jumps over the lazy dog";
-			}
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			if (column == Column.LEVEL) {
-				return null;
-			} else {
-				return super.getImage(element);
-			}
+			return "The quick brown fox jumps over the lazy dog";
 		}
 
 		@Override
 		public Color getForeground(Object element) {
-			if (column == Column.LEVEL) {
-				return super.getForeground(element);
-			} else {
-				LogLevelItem logLevelItem = (LogLevelItem) element;
-				Color color = new Color(Display.getCurrent(), logLevelItem.getForeground());
-				return color;
-			}
+			LogLevelItem logLevelItem = (LogLevelItem) element;
+			Color color = new Color(Display.getCurrent(), logLevelItem.getForeground());
+			return color;
 		}
 
 		@Override
@@ -343,7 +342,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 		}
 	}
 
-	private static class CustomColorCellEditor extends EditingSupport {
+	private static class ColorColumnCellEditor extends EditingSupport {
 
 		private enum ColorState {
 			FOREGROUND,
@@ -354,7 +353,7 @@ public class LogListViewDisplayEditor extends FieldEditor {
 
 		private ColorState colorState;
 
-		public CustomColorCellEditor(TableViewer viewer, ColorState colorState) {
+		public ColorColumnCellEditor(TableViewer viewer, ColorState colorState) {
 			super(viewer);
 			this.viewer = viewer;
 			this.colorState = colorState;

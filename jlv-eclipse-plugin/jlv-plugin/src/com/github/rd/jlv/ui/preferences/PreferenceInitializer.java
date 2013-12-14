@@ -21,7 +21,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.LOGS_REFRESHING_TIME, 500);
 
 		store.setDefault(PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
-				LogConstants.LEVEL_FIELD_NAME + ":100:true;"
+				LogConstants.LEVEL_FIELD_NAME + ":55:true;"
 						+ LogConstants.CATEGORY_FIELD_NAME + ":100:true;"
 						+ LogConstants.MESSAGE_FIELD_NAME + ":100:true;"
 						+ LogConstants.LINE_FIELD_NAME + ":100:true;"

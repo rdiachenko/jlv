@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -28,7 +29,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
@@ -51,6 +51,15 @@ public class LogListViewTableEditor extends FieldEditor {
 	private static final int NAME_COLUMN_WIDTH = 120;
 	private static final int WIDTH_COLUMN_WIDTH = 120;
 	private static final int[] COLUMN_WIDTHS = { DISPLAY_COLUMN_WIDTH, NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
+
+	private static final String[] NAMES = {
+			LogConstants.LEVEL_FIELD_NAME,
+			LogConstants.CATEGORY_FIELD_NAME,
+			LogConstants.MESSAGE_FIELD_NAME,
+			LogConstants.LINE_FIELD_NAME,
+			LogConstants.DATE_FIELD_NAME,
+			LogConstants.THROWABLE_FIELD_NAME,
+	};
 
 	private TableViewer tableViewer;
 
@@ -142,26 +151,6 @@ public class LogListViewTableEditor extends FieldEditor {
 					tableViewer = null;
 				}
 			});
-			table.addListener(SWT.PaintItem, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					int imageColumnIndex = 0;
-
-					if ((event.index == imageColumnIndex) && (event.type == SWT.PaintItem)) {
-						TableItem item = (TableItem) event.item;
-						LogsTableStructureItem column = (LogsTableStructureItem) item.getData();
-						Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
-								: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
-
-						Rectangle imageBounds = image.getBounds();
-						int xOffset = (table.getColumn(imageColumnIndex).getWidth() - imageBounds.width) / 2;
-						int yOffset = (item.getBounds().height - imageBounds.height) / 2;
-
-						event.gc.drawImage(image, event.x + xOffset, event.y + yOffset);
-					}
-				}
-			});
-
 			createTableColumns(tableViewer);
 			tableModel = createTableModel();
 			tableViewer.setContentProvider(new ArrayContentProvider());
@@ -175,7 +164,7 @@ public class LogListViewTableEditor extends FieldEditor {
 	private LogsTableStructureItem[] createTableModel() {
 		List<LogsTableStructureItem> modelList = new ArrayList<>();
 
-		for (String name : LogConstants.LOG_FIELD_NAMES) {
+		for (String name : NAMES) {
 			modelList.add(new LogsTableStructureItem(name, 100, true));
 		}
 		return modelList.toArray(new LogsTableStructureItem[modelList.size()]);
@@ -189,12 +178,7 @@ public class LogListViewTableEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case DISPLAY_LABEL:
-				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
-					@Override
-					public String getText(Object element) {
-						return null;
-					}
-				});
+				viewerColumn.setLabelProvider(new DisplayColumnLabelProvider());
 				viewerColumn.setEditingSupport(new DisplayCellEditor(tableViewer));
 				break;
 			case NAME_LABEL:
@@ -306,6 +290,29 @@ public class LogListViewTableEditor extends FieldEditor {
 			tableViewer.getTable().setSelection(target);
 		}
 		selectionChanged();
+	}
+
+	private static class DisplayColumnLabelProvider extends OwnerDrawLabelProvider {
+
+		@Override
+		protected void measure(Event event, Object element) {
+			// no code
+		}
+
+		@Override
+		protected void paint(Event event, Object element) {
+			TableItem item = (TableItem) event.item;
+			LogsTableStructureItem column = (LogsTableStructureItem) item.getData();
+			Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
+					: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
+			Rectangle bounds = item.getBounds(event.index);
+			Rectangle imageBounds = image.getBounds();
+			int xOffset = bounds.width / 2 - imageBounds.width / 2;
+			int yOffset = bounds.height / 2 - imageBounds.height / 2;
+			int x = xOffset > 0 ? bounds.x + xOffset : bounds.x;
+			int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
+			event.gc.drawImage(image, x, y);
+		}
 	}
 
 	private static class WidthCellEditor extends EditingSupport {
