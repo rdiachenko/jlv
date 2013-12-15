@@ -18,18 +18,18 @@ public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 
 	private Table table;
 
-	private String name;
+	private String fieldName;
 
-	public DefaultColumnLabelProvider(Table table, String name) {
+	public DefaultColumnLabelProvider(Table table, String fieldName) {
 		super();
 		this.table = table;
-		this.name = name;
+		this.fieldName = fieldName;
 	}
 
 	@Override
 	public String getText(Object element) {
 		Log log = (Log) element;
-		return LogUtil.getValue(log, name);
+		return LogUtil.getValue(log, fieldName);
 	}
 
 	@Override

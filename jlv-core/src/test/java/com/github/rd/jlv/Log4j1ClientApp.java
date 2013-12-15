@@ -22,13 +22,20 @@ public final class Log4j1ClientApp {
 				+ "	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)\n"
 				+ "	at java.lang.Thread.run(Thread.java:724)";
 
+		try {
+			throw new IllegalStateException(exception);
+		} catch (IllegalStateException e) {
+			logger.error("illegal state:", e);
+		}
+
 		for (int i = 0; i < 10; i++) {
 			logger.debug("i={}", i);
 			logger.info("i={}", i);
 			logger.error("i={}", i);
 			try {
 				int[] array = new int[2];
-				int a = array[3];
+				int elem = array[3];
+				logger.info(String.valueOf(elem));
 			} catch (ArrayIndexOutOfBoundsException e) {
 				logger.error("exception message", e);
 			}

@@ -1,6 +1,8 @@
 package com.github.rd.jlv.ui.views;
 
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -22,26 +24,32 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
 	private Table table;
 
-	private String name;
+	private String fieldName;
 
-	public LevelColumnLabelProvider(Table table, String name) {
+	public LevelColumnLabelProvider(Table table, String fieldName) {
 		super();
 		this.table = table;
-		this.name = name;
+		this.fieldName = fieldName;
 	}
 
 	@Override
-	protected void measure(Event event, Object element) {
+	public void measure(Event event, Object element) {
 		// no code
 	}
 
 	@Override
-	protected void paint(Event event, Object element) {
+	public void update(ViewerCell cell) {
+		Log log = (Log) cell.getElement();
+		cell.setBackground(getBackground(log));
+		cell.setForeground(getForeground(log));
+		cell.setFont(getFont(log));
+		super.update(cell);
+	}
+
+	@Override
+	public void paint(Event event, Object element) {
 		Log log = (Log) element;
-		setBackground(event, log);
-		setForeground(event, log);
-		setFont(event, log);
-		String value = LogUtil.getValue(log, name);
+		String value = LogUtil.getValue(log, fieldName);
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
 		if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
@@ -62,26 +70,33 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 		}
 	}
 
-	private void setBackground(Event event, Log log) {
+	@Override
+	public void erase(Event event, Object element) {
+		if ((event.detail & SWT.SELECTED) != 0) {
+			event.detail &= ~SWT.FOREGROUND;
+		}
+	}
+
+	private Color getBackground(Log log) {
 		RGB rgb = JlvActivator.getPreferenceManager().getLogsBackground(
 				LogLevel.getLogLevelByName(log.getLevel()));
 		Color color = new Color(Display.getCurrent(), rgb);
-		event.gc.setBackground(color);
+		return color;
 	}
 
-	private void setForeground(Event event, Log log) {
+	private Color getForeground(Log log) {
 		RGB rgb = JlvActivator.getPreferenceManager().getLogsForeground(
 				LogLevel.getLogLevelByName(log.getLevel()));
 		Color color = new Color(Display.getCurrent(), rgb);
-		event.gc.setForeground(color);
+		return color;
 	}
 
-	private void setFont(Event event, Log log) {
+	private Font getFont(Log log) {
 		FontData[] fontData = table.getFont().getFontData();
 		for (int i = 0; i < fontData.length; ++i) {
 			fontData[i].setHeight(JlvActivator.getPreferenceManager().getLogsFontSize());
 		}
 		Font font = new Font(Display.getCurrent(), fontData);
-		event.gc.setFont(font);
+		return font;
 	}
 }

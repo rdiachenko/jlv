@@ -194,7 +194,7 @@ public class LogListView extends ViewPart {
 		LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager().getLogsTableStructure();
 
 		for (int i = 0; i < columnStructure.length; i++) {
-			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.LEAD);
+			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 			TableColumn column = viewerColumn.getColumn();
 			String columnName = columnStructure[i].getName();
 			column.setText(columnName);
@@ -207,6 +207,7 @@ public class LogListView extends ViewPart {
 			}
 
 			if (LogConstants.LEVEL_FIELD_NAME.equals(columnName)) {
+				viewerColumn.getColumn().setAlignment(SWT.CENTER);
 				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(viewer.getTable(), columnName));
 			} else if (LogConstants.MESSAGE_FIELD_NAME.equals(columnName)
 					|| LogConstants.THROWABLE_FIELD_NAME.equals(columnName)) {

@@ -20,18 +20,18 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	private Table table;
 
-	private String name;
+	private String fieldName;
 
-	public TextColumnLabelProvider(Table table, String name) {
+	public TextColumnLabelProvider(Table table, String fieldName) {
 		super();
 		this.table = table;
-		this.name = name;
+		this.fieldName = fieldName;
 	}
 
 	@Override
 	public String getText(Object element) {
 		Log log = (Log) element;
-		String value = LogUtil.getValue(log, name);
+		String value = LogUtil.getValue(log, fieldName);
 		value = value.replaceAll("\\r|\\n", " ");
 
 		if (value.length() > TEXT_LENGTH_LIMIT) {
