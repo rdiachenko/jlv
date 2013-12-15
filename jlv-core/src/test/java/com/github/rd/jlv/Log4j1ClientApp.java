@@ -1,13 +1,13 @@
 package com.github.rd.jlv;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class Log4j1ClientApp {
 
 	public static void main(String[] args) throws InterruptedException {
-		Logger logger = LoggerFactory.getLogger(Log4j1ClientApp.class);
+		Logger logger = Logger.getLogger(Log4j1ClientApp.class);
+
 		PropertyConfigurator.configure("src/test/resources/log4j-test.properties");
 
 		String exception = "Socket couldn't be started:\n"
@@ -25,13 +25,13 @@ public final class Log4j1ClientApp {
 		try {
 			throw new IllegalStateException(exception);
 		} catch (IllegalStateException e) {
-			logger.error("illegal state:", e);
+			logger.fatal("illegal state:", e);
 		}
 
 		for (int i = 0; i < 10; i++) {
-			logger.debug("i={}", i);
-			logger.info("i={}", i);
-			logger.error("i={}", i);
+			logger.debug("i=" + i);
+			logger.info("i=" + i);
+			logger.error("i=" + i);
 			try {
 				int[] array = new int[2];
 				int elem = array[3];

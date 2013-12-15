@@ -207,7 +207,6 @@ public class LogListView extends ViewPart {
 			}
 
 			if (LogConstants.LEVEL_FIELD_NAME.equals(columnName)) {
-				viewerColumn.getColumn().setAlignment(SWT.CENTER);
 				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(viewer.getTable(), columnName));
 			} else if (LogConstants.MESSAGE_FIELD_NAME.equals(columnName)
 					|| LogConstants.THROWABLE_FIELD_NAME.equals(columnName)) {
