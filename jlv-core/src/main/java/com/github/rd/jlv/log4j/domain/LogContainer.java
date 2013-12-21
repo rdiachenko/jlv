@@ -1,5 +1,6 @@
 package com.github.rd.jlv.log4j.domain;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
@@ -24,6 +25,10 @@ public final class LogContainer {
 
 	public Log get() {
 		return (Log) container.get();
+	}
+
+	public Collection<Log> getLogs() {
+		return container;
 	}
 
 	public Iterator<Log> iterator() {

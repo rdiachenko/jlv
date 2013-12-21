@@ -6,7 +6,6 @@ import java.util.Map;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
-import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;
 import com.google.common.base.Strings;
@@ -81,7 +79,7 @@ public class LogListView extends ViewPart {
 					String structure = event.getNewValue().toString();
 					LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager()
 							.getLogsTableStructure(structure);
-					updateColumns(columnStructure);
+					updateColumns(viewer.getTable(), columnStructure);
 				}
 			}
 		};
@@ -143,7 +141,7 @@ public class LogListView extends ViewPart {
 
 	public void refreshViewer() {
 		if (!viewer.getTable().isDisposed()) {
-			viewer.refresh();
+			viewer.refresh(true, false);
 		}
 	}
 
@@ -163,62 +161,33 @@ public class LogListView extends ViewPart {
 	}
 
 	private TableViewer createViewer(Composite parent) {
-		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.VIRTUAL;
-		TableViewer viewer = new TableViewer(parent, style);
-		Table table = viewer.getTable();
-
-		table.addListener(SWT.Selection, new Listener() {
+		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
+		TableViewer viewer = new LogListViewer(parent, style);
+		viewer.getTable().addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				ViewUtils.openView(StringConstants.JLV_LOG_DETAILS_VIEW_ID);
 				setFocus();
 			}
 		});
-
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		table.setLayoutData(gridData);
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		createColumns(viewer);
-
-		viewer.setUseHashlookup(true);
-		viewer.setContentProvider(new LogListViewContentProvider());
+		initColumns(viewer);
 		viewer.setInput(getController().getLogContainer());
 		viewer.addFilter(quickFilter);
-
 		return viewer;
 	}
 
-	private void createColumns(TableViewer viewer) {
+	private void initColumns(TableViewer viewer) {
 		columnOrderMap = new HashMap<>();
-		LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager().getLogsTableStructure();
+		TableColumn[] columns = viewer.getTable().getColumns();
 
-		for (int i = 0; i < columnStructure.length; i++) {
-			TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
-			TableColumn column = viewerColumn.getColumn();
-			String columnName = columnStructure[i].getName();
-			column.setText(columnName);
-			columnOrderMap.put(columnName, i);
-
-			if (columnStructure[i].isDisplay()) {
-				column.setWidth(columnStructure[i].getWidth());
-			} else {
-				column.setWidth(0);
-			}
-
-			if (LogConstants.LEVEL_FIELD_NAME.equals(columnName)) {
-				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(viewer.getTable(), columnName));
-			} else if (LogConstants.MESSAGE_FIELD_NAME.equals(columnName)
-					|| LogConstants.THROWABLE_FIELD_NAME.equals(columnName)) {
-				viewerColumn.setLabelProvider(new TextColumnLabelProvider(viewer.getTable(), columnName));
-			} else {
-				viewerColumn.setLabelProvider(new DefaultColumnLabelProvider(viewer.getTable(), columnName));
-			}
+		for (int i = 0; i < columns.length; i++) {
+			columnOrderMap.put(columns[i].getText(), i);
 		}
+		LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager().getLogsTableStructure();
+		updateColumns(viewer.getTable(), columnStructure);
 	}
 
-	private void updateColumns(LogsTableStructureItem[] columnStructure) {
-		Table table = viewer.getTable();
+	private void updateColumns(Table table, LogsTableStructureItem[] columnStructure) {
 		int[] columnOrder = table.getColumnOrder();
 		int[] newColumnOrder = new int[columnOrder.length];
 
