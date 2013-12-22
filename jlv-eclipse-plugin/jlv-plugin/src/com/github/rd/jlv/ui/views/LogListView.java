@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;
+import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceModel;
 import com.google.common.base.Strings;
 
 public class LogListView extends ViewPart {
@@ -75,10 +75,10 @@ public class LogListView extends ViewPart {
 		preferenceListener = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS.equals(event.getProperty())) {
+				if (PreferenceManager.STRUCTURAL_TABLE_SETTINGS.equals(event.getProperty())) {
 					String structure = event.getNewValue().toString();
-					LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager()
-							.getLogsTableStructure(structure);
+					StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager()
+							.getStructuralPreferenceModel(structure);
 					updateColumns(viewer.getTable(), columnStructure);
 				}
 			}
@@ -162,7 +162,7 @@ public class LogListView extends ViewPart {
 
 	private TableViewer createViewer(Composite parent) {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
-		TableViewer viewer = new LogListViewer(parent, style);
+		TableViewer viewer = new LogTableViewer(parent, style);
 		viewer.getTable().addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -183,11 +183,11 @@ public class LogListView extends ViewPart {
 		for (int i = 0; i < columns.length; i++) {
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		LogsTableStructureItem[] columnStructure = JlvActivator.getPreferenceManager().getLogsTableStructure();
+		StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager().getStructuralPreferenceModel();
 		updateColumns(viewer.getTable(), columnStructure);
 	}
 
-	private void updateColumns(Table table, LogsTableStructureItem[] columnStructure) {
+	private void updateColumns(Table table, StructuralPreferenceModel[] columnStructure) {
 		int[] columnOrder = table.getColumnOrder();
 		int[] newColumnOrder = new int[columnOrder.length];
 

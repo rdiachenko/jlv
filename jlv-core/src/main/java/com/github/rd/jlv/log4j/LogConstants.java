@@ -28,7 +28,21 @@ public final class LogConstants {
 			LOCATION_INFO_FIELD_NAME,
 			METHOD_FIELD_NAME,
 			MILLISECONDS_FIELD_NAME,
-			THREAD_FIELD_NAME
+			THREAD_FIELD_NAME,
+	};
+
+	public static final String DEBUG_LEVEL_NAME = "DEBUG";
+	public static final String INFO_LEVEL_NAME = "INFO";
+	public static final String WARN_LEVEL_NAME = "WARN";
+	public static final String ERROR_LEVEL_NAME = "ERROR";
+	public static final String FATAL_LEVEL_NAME = "FATAL";
+
+	public static final String[] LOG_LEVEL_NAMES = {
+			DATE_FIELD_NAME,
+			INFO_LEVEL_NAME,
+			WARN_LEVEL_NAME,
+			ERROR_LEVEL_NAME,
+			FATAL_LEVEL_NAME,
 	};
 
 	private LogConstants() {

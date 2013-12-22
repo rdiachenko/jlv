@@ -16,20 +16,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.ui.LogLevel;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
 	private Table table;
 
-	private String fieldName;
-
-	public LevelColumnLabelProvider(Table table, String fieldName) {
+	public LevelColumnLabelProvider(Table table) {
 		super();
 		this.table = table;
-		this.fieldName = fieldName;
 	}
 
 	@Override
@@ -49,11 +44,10 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	@Override
 	public void paint(Event event, Object element) {
 		Log log = (Log) element;
-		String value = LogUtil.getValue(log, fieldName);
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
-		if (JlvActivator.getPreferenceManager().isLevelImageSubstitutesText()) {
-			Image image = LogLevel.getImageByName(value);
+		if (JlvActivator.getPreferenceManager().isLevelAsImage()) {
+			Image image = JlvActivator.getPreferenceManager().getLevelImage(log.getLevel());
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
 			int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -61,12 +55,12 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 			int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
 			event.gc.drawImage(image, x, y);
 		} else {
-			Point point = event.gc.stringExtent(value);
+			Point point = event.gc.stringExtent(log.getLevel());
 			int xOffset = bounds.width / 2 - point.x / 2;
 			int yOffset = bounds.height / 2 - point.y / 2;
 			int x = xOffset > 0 ? bounds.x + xOffset : bounds.x;
 			int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
-			event.gc.drawText(value, x, y, true);
+			event.gc.drawText(log.getLevel(), x, y, true);
 		}
 	}
 
@@ -78,15 +72,13 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		RGB rgb = JlvActivator.getPreferenceManager().getLogsBackground(
-				LogLevel.getLogLevelByName(log.getLevel()));
+		RGB rgb = JlvActivator.getPreferenceManager().getBackground(log.getLevel());
 		Color color = new Color(Display.getCurrent(), rgb);
 		return color;
 	}
 
 	private Color getForeground(Log log) {
-		RGB rgb = JlvActivator.getPreferenceManager().getLogsForeground(
-				LogLevel.getLogLevelByName(log.getLevel()));
+		RGB rgb = JlvActivator.getPreferenceManager().getForeground(log.getLevel());
 		Color color = new Color(Display.getCurrent(), rgb);
 		return color;
 	}
@@ -94,7 +86,7 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	private Font getFont(Log log) {
 		FontData[] fontData = table.getFont().getFontData();
 		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(JlvActivator.getPreferenceManager().getLogsFontSize());
+			fontData[i].setHeight(JlvActivator.getPreferenceManager().getFontSize());
 		}
 		Font font = new Font(Display.getCurrent(), fontData);
 		return font;

@@ -3,13 +3,13 @@ package com.github.rd.jlv.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
-import com.github.rd.jlv.ui.LogLevel;
-import com.github.rd.jlv.ui.preferences.additional.LogsDisplayModel;
-import com.github.rd.jlv.ui.preferences.additional.LogsDisplayPreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.LogsTableStructureItem;
-import com.github.rd.jlv.ui.preferences.additional.LogsTableStructurePreferenceManager;
+import com.github.rd.jlv.ui.preferences.additional.PresentationalPreferenceManager;
+import com.github.rd.jlv.ui.preferences.additional.PresentationalPreferenceModel;
+import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceManager;
+import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceModel;
 
 public final class PreferenceManager {
 
@@ -21,25 +21,23 @@ public final class PreferenceManager {
 	public static final String LOGS_BUFFER_SIZE = "jlv.loglistview.buffer.size";
 	public static final String LOGS_REFRESHING_TIME = "jlv.loglistview.refreshing.time";
 
-	public static final String LOGS_TABLE_STRUCTURE_SETTINGS = "jlv.loglistview.table.structure";
-	public static final String LOGS_TABLE_PRESENTATION_SETTINGS = "jlv.loglistview.table.presentation";
+	public static final String STRUCTURAL_TABLE_SETTINGS = "jlv.loglistview.structural.settings";
+	public static final String PRESENTATIONAL_TABLE_SETTINGS = "jlv.loglistview.presentational.settings";
 
 	private IPreferenceStore store;
 
-	private LogsTableStructurePreferenceManager logsTableStructurePreferenceManager;
+	private StructuralPreferenceManager structuralPreferenceManager;
 
-	private LogsDisplayPreferenceManager logsDisplayPreferenceManager;
-	private LogsDisplayModel logsDisplayModel;
+	private PresentationalPreferenceManager presentationalPreferenceManager;
+	private PresentationalPreferenceModel presentationalPreferenceModel;
 
 	private IPropertyChangeListener propertyChangeListener;
 
 	public PreferenceManager(IPreferenceStore store) {
 		this.store = store;
-		logsTableStructurePreferenceManager = new LogsTableStructurePreferenceManager(this.store,
-				LOGS_TABLE_STRUCTURE_SETTINGS);
-		logsDisplayPreferenceManager = new LogsDisplayPreferenceManager(this.store, LOGS_TABLE_PRESENTATION_SETTINGS);
-		logsDisplayModel = logsDisplayPreferenceManager.loadModel();
-
+		structuralPreferenceManager = new StructuralPreferenceManager(this.store, STRUCTURAL_TABLE_SETTINGS);
+		presentationalPreferenceManager = new PresentationalPreferenceManager(this.store, PRESENTATIONAL_TABLE_SETTINGS);
+		presentationalPreferenceModel = presentationalPreferenceManager.loadModel();
 		propertyChangeListener = new PropertyChangeListener();
 		addPropertyChangeListener(propertyChangeListener);
 	}
@@ -80,28 +78,32 @@ public final class PreferenceManager {
 		return store.getInt(LOGS_REFRESHING_TIME);
 	}
 
-	public LogsTableStructureItem[] getLogsTableStructure() {
-		return logsTableStructurePreferenceManager.loadStructure();
+	public StructuralPreferenceModel[] getStructuralPreferenceModel() {
+		return structuralPreferenceManager.loadStructure();
 	}
 
-	public LogsTableStructureItem[] getLogsTableStructure(String structure) {
-		return logsTableStructurePreferenceManager.loadStructure(structure);
+	public StructuralPreferenceModel[] getStructuralPreferenceModel(String structure) {
+		return structuralPreferenceManager.loadStructure(structure);
 	}
 
-	public boolean isLevelImageSubstitutesText() {
-		return logsDisplayModel.isLevelImageSubstitutesText();
+	public boolean isLevelAsImage() {
+		return presentationalPreferenceModel.isLevelAsImage();
 	}
 
-	public int getLogsFontSize() {
-		return logsDisplayModel.getFontSize();
+	public int getFontSize() {
+		return presentationalPreferenceModel.getFontSize();
 	}
 
-	public RGB getLogsForeground(LogLevel logLevel) {
-		return logsDisplayModel.getForegroundByLevel(logLevel);
+	public RGB getForeground(String levelName) {
+		return presentationalPreferenceModel.getForeground(levelName);
 	}
 
-	public RGB getLogsBackground(LogLevel logLevel) {
-		return logsDisplayModel.getBackgroundByLevel(logLevel);
+	public RGB getBackground(String levelName) {
+		return presentationalPreferenceModel.getBackground(levelName);
+	}
+
+	public Image getLevelImage(String levelName) {
+		return presentationalPreferenceModel.getImage(levelName);
 	}
 
 	public void dispose() {
@@ -112,8 +114,8 @@ public final class PreferenceManager {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			if (LOGS_TABLE_PRESENTATION_SETTINGS.equals(event.getProperty())) {
-				logsDisplayModel = logsDisplayPreferenceManager.loadModel();
+			if (PRESENTATIONAL_TABLE_SETTINGS.equals(event.getProperty())) {
+				presentationalPreferenceModel = presentationalPreferenceManager.loadModel();
 			}
 		}
 	}

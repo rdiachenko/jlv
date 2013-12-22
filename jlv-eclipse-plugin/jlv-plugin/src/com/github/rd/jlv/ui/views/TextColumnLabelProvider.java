@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Table;
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.ui.LogLevel;
 
 public class TextColumnLabelProvider extends ColumnLabelProvider {
 
@@ -48,8 +47,7 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public Color getForeground(Object element) {
 		Log log = (Log) element;
-		RGB rgb = JlvActivator.getPreferenceManager().getLogsForeground(
-				LogLevel.getLogLevelByName(log.getLevel()));
+		RGB rgb = JlvActivator.getPreferenceManager().getForeground(log.getLevel());
 		Color color = new Color(Display.getCurrent(), rgb);
 		return color;
 	}
@@ -57,8 +55,7 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public Color getBackground(Object element) {
 		Log log = (Log) element;
-		RGB rgb = JlvActivator.getPreferenceManager().getLogsBackground(
-				LogLevel.getLogLevelByName(log.getLevel()));
+		RGB rgb = JlvActivator.getPreferenceManager().getBackground(log.getLevel());
 		Color color = new Color(Display.getCurrent(), rgb);
 		return color;
 	}
@@ -67,7 +64,7 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 	public Font getFont(Object element) {
 		FontData[] fontData = table.getFont().getFontData();
 		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(JlvActivator.getPreferenceManager().getLogsFontSize());
+			fontData[i].setHeight(JlvActivator.getPreferenceManager().getFontSize());
 		}
 		Font font = new Font(Display.getCurrent(), fontData);
 		return font;

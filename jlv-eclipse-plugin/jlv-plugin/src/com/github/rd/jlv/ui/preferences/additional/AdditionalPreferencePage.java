@@ -24,18 +24,18 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 		Composite parent = getFieldEditorParent();
 		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
 
-		Group logListTableSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
-				"Log list view table columns");
-		FieldEditor logListViewTableEditor = new LogListViewTableEditor(
-				PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
-				PreferencePageUtils.createFieldEditorComposite(logListTableSettingsGroup));
-		addField(logListViewTableEditor);
+		Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
+				"Structural log table settings");
+		FieldEditor structuralTableEditor = new StructuralTableEditor(
+				PreferenceManager.STRUCTURAL_TABLE_SETTINGS,
+				PreferencePageUtils.createFieldEditorComposite(structuralSettingsGroup));
+		addField(structuralTableEditor);
 
-		Group logListDisplaySettingGroup = PreferencePageUtils.createSettingsGroup(parent,
-				"Log list view log display");
-		FieldEditor logListViewDisplayEditor = new LogListViewDisplayEditor(
-				PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS,
-				PreferencePageUtils.createFieldEditorComposite(logListDisplaySettingGroup));
-		addField(logListViewDisplayEditor);
+		Group presentationalSettingGroup = PreferencePageUtils.createSettingsGroup(parent,
+				"Presentational log table settings");
+		FieldEditor presentationalTableEditor = new PresentationalTableEditor(
+				PreferenceManager.PRESENTATIONAL_TABLE_SETTINGS,
+				PreferencePageUtils.createFieldEditorComposite(presentationalSettingGroup));
+		addField(presentationalTableEditor);
 	}
 }

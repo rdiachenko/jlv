@@ -5,7 +5,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.log4j.LogConstants;
-import com.github.rd.jlv.ui.LogLevel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -20,18 +19,18 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceManager.LOGS_BUFFER_SIZE, 1000);
 		store.setDefault(PreferenceManager.LOGS_REFRESHING_TIME, 500);
 
-		store.setDefault(PreferenceManager.LOGS_TABLE_STRUCTURE_SETTINGS,
+		store.setDefault(PreferenceManager.STRUCTURAL_TABLE_SETTINGS,
 				LogConstants.LEVEL_FIELD_NAME + ":55:true;"
 						+ LogConstants.CATEGORY_FIELD_NAME + ":100:true;"
 						+ LogConstants.MESSAGE_FIELD_NAME + ":100:true;"
 						+ LogConstants.LINE_FIELD_NAME + ":100:true;"
 						+ LogConstants.DATE_FIELD_NAME + ":100:true;"
 						+ LogConstants.THROWABLE_FIELD_NAME + ":100:true;");
-		store.setDefault(PreferenceManager.LOGS_TABLE_PRESENTATION_SETTINGS, "true;11;"
-				+ LogLevel.DEBUG.getName() + ":0-0-0:255-255-255;"
-				+ LogLevel.INFO.getName() + ":0-255-0:255-255-255;"
-				+ LogLevel.WARN.getName() + ":255-128-0:255-255-255;"
-				+ LogLevel.ERROR.getName() + ":255-0-0:255-255-255;"
-				+ LogLevel.FATAL.getName() + ":165-42-42:255-255-255;");
+		store.setDefault(PreferenceManager.PRESENTATIONAL_TABLE_SETTINGS, "true;11;"
+				+ LogConstants.DEBUG_LEVEL_NAME + ":0-0-0:255-255-255;"
+				+ LogConstants.INFO_LEVEL_NAME + ":0-255-0:255-255-255;"
+				+ LogConstants.WARN_LEVEL_NAME + ":255-128-0:255-255-255;"
+				+ LogConstants.ERROR_LEVEL_NAME + ":255-0-0:255-255-255;"
+				+ LogConstants.FATAL_LEVEL_NAME + ":165-42-42:255-255-255;");
 	}
 }
