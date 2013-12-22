@@ -4,12 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ConnectionPool {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private JdbcConnectionPool connectionPool;
 
@@ -22,7 +18,6 @@ public class ConnectionPool {
 			Class.forName(dbDriver);
 			connectionPool = JdbcConnectionPool.create(dbUrl, user, password);
 		} catch (ClassNotFoundException e) {
-			logger.error("Db driver could not be found" + dbDriver, e);
 			throw new IllegalStateException("Db driver could not be found: " + dbDriver, e);
 		}
 	}
@@ -31,7 +26,6 @@ public class ConnectionPool {
 		try {
 			return connectionPool.getConnection();
 		} catch (SQLException e) {
-			logger.error("Exception occurs while getting connection from the connection pool:", e);
 			throw new IllegalStateException("Exception occurs while getting connection from the connection pool:", e);
 		}
 	}

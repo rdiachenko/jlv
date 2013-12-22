@@ -131,7 +131,6 @@ public class LogDaoImpl implements LogDao {
 			preparedStatement.setString(12, log.getThrowable());
 			preparedStatement.execute();
 		} catch (SQLException e) {
-			logger.error("", e);
 			throw new IllegalStateException(e);
 		} finally {
 			DaoUtil.close(conn, preparedStatement);

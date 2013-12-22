@@ -358,6 +358,9 @@
     <module name="ForbidReturnInFinalBlock"/>
     <module name="ForbidCCommentsInMethods"/>
     <module name="AvoidDefaultSerializableInInnerClasses"/>
+    <module name="LineLengthExtended">
+      <property name="max" value="120"/>
+    </module>
   </module>
   <module name="JavadocPackage">
     <property name="severity" value="ignore"/>
