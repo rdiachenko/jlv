@@ -86,6 +86,18 @@ public final class PreferenceManager {
 		return structuralPreferenceManager.loadStructure(structure);
 	}
 
+	public void setStructuralPreferenceModel(String columnName, int width) {
+		StructuralPreferenceModel[] structure = getStructuralPreferenceModel();
+
+		for (StructuralPreferenceModel model : structure) {
+			if (columnName.equals(model.getName())) {
+				model.setWidth(width);
+				structuralPreferenceManager.storeTableStructure(structure);
+				break;
+			}
+		}
+	}
+
 	public boolean isLevelAsImage() {
 		return presentationalPreferenceModel.isLevelAsImage();
 	}

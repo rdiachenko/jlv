@@ -7,6 +7,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
@@ -181,9 +183,11 @@ public class LogListView extends ViewPart {
 		TableColumn[] columns = viewer.getTable().getColumns();
 
 		for (int i = 0; i < columns.length; i++) {
+			columns[i].addControlListener(new ColumnResizeListener());
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager().getStructuralPreferenceModel();
+		StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager()
+				.getStructuralPreferenceModel();
 		updateColumns(viewer.getTable(), columnStructure);
 	}
 
@@ -206,6 +210,23 @@ public class LogListView extends ViewPart {
 		}
 		table.setColumnOrder(newColumnOrder);
 		table.redraw();
+	}
+
+	private static class ColumnResizeListener implements ControlListener {
+		@Override
+		public void controlMoved(ControlEvent e) {
+			// no code
+		}
+
+		@Override
+		public void controlResized(ControlEvent e) {
+			if (e.getSource() instanceof TableColumn) {
+				TableColumn column = (TableColumn) e.getSource();
+				String columnName = column.getText();
+				int width = column.getWidth();
+				JlvActivator.getPreferenceManager().setStructuralPreferenceModel(columnName, width);
+			}
+		}
 	}
 
 	// Inner class represents handler for LogView life cycle actions: close/open view, activate/deactivate view, etc.

@@ -3,14 +3,9 @@ package com.github.rd.jlv.ui.views;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.LogConstants;
 
@@ -44,7 +39,6 @@ public class LogTableViewer extends TableViewer {
 			column.getColumn().setWidth(bounds[i]);
 			column.getColumn().setResizable(true);
 			column.getColumn().setMoveable(false);
-			column.getColumn().addControlListener(new ColumnResizeListener());
 
 			switch (headers[i]) {
 			case LogConstants.LEVEL_FIELD_NAME:
@@ -56,23 +50,6 @@ public class LogTableViewer extends TableViewer {
 				break;
 			default:
 				column.setLabelProvider(new DefaultColumnLabelProvider(this.getTable(), headers[i]));
-			}
-		}
-	}
-
-	private static class ColumnResizeListener implements ControlListener {
-		private final Logger logger = LoggerFactory.getLogger(getClass());
-
-		@Override
-		public void controlMoved(ControlEvent e) {
-			// no code
-		}
-
-		@Override
-		public void controlResized(ControlEvent e) {
-			if (e.getSource() instanceof TableColumn) {
-				TableColumn column = (TableColumn) e.getSource();
-				logger.debug("event width==" + column.getWidth());
 			}
 		}
 	}
