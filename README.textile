@@ -20,7 +20,7 @@ h5. Requirements:
 
 h3. Eclipse update site
 
-bc.. https://github.com/rdiachenko/JLV/raw/repo/eclipse
+bc.. https://github.com/rdiachenko/jlv/raw/repo/eclipse
 
 h3. Release notes
 
