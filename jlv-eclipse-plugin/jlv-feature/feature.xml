@@ -3,7 +3,7 @@
       id="com.github.rd.jlv.feature"
       label="jlv"
       version="1.3.2.qualifier"
-      provider-name="In-Code">
+      provider-name="Ruslan Diachenko">
 
    <description url="https://github.com/rdiachenko/jlv">
       Java logging viewer (plugin for Eclipse IDE)
