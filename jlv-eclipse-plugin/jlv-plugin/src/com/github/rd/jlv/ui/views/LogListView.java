@@ -163,7 +163,7 @@ public class LogListView extends ViewPart {
 	}
 
 	private TableViewer createViewer(Composite parent) {
-		int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
+		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 		TableViewer viewer = new LogTableViewer(parent, style);
 		viewer.getTable().addListener(SWT.Selection, new Listener() {
 			@Override
