@@ -14,6 +14,8 @@ public final class Log {
 	private final String threadName; // %t
 	private final String message; // %m
 	private final String throwable; // %throwable
+	private final String ndc; // %x
+	private final String mdc; // %X{key}
 
 	private Log(Builder builder) {
 		categoryName = builder.categoryName;
@@ -28,6 +30,8 @@ public final class Log {
 		threadName = builder.threadName;
 		message = builder.message;
 		throwable = builder.throwable;
+		ndc = builder.ndc;
+		mdc = builder.mdc;
 	}
 
 	public String getCategoryName() {
@@ -78,6 +82,14 @@ public final class Log {
 		return throwable;
 	}
 
+	public String getNdc() {
+		return ndc;
+	}
+
+	public String getMdc() {
+		return mdc;
+	}
+
 	@Override
 	public int hashCode() {
 		int result = 17;
@@ -93,6 +105,8 @@ public final class Log {
 		result = 31 * result + threadName.hashCode();
 		result = 31 * result + message.hashCode();
 		result = 31 * result + throwable.hashCode();
+		result = 31 * result + ndc.hashCode();
+		result = 31 * result + mdc.hashCode();
 		return result;
 	}
 
@@ -118,7 +132,9 @@ public final class Log {
 					|| !ms.equals(log.getMs())
 					|| !threadName.equals(log.getThreadName())
 					|| !message.equals(log.getMessage())
-					|| !throwable.equals(log.getThrowable())) {
+					|| !throwable.equals(log.getThrowable())
+					|| !ndc.equals(log.getNdc())
+					|| !mdc.equals(log.getMdc())) {
 
 				return false;
 			}
@@ -140,6 +156,8 @@ public final class Log {
 				+ "; threadName=" + threadName
 				+ "; message=" + message
 				+ "; throwable=" + throwable
+				+ "; ndc=" + ndc
+				+ "; mdc=" + mdc
 				+ "]";
 	}
 
@@ -157,6 +175,8 @@ public final class Log {
 		private String threadName = ""; // %t
 		private String message = ""; // %m
 		private String throwable = ""; // %throwable
+		private String ndc = ""; // %x
+		private String mdc = ""; // %X{key}
 
 		public Builder categoryName(String name) {
 			categoryName = name;
@@ -215,6 +235,16 @@ public final class Log {
 
 		public Builder throwable(String throwable) {
 			this.throwable = throwable;
+			return this;
+		}
+
+		public Builder ndc(String ndc) {
+			this.ndc = ndc;
+			return this;
+		}
+
+		public Builder mdc(String mdc) {
+			this.mdc = mdc;
 			return this;
 		}
 

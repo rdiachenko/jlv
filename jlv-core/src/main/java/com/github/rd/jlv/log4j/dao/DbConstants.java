@@ -15,6 +15,8 @@ public final class DbConstants {
 	public static final String THREAD_FIELD_NAME = "thread";
 	public static final String MESSAGE_FIELD_NAME = "message";
 	public static final String THROWABLE_FIELD_NAME = "throwable";
+	public static final String NDC_FIELD_NAME = "ndc";
+	public static final String MDC_FIELD_NAME = "mdc";
 
 	private DbConstants() {
 		throw new IllegalStateException("Private constructor's call on an util class");

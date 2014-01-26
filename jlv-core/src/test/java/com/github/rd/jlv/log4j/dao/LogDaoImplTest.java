@@ -122,6 +122,8 @@ public class LogDaoImplTest {
 				.threadName("main[0]-$someUnknownThread")
 				.message("Selection -1 tailing logs from db...['] \nn && some symbols ? )\"\t/**-? ololo''$")
 				.throwable(exception)
+				.ndc("ndc1 ndc2")
+				.mdc("{test1=testValue1, test2=testValue2, test3=testValue3}")
 				.build();
 
 		logDao.insert(log);

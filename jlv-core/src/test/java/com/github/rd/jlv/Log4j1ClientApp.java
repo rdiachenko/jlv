@@ -1,6 +1,8 @@
 package com.github.rd.jlv;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
+import org.apache.log4j.NDC;
 import org.apache.log4j.PropertyConfigurator;
 
 public final class Log4j1ClientApp {
@@ -28,10 +30,16 @@ public final class Log4j1ClientApp {
 			logger.fatal("illegal state:", e);
 		}
 
+		MDC.put("testKey1", "mdcTest1");
+		MDC.put("testKey2", "mdcTest2");
+		MDC.put("testKey3", "mdcTest3");
+
 		for (int i = 0; i < 10; i++) {
+			NDC.push("ndcTest" + i);
 			logger.debug("i=" + i);
 			logger.info("i=" + i);
 			logger.error("i=" + i);
+			NDC.pop();
 			try {
 				int[] array = new int[2];
 				int elem = array[3];
@@ -48,6 +56,8 @@ public final class Log4j1ClientApp {
 			}
 			Thread.sleep(1000);
 		}
+		MDC.clear();
+		NDC.clear();
 	}
 
 	private Log4j1ClientApp() {

@@ -15,6 +15,8 @@ public final class LogConstants {
 	public static final String METHOD_FIELD_NAME = "Method";
 	public static final String MILLISECONDS_FIELD_NAME = "Milliseconds";
 	public static final String THREAD_FIELD_NAME = "Thread";
+	public static final String NDC_FIELD_NAME = "NDC";
+	public static final String MDC_FIELD_NAME = "MDC";
 
 	public static final String[] LOG_FIELD_NAMES = {
 			LEVEL_FIELD_NAME,
@@ -29,6 +31,8 @@ public final class LogConstants {
 			METHOD_FIELD_NAME,
 			MILLISECONDS_FIELD_NAME,
 			THREAD_FIELD_NAME,
+			NDC_FIELD_NAME,
+			MDC_FIELD_NAME,
 	};
 
 	public static final String DEBUG_LEVEL_NAME = "DEBUG";

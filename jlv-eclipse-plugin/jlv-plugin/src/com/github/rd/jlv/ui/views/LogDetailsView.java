@@ -44,6 +44,8 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 		buildExpandItem(bar, LogConstants.METHOD_FIELD_NAME, singleLineStyle);
 		buildExpandItem(bar, LogConstants.LOCATION_INFO_FIELD_NAME, singleLineStyle);
 		buildExpandItem(bar, LogConstants.THREAD_FIELD_NAME, singleLineStyle);
+		buildExpandItem(bar, LogConstants.NDC_FIELD_NAME, singleLineStyle);
+		buildExpandItem(bar, LogConstants.MDC_FIELD_NAME, singleLineStyle);
 	}
 
 	@Override
@@ -73,6 +75,8 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 			logFields.get(LogConstants.THREAD_FIELD_NAME).setText(log.getThreadName());
 			logFields.get(LogConstants.MESSAGE_FIELD_NAME).setText(log.getMessage());
 			logFields.get(LogConstants.THROWABLE_FIELD_NAME).setText(log.getThrowable());
+			logFields.get(LogConstants.NDC_FIELD_NAME).setText(log.getNdc());
+			logFields.get(LogConstants.MDC_FIELD_NAME).setText(log.getMdc());
 		}
 	}
 

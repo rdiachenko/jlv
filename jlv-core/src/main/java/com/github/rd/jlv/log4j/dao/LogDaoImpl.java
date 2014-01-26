@@ -29,8 +29,10 @@ public class LogDaoImpl implements LogDao {
 			+ ", " + DbConstants.THREAD_FIELD_NAME
 			+ ", " + DbConstants.MESSAGE_FIELD_NAME
 			+ ", " + DbConstants.THROWABLE_FIELD_NAME
+			+ ", " + DbConstants.NDC_FIELD_NAME
+			+ ", " + DbConstants.MDC_FIELD_NAME
 			+ ") "
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private String createTableQueryString = "CREATE TABLE log4j1x("
 			+ "ID BIGINT AUTO_INCREMENT,"
@@ -45,7 +47,9 @@ public class LogDaoImpl implements LogDao {
 			+ DbConstants.MILLISECONDS_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
 			+ DbConstants.THREAD_FIELD_NAME + " VARCHAR(1000) DEFAULT '',"
 			+ DbConstants.MESSAGE_FIELD_NAME + " VARCHAR(MAX) DEFAULT '',"
-			+ DbConstants.THROWABLE_FIELD_NAME + " VARCHAR(MAX) DEFAULT ''"
+			+ DbConstants.THROWABLE_FIELD_NAME + " VARCHAR(MAX) DEFAULT '',"
+			+ DbConstants.NDC_FIELD_NAME + " VARCHAR(100) DEFAULT '',"
+			+ DbConstants.MDC_FIELD_NAME + " VARCHAR(200) DEFAULT ''"
 			+ ")";
 
 	private ConnectionPool connectionPool;
@@ -93,6 +97,8 @@ public class LogDaoImpl implements LogDao {
 						.threadName(result.getString(DbConstants.THREAD_FIELD_NAME))
 						.message(result.getString(DbConstants.MESSAGE_FIELD_NAME))
 						.throwable(result.getString(DbConstants.THROWABLE_FIELD_NAME))
+						.ndc(result.getString(DbConstants.NDC_FIELD_NAME))
+						.mdc(result.getString(DbConstants.MDC_FIELD_NAME))
 						.build();
 				logs.add(log);
 			}
@@ -129,6 +135,8 @@ public class LogDaoImpl implements LogDao {
 			preparedStatement.setString(10, log.getThreadName());
 			preparedStatement.setString(11, log.getMessage());
 			preparedStatement.setString(12, log.getThrowable());
+			preparedStatement.setString(13, log.getNdc());
+			preparedStatement.setString(14, log.getMdc());
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);

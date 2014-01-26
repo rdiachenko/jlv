@@ -1,6 +1,7 @@
 package com.github.rd.jlv.log4j;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -21,7 +22,7 @@ public final class LogUtil {
 		builder.threadName(Strings.nullToEmpty(le.getThreadName()));
 		builder.message(Strings.nullToEmpty(le.getRenderedMessage()));
 		builder.level(Strings.nullToEmpty(le.getLevel().toString()));
-
+		builder.ndc(Strings.nullToEmpty(le.getNDC()));
 		LocationInfo localInfo = le.getLocationInformation();
 
 		if (localInfo != null) {
@@ -31,7 +32,6 @@ public final class LogUtil {
 			builder.methodName(Strings.nullToEmpty(localInfo.getMethodName()));
 			builder.locationInfo(Strings.nullToEmpty(localInfo.fullInfo));
 		}
-
 		ThrowableInformation throwable = le.getThrowableInformation();
 
 		if (throwable != null && throwable.getThrowableStrRep() != null) {
@@ -43,14 +43,19 @@ public final class LogUtil {
 			}
 			builder.throwable(Strings.nullToEmpty(strBuilder.toString()));
 		}
-
 		long time = le.getTimeStamp();
 
 		if (time > 0) {
 			builder.ms(String.valueOf(time));
 			builder.date(new Timestamp(time).toString());
 		}
+		Map<?, ?> mdc = le.getProperties();
 
+		if (mdc != null && !mdc.isEmpty()) {
+			builder.mdc(mdc.toString());
+		} else {
+			builder.mdc("");
+		}
 		Log log = builder.build();
 		return log;
 	}
@@ -81,6 +86,10 @@ public final class LogUtil {
 			return log.getMs();
 		case LogConstants.THREAD_FIELD_NAME:
 			return log.getThreadName();
+		case LogConstants.NDC_FIELD_NAME:
+			return log.getNdc();
+		case LogConstants.MDC_FIELD_NAME:
+			return log.getMdc();
 		default:
 			throw new IllegalArgumentException("No log field with such name: " + logField);
 		}
