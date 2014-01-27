@@ -130,6 +130,7 @@ public class LogListView extends ViewPart {
 		} else {
 			quickSearchText = quickSearchField.getText();
 			quickSearchField.dispose();
+			setFocus();
 		}
 		parent.layout();
 	}

@@ -123,5 +123,20 @@
          </variable>
       </sourceProvider>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.github.rd.jlv.ui.views.quickSearchAction"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Shift+F">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="com.github.rd.jlv.ui.views.quickSearchAction"
+            name="Quick search">
+      </command>
+   </extension>
 
 </plugin>
