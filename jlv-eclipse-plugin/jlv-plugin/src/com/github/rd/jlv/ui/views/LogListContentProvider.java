@@ -3,7 +3,7 @@ package com.github.rd.jlv.ui.views;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.github.rd.jlv.log4j.domain.LogContainer;
+import com.github.rd.jlv.log4j.domain.LogCollection;
 
 public class LogListContentProvider implements IStructuredContentProvider {
 
@@ -19,10 +19,7 @@ public class LogListContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof LogContainer) {
-			LogContainer logContainer = (LogContainer) inputElement;
-			return logContainer.getLogs().toArray();
-		}
-		return new Object[0];
+		LogCollection logs = (LogCollection) inputElement;
+		return logs.toArray();
 	}
 }

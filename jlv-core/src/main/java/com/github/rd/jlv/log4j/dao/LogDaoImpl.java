@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogContainer;
+import com.github.rd.jlv.log4j.domain.LogCollection;
 
 public class LogDaoImpl implements LogDao {
 
@@ -70,13 +70,13 @@ public class LogDaoImpl implements LogDao {
 	}
 
 	@Override
-	public LogContainer getTailingLogs(int tail) {
+	public Log[] getTailingLogs(int tail) {
 		logger.info("Selection {} tailing logs from db...", tail);
 		String queryString = "SELECT * FROM log4j1x ORDER BY id DESC LIMIT ?";
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;
-		LogContainer logs = new LogContainer(tail);
+		LogCollection logs = new LogCollection(tail);
 
 		try {
 			conn = connectionPool.getConnection();
@@ -108,7 +108,7 @@ public class LogDaoImpl implements LogDao {
 			DaoUtil.close(conn, preparedStatement, result);
 		}
 		logger.info("{} logs were selected", logs.size());
-		return logs;
+		return logs.toArray();
 	}
 
 	@Override

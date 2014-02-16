@@ -34,16 +34,16 @@ public final class Log4j1ClientApp {
 		MDC.put("testKey2", "mdcTest2");
 		MDC.put("testKey3", "mdcTest3");
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i <= 10; i++) {
 			NDC.push("ndcTest" + i);
 			logger.debug("i=" + i);
 			logger.info("i=" + i);
 			logger.error("i=" + i);
 			NDC.pop();
 			try {
+				logger.info("retrieving element from array");
 				int[] array = new int[2];
 				int elem = array[3];
-				logger.info(String.valueOf(elem));
 			} catch (ArrayIndexOutOfBoundsException e) {
 				logger.error("exception message", e);
 			}
@@ -54,7 +54,7 @@ public final class Log4j1ClientApp {
 					logger.error("illegal state:", e);
 				}
 			}
-			Thread.sleep(1000);
+			Thread.sleep(1);
 		}
 		MDC.clear();
 		NDC.clear();

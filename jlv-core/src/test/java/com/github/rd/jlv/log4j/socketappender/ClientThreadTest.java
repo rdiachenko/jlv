@@ -9,46 +9,36 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.rd.jlv.log4j.LogUtil;
-import com.github.rd.jlv.log4j.dao.DaoProvider;
-import com.github.rd.jlv.log4j.dao.LogDao;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogContainer;
-import com.github.rd.jlv.log4j.domain.LogEventContainer;
-import com.github.rd.jlv.log4j.domain.LogEventListener;
 
 public class ClientThreadTest {
 
-	private static LogDao logDao;
-
-	@BeforeClass
-	public static void init() {
-		logDao = DaoProvider.LOG_DAO.getLogDao();
-	}
-
-	@Before
-	public void initDb() {
-		logDao.initDb();
-	}
-
-	@After
-	public void dropDb() {
-		logDao.dropDb();
-	}
+//	private static LogDao logDao;
+//
+//	@BeforeClass
+//	public static void init() {
+//		logDao = DaoProvider.LOG_DAO.getLogDao();
+//	}
+//
+//	@Before
+//	public void initDb() {
+//		logDao.initDb();
+//	}
+//
+//	@After
+//	public void dropDb() {
+//		logDao.dropDb();
+//	}
 
 	@Test
 	public void testInplaceLogsReceiving() throws IOException, ClassNotFoundException {
@@ -85,79 +75,79 @@ public class ClientThreadTest {
 		Assert.assertEquals(expectedLog, actualLog);
 	}
 
-	@Test
-	public void testClientThread() throws UnknownHostException, IOException, InterruptedException,
-			ClassNotFoundException {
-		// Creating mock LoggingEvent
-		class CategoryExt extends Category {
-			protected CategoryExt(String name) {
-				super(name);
-			}
-		}
-
-		Category mockCategory = new CategoryExt(null);
-		LoggingEvent mockLoggingEvent1 = new LoggingEvent(null, mockCategory, 1234567L, Level.INFO, "message1", null);
-		LoggingEvent mockLoggingEvent2 = new LoggingEvent(null, mockCategory, 1234567L, Level.DEBUG, "message2", null);
-		LoggingEvent mockLoggingEvent3 = new LoggingEvent(null, mockCategory, 1234567L, Level.ERROR, "message3", null);
-		LoggingEvent mockLoggingEvent4 = new LoggingEvent(null, mockCategory, 1234567L, Level.FATAL, "message4", null);
-
-		Log[] expectedLogList = {
-				LogUtil.convert(mockLoggingEvent1),
-				LogUtil.convert(mockLoggingEvent2),
-				LogUtil.convert(mockLoggingEvent3),
-				LogUtil.convert(mockLoggingEvent4),
-		};
-
-		// Logs from LogEventListener
-		final Log[] actualLogList = new Log[4];
-		LogEventListener listener = new LogEventListener() {
-			private int counter = 0;
-
-			public void lastLogEvent() {
-				// no code
-			}
-
-			public void handleLogEvent(Log log) {
-				actualLogList[counter] = log;
-				counter++;
-			}
-		};
-		LogEventContainer.addListener(listener);
-
-		Socket client = writeLogsToSocket(Arrays.asList(mockLoggingEvent1, mockLoggingEvent2, mockLoggingEvent3,
-				mockLoggingEvent4));
-		Thread clientThread = new Thread(new ClientThread(client));
-		clientThread.start();
-		clientThread.join();
-		LogEventContainer.removeListener(listener);
-
-		// Logs from db
-		LogContainer logContainer = logDao.getTailingLogs(4);
-
-		Assert.assertTrue(logContainer.size() == 4);
-
-		Log[] logsFromDb = new Log[4];
-		Iterator<Log> iter = logContainer.iterator();
-		logsFromDb[3] = iter.next();
-		logsFromDb[2] = iter.next();
-		logsFromDb[1] = iter.next();
-		logsFromDb[0] = iter.next();
-
-		Assert.assertArrayEquals(expectedLogList, actualLogList);
-		Assert.assertArrayEquals(expectedLogList, logsFromDb);
-	}
-
-	@Test
-	public void testNoneLoggingEventLogs() throws IOException, InterruptedException {
-		Socket client = writeLogsToSocket(Arrays.asList("message1", "message2", "message3", "message4"));
-		Thread clientThread = new Thread(new ClientThread(client));
-		clientThread.start();
-		clientThread.join();
-
-		LogContainer logContainer = logDao.getTailingLogs(4);
-
-		Assert.assertTrue(logContainer.size() == 0);
-	}
+//	@Test
+//	public void testClientThread() throws UnknownHostException, IOException, InterruptedException,
+//			ClassNotFoundException {
+//		// Creating mock LoggingEvent
+//		class CategoryExt extends Category {
+//			protected CategoryExt(String name) {
+//				super(name);
+//			}
+//		}
+//
+//		Category mockCategory = new CategoryExt(null);
+//		LoggingEvent mockLoggingEvent1 = new LoggingEvent(null, mockCategory, 1234567L, Level.INFO, "message1", null);
+//		LoggingEvent mockLoggingEvent2 = new LoggingEvent(null, mockCategory, 1234567L, Level.DEBUG, "message2", null);
+//		LoggingEvent mockLoggingEvent3 = new LoggingEvent(null, mockCategory, 1234567L, Level.ERROR, "message3", null);
+//		LoggingEvent mockLoggingEvent4 = new LoggingEvent(null, mockCategory, 1234567L, Level.FATAL, "message4", null);
+//
+//		Log[] expectedLogList = {
+//				LogUtil.convert(mockLoggingEvent1),
+//				LogUtil.convert(mockLoggingEvent2),
+//				LogUtil.convert(mockLoggingEvent3),
+//				LogUtil.convert(mockLoggingEvent4),
+//		};
+//
+//		// Logs from LogEventListener
+//		final Log[] actualLogList = new Log[4];
+//		LogEventListener listener = new LogEventListener() {
+//			private int counter = 0;
+//
+//			public void lastLogEvent() {
+//				// no code
+//			}
+//
+//			public void handleLogEvent(Log log) {
+//				actualLogList[counter] = log;
+//				counter++;
+//			}
+//		};
+//		LogEventContainer.addListener(listener);
+//
+//		Socket client = writeLogsToSocket(Arrays.asList(mockLoggingEvent1, mockLoggingEvent2, mockLoggingEvent3,
+//				mockLoggingEvent4));
+//		Thread clientThread = new Thread(new ClientThread(client));
+//		clientThread.start();
+//		clientThread.join();
+//		LogEventContainer.removeListener(listener);
+//
+//		// Logs from db
+//		LogContainer logContainer = logDao.getTailingLogs(4);
+//
+//		Assert.assertTrue(logContainer.size() == 4);
+//
+//		Log[] logsFromDb = new Log[4];
+//		Iterator<Log> iter = logContainer.iterator();
+//		logsFromDb[3] = iter.next();
+//		logsFromDb[2] = iter.next();
+//		logsFromDb[1] = iter.next();
+//		logsFromDb[0] = iter.next();
+//
+//		Assert.assertArrayEquals(expectedLogList, actualLogList);
+//		Assert.assertArrayEquals(expectedLogList, logsFromDb);
+//	}
+//
+//	@Test
+//	public void testNoneLoggingEventLogs() throws IOException, InterruptedException {
+//		Socket client = writeLogsToSocket(Arrays.asList("message1", "message2", "message3", "message4"));
+//		Thread clientThread = new Thread(new ClientThread(client));
+//		clientThread.start();
+//		clientThread.join();
+//
+//		LogContainer logContainer = logDao.getTailingLogs(4);
+//
+//		Assert.assertTrue(logContainer.size() == 0);
+//	}
 
 	private Socket writeLogsToSocket(List<? extends Object> logs) throws IOException {
 		// Defining the OutputStream for socket

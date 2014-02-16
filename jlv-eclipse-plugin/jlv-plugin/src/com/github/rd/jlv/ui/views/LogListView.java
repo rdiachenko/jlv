@@ -164,9 +164,19 @@ public class LogListView extends ViewPart {
 	}
 
 	private TableViewer createViewer(Composite parent) {
-		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
+		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL;
 		TableViewer viewer = new LogTableViewer(parent, style);
-		viewer.getTable().addListener(SWT.Selection, new Listener() {
+		final Table table = viewer.getTable();
+//		table.setItemCount(JlvActivator.getPreferenceManager().getLogsBufferSize());
+//
+//		table.addListener(SWT.SetData, new Listener() {
+//			public void handleEvent(Event event) {
+//				TableItem item = (TableItem) event.item;
+//				item.setText(logs[table.indexOf(item)]);
+//			}
+//		});
+
+		table.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				ViewUtils.openView(StringConstants.JLV_LOG_DETAILS_VIEW_ID);

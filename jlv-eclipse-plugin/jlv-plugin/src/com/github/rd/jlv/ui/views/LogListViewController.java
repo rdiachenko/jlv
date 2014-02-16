@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.log4j.dao.DaoProvider;
-import com.github.rd.jlv.log4j.dao.LogDao;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogContainer;
+import com.github.rd.jlv.log4j.domain.LogCollection;
 import com.github.rd.jlv.log4j.domain.LogEventContainer;
 import com.github.rd.jlv.log4j.domain.LogEventListener;
 import com.github.rd.jlv.log4j.socketappender.Server;
@@ -19,20 +17,16 @@ public class LogListViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final LogContainer logContainer;
+	private final LogCollection logContainer;
 
 	private final LogEventListener logEventListener;
 
 	private final Timer viewUpdater;
 
-	private final LogDao logDao;
-
 	private Server server;
 
 	public LogListViewController(LogListView view) {
-		logDao = DaoProvider.LOG_DAO.getLogDao();
-		logDao.initDb();
-		logContainer = new LogContainer(JlvActivator.getPreferenceManager().getLogsBufferSize());
+		logContainer = new LogCollection(JlvActivator.getPreferenceManager().getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -46,7 +40,7 @@ public class LogListViewController {
 		viewUpdater.start();
 	}
 
-	public LogContainer getLogContainer() {
+	public LogCollection getLogContainer() {
 		return logContainer;
 	}
 
@@ -61,7 +55,7 @@ public class LogListViewController {
 
 	public void stopServer() {
 		if (server != null) {
-			server.stopServer();
+			server.shutdown();
 			server = null;
 		}
 	}
@@ -70,7 +64,6 @@ public class LogListViewController {
 		LogEventContainer.removeListener(logEventListener);
 		viewUpdater.stopTimer();
 		stopServer();
-		logDao.dropDb();
 	}
 
 	public void clearLogContainer() {
@@ -94,7 +87,7 @@ public class LogListViewController {
 		public void run() {
 			logger.debug("Log list view updater was run");
 			while (running) {
-				Display.getDefault().syncExec(new Runnable() {
+				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {
 						view.refreshViewer();
