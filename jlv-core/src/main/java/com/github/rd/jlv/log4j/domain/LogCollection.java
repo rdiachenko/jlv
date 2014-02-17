@@ -72,23 +72,15 @@ public class LogCollection {
 		} else if (head == tail) {
 			return new Log[] { logs[head] };
 		} else if (head < tail) {
-			Log[] array = new Log[this.size()];
-
-			for (int i = 0; i < array.length; i++) {
-				array[i] = logs[i + head];
-			}
+			int length = this.size();
+			Log[] array = new Log[length];
+			System.arraycopy(logs, head, array, 0, length);
 			return array;
 		} else {
-			Log[] array = new Log[this.size()];
-			int index = 0;
-
-			for (int i = head; i < capacity; i++) {
-				array[index++] = logs[i];
-			}
-
-			for (int i = 0; i <= tail; i++) {
-				array[index++] = logs[i];
-			}
+			int length = this.size();
+			Log[] array = new Log[length];
+			System.arraycopy(logs, head, array, 0, capacity - head);
+			System.arraycopy(logs, 0, array, capacity - head, tail + 1);
 			return array;
 		}
 	}
