@@ -44,6 +44,8 @@ public class LogListView extends ViewPart {
 	private String quickSearchText;
 	private QuickLogFilter quickFilter;
 
+	private boolean toggledToBottom;
+
 	private TableViewer viewer;
 	private Map<String, Integer> columnOrderMap;
 
@@ -144,8 +146,18 @@ public class LogListView extends ViewPart {
 
 	public void refreshViewer() {
 		if (!viewer.getTable().isDisposed()) {
-			viewer.refresh(true, false);
+			viewer.refresh(true, toggledToBottom);
+
+			if (toggledToBottom) {
+				Table table = viewer.getTable();
+				int itemCount = table.getItemCount();
+				table.setSelection(itemCount - 1);
+			}
 		}
+	}
+
+	public void toggleScrollToBottom() {
+		toggledToBottom = !toggledToBottom;
 	}
 
 	private Text createQuickSearchField(Composite parent) {

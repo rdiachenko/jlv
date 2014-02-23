@@ -77,6 +77,10 @@
             class="com.github.rd.jlv.ui.views.ClearViewAction"
             commandId="com.github.rd.jlv.ui.views.clearViewAction">
       </handler>
+      <handler
+            class="com.github.rd.jlv.ui.views.ToggleScrollToBottomAction"
+            commandId="com.github.rd.jlv.ui.views.toggleScrollToBottomAction">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -110,6 +114,13 @@
                label="Clear view"
                style="push"
                tooltip="Clear view">
+         </command>
+         <command
+               commandId="com.github.rd.jlv.ui.views.toggleScrollToBottomAction"
+               icon="icons/toggleScrollToBottom.png"
+               label="Toggle to bottom"
+               style="toggle"
+               tooltip="Toggle scroll to view bottom">
          </command>
       </menuContribution>
    </extension>
