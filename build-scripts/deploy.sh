@@ -5,7 +5,7 @@
 # E.g.: ./deploy.sh 1.0.0 1.0.1
 
 function check_status() {
-	if [ "$1" -gt 0 ] then
+	if [ "$1" -gt 0 ]; then
     	  echo "[BUILD FAILED] during $2 phase"
     	  exit $1
 	fi
