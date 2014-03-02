@@ -5,78 +5,40 @@
 # E.g.: ./deploy.sh 1.0.0 1.0.1
 
 function check_status() {
-	if [ "$1" -gt 0 ]
-	then
-    	echo '[BUILD FAILED]'
-    	exit $1
+	if [ "$1" -gt 0 ] then
+    	  echo "[BUILD FAILED] during $2 phase"
+    	  exit $1
 	fi
 }
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[JLV-CORE BUILD]'
-cd ../jlv-core && mvn clean install
-check_status $?
-
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[JLV-ECLIPSE-PLUGIN BUILD]'
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Bumping jlv eclipse plugin version to $1"
-cd ../jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$1
-check_status $?
-
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Building jlv-eclipse-plugin project'
-mvn clean install
-check_status $?
-
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[JLV-ECLIPSE-PLUGIN DEPLOY]'
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Commiting changes'
-cd ..
-git add .
-git commit -m "jlv eclipse plugin version was updated to $1"
-check_status $?
-
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Switching to repo branch'
+cd ../ && rm -fr repo
+mkdir repo && cd ./repo
+git init
+git remote add origin git@github.com:rdiachenko/jlv.git
+git fetch origin repo:refs/remotes/origin/repo
 git checkout repo
-check_status $?
+check_status $? '[repo init]'
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Removing old jars'
-cd eclipse && rm -fr *.jar features plugins
-check_status $?
+cd ../jlv-core && mvn clean install
+check_status $? '[jlv-core build]'
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Copying new jars into eclipse/'
-cd .. && cp -R jlv-eclipse-plugin/jlv-update-site/target/repository/* eclipse/
-check_status $?
-cp jlv-eclipse-plugin/jlv-update-site/target/*.zip eclipse/archive/
-check_status $?
+cd ../jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$1
+check_status $? "[setting up jlv-eclipse-plugin release version to $1]"
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Commiting and pushing changes'
-git add -A eclipse
-git commit -m "JLV released (v$1)"
-git push
-check_status $?
+mvn clean install
+check_status $? '[jlv-eclipse-plugin build]'
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Switching to master branch'
-git checkout master
-check_status $?
+cd ./jlv-update-site && mvn wagon:upload
+check_status $? '[jlv-eclipse-plugin deploy]'
 
-echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Updating jlv eclipse plugin version to $2-SNAPSHOT"
-cd jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
-check_status $?
+cd ../../repo
+echo "git add . && git commit -m \"jlv released v$1\" && git push origin repo"
 
-echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Commiting and pushing changes'
-cd ..
-git add .
-git commit -m "jlv eclipse plugin version was updated to $2-SNAPSHOT"
-git push
-check_status $?
+cd ../jlv-eclipse-plugin && mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
+check_status $? '[setting up jlv-eclipse-plugin next snapshot version to $2-SNAPSHOT]'
 
-git tag -a v$1 -m "JLV tagged v$1"
-git push --tags
-status=$?
+cd ../
+echo "git add . && git commit -m \"jlv-eclipse-plugin version was bumped to $2-SNAPSHOT\" && git push"
 
-if [ "$status" -gt 0 ]
-then
-    echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[BUILD FAILED]'
-else
-    echo '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>[BUILD SUCCESS]'
-fi
-
-exit $status
-
+#git tag -a v$1 -m "JLV tagged v$1"
+#git push --tags

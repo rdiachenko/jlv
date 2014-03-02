@@ -96,6 +96,7 @@ public class LogListViewController {
 				try {
 					sleep(JlvActivator.getPreferenceManager().getLogsRefreshingTime());
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 					logger.error("Timer thread was interrupted:", e);
 				}
 			}

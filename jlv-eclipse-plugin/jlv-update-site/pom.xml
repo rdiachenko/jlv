@@ -11,6 +11,21 @@
 	
 	<artifactId>com.github.rd.jlv.updatesite</artifactId>
 	<packaging>eclipse-repository</packaging>
+        <name>JLV Eclipse update site</name>
 
-    <name>JLV Eclipse update site</name>
+        <build>
+                <plugins>
+                        <plugin>
+                          <groupId>org.codehaus.mojo</groupId>
+                          <artifactId>wagon-maven-plugin</artifactId>
+                          <version>1.0-beta-5</version>
+                            <configuration>
+                              <fromDir>${project.build.directory}/repository/</fromDir>
+                              <includes>**</includes>
+                              <toDir>eclipse</toDir>
+                              <url>file://${project.build.directory}/../../repo/</url>
+                            </configuration>
+                        </plugin>
+                </plugins>
+        </build>
 </project>
