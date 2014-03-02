@@ -13,3 +13,4 @@ repo
 .metadata
 *.class
 *.db
+*.swp
