@@ -34,7 +34,7 @@ public final class Log4j1ClientApp {
 		MDC.put("testKey2", "mdcTest2");
 		MDC.put("testKey3", "mdcTest3");
 
-		for (int i = 0; i <= 10; i++) {
+		for (int i = 0; i <= 1000; i++) {
 			NDC.push("ndcTest" + i);
 			logger.debug("i=" + i);
 			logger.info("i=" + i);

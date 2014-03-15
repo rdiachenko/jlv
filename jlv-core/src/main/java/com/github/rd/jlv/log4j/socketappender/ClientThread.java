@@ -1,5 +1,6 @@
 package com.github.rd.jlv.log4j.socketappender;
 
+import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,43 +18,60 @@ public class ClientThread implements Runnable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private Socket client;
+	private Socket socket;
 
-	public ClientThread(Socket client) {
-		this.client = client;
+	public ClientThread(Socket socket) {
+		this.socket = socket;
 	}
 
 	@Override
 	public void run() {
-		try {
-			ObjectInputStream inputStream = new ObjectInputStream(client.getInputStream());
+		ObjectInputStream objectStream = null;
+		BufferedInputStream inputStream = null;
 
-			while (!client.isClosed()) {
-				LoggingEvent log = (LoggingEvent) inputStream.readObject();
+		try {
+			inputStream = new BufferedInputStream(socket.getInputStream());
+			objectStream = new ObjectInputStream(inputStream);
+
+			while (!socket.isClosed()) {
+				LoggingEvent log = (LoggingEvent) objectStream.readObject();
 				append(log);
 			}
-
 		} catch (EOFException e) {
-			// When the client closes the connection, the stream will run out of data, and the ObjectInputStream.readObject method will throw the exception
+			// When the client closes the connection, the stream will run out of data, 
+			// and the ObjectInputStream.readObject method will throw the exception
 			logger.info("Reached EOF, closing client's connection");
 		} catch (IOException e) {
-			logger.error("IOException occurs, closing client's connection:", e);
+			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			logger.error("ClassNotFoundException occurs, closing client's connection:", e);
+			logger.error("ClassNotFoundException occurred while reading LoggingEvent", e);
 		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					logger.error("IOException occurred while closing input stream", e);
+				}
+			}
+
+			if (objectStream != null) {
+				try {
+					objectStream.close();
+				} catch (IOException e) {
+					logger.error("IOException occurred while closing object stream", e);
+				}
+			}
 			shutdown();
 		}
 	}
 
-	public void shutdown() {
+	private void shutdown() {
 		try {
-			if (!client.isClosed()) {
-				logger.debug("Closing client's connection...");
-				client.close();
-				logger.debug("Client's connection was closed");
-			}
+			logger.debug("Closing client's connection...");
+			socket.close();
+			logger.debug("Client's connection was closed");
 		} catch (IOException e) {
-			logger.error("IOException occurs while closing client's connection:", e);
+			logger.error("IOException occurred while closing client's connection", e);
 		}
 	}
 

@@ -86,6 +86,7 @@ public class LogListViewController {
 		@Override
 		public void run() {
 			logger.debug("Log list view updater was run");
+
 			while (running) {
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override

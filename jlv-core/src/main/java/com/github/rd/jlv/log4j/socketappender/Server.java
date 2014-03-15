@@ -3,8 +3,10 @@ package com.github.rd.jlv.log4j.socketappender;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,18 +15,15 @@ public class Server extends Thread {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
+	private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
 	private ServerSocket serverSocket;
-
-	private volatile boolean listening = true;
-
-	private BlockingQueue<ClientThread> clients = new LinkedBlockingQueue<>();
 
 	public Server(int port) throws IOException {
 		if (port < 0) {
 			throw new IllegalArgumentException("Port value should be a positive number. Current port: " + port);
 		}
 		try {
-			setDaemon(true);
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
 			throw new IOException("Could not listen on port: " + port, e);
@@ -35,17 +34,16 @@ public class Server extends Thread {
 	public void run() {
 		logger.debug("Server was started");
 
-		while (listening) {
+		while (!serverSocket.isClosed()) {
 			try {
 				logger.debug("Waiting for a new connection");
-				Socket clientSocket = serverSocket.accept();
-				logger.debug("Connection has been accepted from " + clientSocket.getInetAddress().getHostName());
-				ClientThread client = new ClientThread(clientSocket);
-
-				if (clients.offer(client)) {
-					Thread clientThread = new Thread(client);
-					clientThread.setDaemon(true);
-					clientThread.start();
+				final Socket socket = serverSocket.accept();
+				socket.setSoTimeout(5000);
+				logger.debug("Connection has been accepted from " + socket.getInetAddress().getHostName());
+				executor.execute(new ClientThread(socket));
+			} catch (RejectedExecutionException e) {
+				if (!executor.isShutdown()) {
+					logger.warn("logs submission rejected", e);
 				}
 			} catch (IOException e) {
 				logger.warn("Failed to accept a new connection: server socket was closed.");
@@ -54,21 +52,20 @@ public class Server extends Thread {
 	}
 
 	public void shutdown() {
-		listening = false;
-
 		try {
-			ClientThread client = clients.poll();
-
-			while (client != null) {
-				client.shutdown();
-				client = clients.poll();
-			}
+			serverSocket.close();
+			logger.debug("Server was stopped");
+		} catch (IOException e) {
+			logger.error("IOException occurred while closing server socket:", e);
 		} finally {
 			try {
-				serverSocket.close();
-				logger.debug("Server was stopped");
-			} catch (IOException e) {
-				logger.error("IOException occurred while closing server socket:", e);
+				executor.shutdown();
+
+				if (!executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.NANOSECONDS)) {
+					executor.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				logger.error("InterruptedException occurred while shutting down server executor.", e);
 			}
 		}
 	}
