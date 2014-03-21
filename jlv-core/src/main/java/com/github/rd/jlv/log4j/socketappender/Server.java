@@ -40,10 +40,10 @@ public class Server extends Thread {
 				final Socket socket = serverSocket.accept();
 				socket.setSoTimeout(5000);
 				logger.debug("Connection has been accepted from " + socket.getInetAddress().getHostName());
-				executor.execute(new ClientThread(socket));
+				executor.execute(new SocketLogHandler(socket));
 			} catch (RejectedExecutionException e) {
 				if (!executor.isShutdown()) {
-					logger.warn("logs submission rejected", e);
+					logger.warn("Connections submission rejected", e);
 				}
 			} catch (IOException e) {
 				logger.warn("Failed to accept a new connection: server socket was closed.");
