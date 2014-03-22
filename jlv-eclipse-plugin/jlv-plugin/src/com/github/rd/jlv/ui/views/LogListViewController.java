@@ -26,7 +26,7 @@ public class LogListViewController {
 	private Server server;
 
 	public LogListViewController(LogListView view) {
-		logContainer = new LogCollection(JlvActivator.getPreferenceManager().getLogsBufferSize());
+		logContainer = new LogCollection(JlvActivator.getDefault().getPreferenceManager().getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -46,7 +46,7 @@ public class LogListViewController {
 
 	public void startServer() {
 		try {
-			server = new Server(JlvActivator.getPreferenceManager().getServerPortNumber());
+			server = new Server(JlvActivator.getDefault().getPreferenceManager().getServerPortNumber());
 			server.start();
 		} catch (IOException e) {
 			logger.error("IOException occurred while starting server:", e);
@@ -95,7 +95,7 @@ public class LogListViewController {
 					}
 				});
 				try {
-					sleep(JlvActivator.getPreferenceManager().getLogsRefreshingTime());
+					sleep(JlvActivator.getDefault().getPreferenceManager().getLogsRefreshingTime());
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					logger.error("Timer thread was interrupted:", e);

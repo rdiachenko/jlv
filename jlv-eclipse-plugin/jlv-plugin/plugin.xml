@@ -91,7 +91,7 @@
                commandId="com.github.rd.jlv.ui.views.quickSearchAction"
                icon="icons/quickSearchIcon.png"
                label="Quick search"
-               style="push"
+               style="toggle"
                tooltip="Quick search">
          </command>
          <command

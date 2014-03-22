@@ -101,15 +101,15 @@ public class PresentationalPreferenceManager {
 	private Image levelNameToImage(String levelName) {
 		switch (levelName) {
 		case LogConstants.DEBUG_LEVEL_NAME:
-			return JlvActivator.getImage(ImageType.DEBUG);
+			return JlvActivator.getDefault().getResourceManager().getImage(ImageType.DEBUG_LEVEL_ICON);
 		case LogConstants.INFO_LEVEL_NAME:
-			return JlvActivator.getImage(ImageType.INFO);
+			return JlvActivator.getDefault().getResourceManager().getImage(ImageType.INFO_LEVEL_ICON);
 		case LogConstants.WARN_LEVEL_NAME:
-			return JlvActivator.getImage(ImageType.WARN);
+			return JlvActivator.getDefault().getResourceManager().getImage(ImageType.WARN_LEVEL_ICON);
 		case LogConstants.ERROR_LEVEL_NAME:
-			return JlvActivator.getImage(ImageType.ERROR);
+			return JlvActivator.getDefault().getResourceManager().getImage(ImageType.ERROR_LEVEL_ICON);
 		case LogConstants.FATAL_LEVEL_NAME:
-			return JlvActivator.getImage(ImageType.FATAL);
+			return JlvActivator.getDefault().getResourceManager().getImage(ImageType.FATAL_LEVEL_ICON);
 		default:
 			throw new IllegalArgumentException("No log level with such name: " + levelName);
 		}

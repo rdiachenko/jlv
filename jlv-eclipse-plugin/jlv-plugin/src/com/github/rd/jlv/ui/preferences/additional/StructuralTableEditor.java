@@ -283,8 +283,9 @@ public class StructuralTableEditor extends FieldEditor {
 		protected void paint(Event event, Object element) {
 			TableItem item = (TableItem) event.item;
 			StructuralPreferenceModel column = (StructuralPreferenceModel) item.getData();
-			Image image = (column.isDisplay()) ? JlvActivator.getImage(ImageType.CHECKBOX_CHECKED)
-					: JlvActivator.getImage(ImageType.CHECKBOX_UNCHECKED);
+			Image image = (column.isDisplay()) ? JlvActivator.getDefault().getResourceManager()
+					.getImage(ImageType.CHECKBOX_CHECKED_ICON)
+					: JlvActivator.getDefault().getResourceManager().getImage(ImageType.CHECKBOX_UNCHECKED_ICON);
 			Rectangle bounds = item.getBounds(event.index);
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;

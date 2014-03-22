@@ -3,28 +3,31 @@ package com.github.rd.jlv.ui.views;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
 
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	private static final int TEXT_LENGTH_LIMIT = 200;
 
-	private Table table;
-
 	private String fieldName;
 
-	public TextColumnLabelProvider(Table table, String fieldName) {
+	private ResourceManager resourceManager;
+
+	private PreferenceManager preferenceManager;
+
+	public TextColumnLabelProvider(String fieldName) {
 		super();
-		this.table = table;
 		this.fieldName = fieldName;
+		this.resourceManager = JlvActivator.getDefault().getResourceManager();
+		this.preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
 
 	@Override
@@ -46,27 +49,38 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public Color getForeground(Object element) {
-		Log log = (Log) element;
-		RGB rgb = JlvActivator.getPreferenceManager().getForeground(log.getLevel());
-		Color color = new Color(Display.getCurrent(), rgb);
-		return color;
+		Display display = Display.getCurrent();
+
+		if (display == null) {
+			return null;
+		} else {
+			Log log = (Log) element;
+			RGB rgb = preferenceManager.getForeground(log.getLevel());
+			return resourceManager.getColor(display, rgb);
+		}
 	}
 
 	@Override
 	public Color getBackground(Object element) {
-		Log log = (Log) element;
-		RGB rgb = JlvActivator.getPreferenceManager().getBackground(log.getLevel());
-		Color color = new Color(Display.getCurrent(), rgb);
-		return color;
+		Display display = Display.getCurrent();
+
+		if (display == null) {
+			return null;
+		} else {
+			Log log = (Log) element;
+			RGB rgb = preferenceManager.getBackground(log.getLevel());
+			return resourceManager.getColor(display, rgb);
+		}
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		FontData[] fontData = table.getFont().getFontData();
-		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(JlvActivator.getPreferenceManager().getFontSize());
+		Display display = Display.getCurrent();
+
+		if (display == null) {
+			return null;
+		} else {
+			return resourceManager.getFont(display, preferenceManager.getFontSize());
 		}
-		Font font = new Font(Display.getCurrent(), fontData);
-		return font;
 	}
 }

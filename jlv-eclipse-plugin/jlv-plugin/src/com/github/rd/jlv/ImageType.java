@@ -2,13 +2,13 @@ package com.github.rd.jlv;
 
 public enum ImageType {
 
-	CHECKBOX_CHECKED("icons/checkboxChecked.gif"),
-	CHECKBOX_UNCHECKED("icons/checkboxUnchecked.gif"),
-	DEBUG("icons/debug.png"),
-	INFO("icons/info.png"),
-	WARN("icons/warn.png"),
-	ERROR("icons/error.png"),
-	FATAL("icons/fatal.png");
+	CHECKBOX_CHECKED_ICON("/icons/checkboxChecked.gif"),
+	CHECKBOX_UNCHECKED_ICON("/icons/checkboxUnchecked.gif"),
+	DEBUG_LEVEL_ICON("/icons/debug.png"),
+	INFO_LEVEL_ICON("/icons/info.png"),
+	WARN_LEVEL_ICON("/icons/warn.png"),
+	ERROR_LEVEL_ICON("/icons/error.png"),
+	FATAL_LEVEL_ICON("/icons/fatal.png");
 
 	private String path;
 
@@ -16,7 +16,7 @@ public enum ImageType {
 		this.path = path;
 	}
 
-	public String getPath() {
+	public String path() {
 		return path;
 	}
 }
