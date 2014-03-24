@@ -1,7 +1,9 @@
 package com.github.rd.jlv.ui.preferences.additional;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -33,6 +35,9 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.model.StructuralModel;
+import com.github.rd.jlv.model.StructuralModel.ModelItem;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class StructuralTableEditor extends FieldEditor {
 
@@ -58,16 +63,14 @@ public class StructuralTableEditor extends FieldEditor {
 
 	private SelectionListener selectionListener;
 
-	private StructuralPreferenceModel[] structuralModel;
+	private StructuralModel structuralModel;
 
-	private IPreferenceStore store;
-	private StructuralPreferenceManager preferenceManager;
+	private PreferenceManager preferenceManager;
 
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
-		this.store = JlvActivator.getDefault().getPreferenceStore();
-		preferenceManager = new StructuralPreferenceManager(store, name);
-		structuralModel = preferenceManager.loadDefaultStructure();
+		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		structuralModel = preferenceManager.getDefaultStructuralModel();
 		createControl(parent);
 	}
 
@@ -95,26 +98,26 @@ public class StructuralTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.loadStructure());
+		doLoad(preferenceManager.getStructuralModel());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.loadDefaultStructure());
+		doLoad(preferenceManager.getDefaultStructuralModel());
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			preferenceManager.storeTableStructure(structuralModel);
+			preferenceManager.storeStructuralModel(structuralModel);
 		}
 	}
 
-	private void doLoad(StructuralPreferenceModel[] model) {
+	private void doLoad(StructuralModel model) {
+		structuralModel = model;
+
 		if (tableViewer != null) {
-			for (int i = 0; i < model.length; i++) {
-				structuralModel[i] = model[i];
-			}
+			tableViewer.setInput(structuralModel.getModelItems());
 			tableViewer.refresh();
 		}
 	}
@@ -143,7 +146,7 @@ public class StructuralTableEditor extends FieldEditor {
 			});
 			createTableColumns(tableViewer);
 			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(structuralModel);
+			tableViewer.setInput(structuralModel.getModelItems());
 		} else {
 			checkParent(tableViewer.getControl(), parent);
 		}
@@ -165,8 +168,8 @@ public class StructuralTableEditor extends FieldEditor {
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
 					public String getText(Object element) {
-						StructuralPreferenceModel column = (StructuralPreferenceModel) element;
-						return column.getName();
+						ModelItem modelItem = (ModelItem) element;
+						return modelItem.getName();
 					}
 				});
 				break;
@@ -174,8 +177,8 @@ public class StructuralTableEditor extends FieldEditor {
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
 					public String getText(Object element) {
-						StructuralPreferenceModel column = (StructuralPreferenceModel) element;
-						return Integer.toString(column.getWidth());
+						ModelItem modelItem = (ModelItem) element;
+						return Integer.toString(modelItem.getWidth());
 					}
 				});
 				viewerColumn.setEditingSupport(new WidthCellEditor(tableViewer));
@@ -263,9 +266,8 @@ public class StructuralTableEditor extends FieldEditor {
 		int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			StructuralPreferenceModel currentModel = structuralModel[index];
-			structuralModel[index] = structuralModel[target];
-			structuralModel[target] = currentModel;
+			List<ModelItem> modelItems = structuralModel.getModelItems();
+			Collections.swap(modelItems, index, target);
 			tableViewer.refresh();
 			tableViewer.getTable().setSelection(target);
 		}
@@ -282,8 +284,8 @@ public class StructuralTableEditor extends FieldEditor {
 		@Override
 		protected void paint(Event event, Object element) {
 			TableItem item = (TableItem) event.item;
-			StructuralPreferenceModel column = (StructuralPreferenceModel) item.getData();
-			Image image = (column.isDisplay()) ? JlvActivator.getDefault().getResourceManager()
+			ModelItem modelItem = (ModelItem) item.getData();
+			Image image = (modelItem.isDisplay()) ? JlvActivator.getDefault().getResourceManager()
 					.getImage(ImageType.CHECKBOX_CHECKED_ICON)
 					: JlvActivator.getDefault().getResourceManager().getImage(ImageType.CHECKBOX_UNCHECKED_ICON);
 			Rectangle bounds = item.getBounds(event.index);
@@ -325,15 +327,15 @@ public class StructuralTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(Object element) {
-			StructuralPreferenceModel model = (StructuralPreferenceModel) element;
-			return Integer.toString(model.getWidth());
+			ModelItem modelItem = (ModelItem) element;
+			return Integer.toString(modelItem.getWidth());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			StructuralPreferenceModel model = (StructuralPreferenceModel) element;
+			ModelItem modelItem = (ModelItem) element;
 			int width = Integer.valueOf((String) value);
-			model.setWidth(width);
+			modelItem.setWidth(width);
 			viewer.update(element, null);
 		}
 	}
@@ -359,14 +361,14 @@ public class StructuralTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(final Object element) {
-			StructuralPreferenceModel model = (StructuralPreferenceModel) element;
-			return model.isDisplay();
+			ModelItem modelItem = (ModelItem) element;
+			return modelItem.isDisplay();
 		}
 
 		@Override
 		protected void setValue(final Object element, final Object value) {
-			StructuralPreferenceModel model = (StructuralPreferenceModel) element;
-			model.setDisplay((Boolean) value);
+			ModelItem modelItem = (ModelItem) element;
+			modelItem.setDisplay((Boolean) value);
 			viewer.update(element, null);
 		}
 	}

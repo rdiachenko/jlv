@@ -1,14 +1,12 @@
 package com.github.rd.jlv.ui.views;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
@@ -19,14 +17,11 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	private String fieldName;
 
-	private ResourceManager resourceManager;
-
 	private PreferenceManager preferenceManager;
 
 	public TextColumnLabelProvider(String fieldName) {
 		super();
 		this.fieldName = fieldName;
-		this.resourceManager = JlvActivator.getDefault().getResourceManager();
 		this.preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
 
@@ -49,38 +44,16 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public Color getForeground(Object element) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			Log log = (Log) element;
-			RGB rgb = preferenceManager.getForeground(log.getLevel());
-			return resourceManager.getColor(display, rgb);
-		}
+		return preferenceManager.getColor(((Log) element).getLevel(), SWT.FOREGROUND);
 	}
 
 	@Override
 	public Color getBackground(Object element) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			Log log = (Log) element;
-			RGB rgb = preferenceManager.getBackground(log.getLevel());
-			return resourceManager.getColor(display, rgb);
-		}
+		return preferenceManager.getColor(((Log) element).getLevel(), SWT.BACKGROUND);
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			return resourceManager.getFont(display, preferenceManager.getFontSize());
-		}
+		return preferenceManager.getFont();
 	}
 }

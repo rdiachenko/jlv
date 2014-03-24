@@ -17,13 +17,15 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.rd.jlv.model.PresentationalModel.ModelItem.Rgb;
+
 public class ResourceManager {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final Map<ImageType, Image> imageRegistry = new EnumMap<>(ImageType.class);
 
-	private final Map<RGB, Color> colorRegistry = new HashMap<>();
+	private final Map<Rgb, Color> colorRegistry = new HashMap<>();
 
 	private final Map<Integer, Font> fontRegistry = new HashMap<>();
 
@@ -39,11 +41,11 @@ public class ResourceManager {
 		return imageRegistry.get(type);
 	}
 
-	public Color getColor(Display display, RGB rgb) {
+	public Color getColor(Display display, Rgb rgb) {
 		Color color = colorRegistry.get(rgb);
 
 		if (color == null || color.isDisposed()) {
-			color = new Color(display, rgb);
+			color = new Color(display, new RGB(rgb.getRed(), rgb.getGreen(), rgb.getBlue()));
 			colorRegistry.put(rgb, color);
 			logger.debug("A new color was added to color registry: {}", color);
 		}

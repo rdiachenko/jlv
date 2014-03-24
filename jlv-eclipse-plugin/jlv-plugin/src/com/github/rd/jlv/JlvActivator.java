@@ -30,7 +30,7 @@ public class JlvActivator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		resourceManager = new ResourceManager();
-		preferenceManager = new PreferenceManager(getPreferenceStore());
+		preferenceManager = new PreferenceManager(getPreferenceStore(), resourceManager);
 		configureLogging();
 	}
 

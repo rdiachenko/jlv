@@ -1,6 +1,7 @@
 package com.github.rd.jlv.ui.views;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -27,8 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.model.StructuralModel;
+import com.github.rd.jlv.model.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceModel;
 import com.google.common.base.Strings;
 
 public class LogListView extends ViewPart {
@@ -80,9 +82,8 @@ public class LogListView extends ViewPart {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceManager.STRUCTURAL_TABLE_SETTINGS.equals(event.getProperty())) {
 					String structure = event.getNewValue().toString();
-					StructuralPreferenceModel[] columnStructure = preferenceManager
-							.getStructuralPreferenceModel(structure);
-					updateColumns(viewer.getTable(), columnStructure);
+					StructuralModel structuralModel = preferenceManager.getStructuralModel(structure);
+					updateColumns(viewer.getTable(), structuralModel);
 				}
 			}
 		};
@@ -203,26 +204,29 @@ public class LogListView extends ViewPart {
 			columns[i].addControlListener(new ColumnResizeListener());
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		StructuralPreferenceModel[] columnStructure = preferenceManager.getStructuralPreferenceModel();
-		updateColumns(viewer.getTable(), columnStructure);
+		StructuralModel structuralModel = preferenceManager.getStructuralModel();
+		updateColumns(viewer.getTable(), structuralModel);
 	}
 
-	private void updateColumns(Table table, StructuralPreferenceModel[] columnStructure) {
+	private void updateColumns(Table table, StructuralModel structuralModel) {
 		int[] columnOrder = table.getColumnOrder();
 		int[] newColumnOrder = new int[columnOrder.length];
+		List<ModelItem> modelItems = structuralModel.getModelItems();
+		int index = 0;
 
-		for (int i = 0; i < columnStructure.length; i++) {
-			int position = columnOrderMap.get(columnStructure[i].getName());
-			newColumnOrder[i] = columnOrder[position];
-			columnOrderMap.put(columnStructure[i].getName(), i);
+		for (ModelItem item : modelItems) {
+			int position = columnOrderMap.get(item.getName());
+			newColumnOrder[index] = columnOrder[position];
+			columnOrderMap.put(item.getName(), index);
 
-			TableColumn column = table.getColumn(newColumnOrder[i]);
+			TableColumn column = table.getColumn(newColumnOrder[index]);
 
-			if (columnStructure[i].isDisplay()) {
-				column.setWidth(columnStructure[i].getWidth());
+			if (item.isDisplay()) {
+				column.setWidth(item.getWidth());
 			} else {
 				column.setWidth(0);
 			}
+			++index;
 		}
 		table.setColumnOrder(newColumnOrder);
 		table.redraw();
@@ -240,7 +244,7 @@ public class LogListView extends ViewPart {
 				TableColumn column = (TableColumn) e.getSource();
 				String columnName = column.getText();
 				int width = column.getWidth();
-				preferenceManager.setStructuralPreferenceModel(columnName, width);
+				preferenceManager.storeStructuralModel(columnName, width);
 			}
 		}
 	}

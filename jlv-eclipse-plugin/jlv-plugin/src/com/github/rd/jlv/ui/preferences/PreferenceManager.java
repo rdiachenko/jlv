@@ -3,13 +3,19 @@ package com.github.rd.jlv.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
-import com.github.rd.jlv.ui.preferences.additional.PresentationalPreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.PresentationalPreferenceModel;
-import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceModel;
+import com.github.rd.jlv.ImageType;
+import com.github.rd.jlv.ResourceManager;
+import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.model.PresentationalModel;
+import com.github.rd.jlv.model.StructuralModel;
+import com.github.rd.jlv.model.converters.PresentationalModelConverter;
+import com.github.rd.jlv.model.converters.StructuralModelConverter;
 
 public final class PreferenceManager {
 
@@ -25,19 +31,20 @@ public final class PreferenceManager {
 	public static final String PRESENTATIONAL_TABLE_SETTINGS = "jlv.loglistview.presentational.settings";
 
 	private IPreferenceStore store;
+	private ResourceManager resourceManager;
 
-	private StructuralPreferenceManager structuralPreferenceManager;
-
-	private PresentationalPreferenceManager presentationalPreferenceManager;
-	private PresentationalPreferenceModel presentationalPreferenceModel;
+	private StructuralModelConverter structuralModelConverter;
+	private PresentationalModelConverter presentationalModelConverter;
+	private PresentationalModel presentationalModel;
 
 	private IPropertyChangeListener propertyChangeListener;
 
-	public PreferenceManager(IPreferenceStore store) {
+	public PreferenceManager(IPreferenceStore store, ResourceManager resourceManager) {
 		this.store = store;
-		structuralPreferenceManager = new StructuralPreferenceManager(this.store, STRUCTURAL_TABLE_SETTINGS);
-		presentationalPreferenceManager = new PresentationalPreferenceManager(this.store, PRESENTATIONAL_TABLE_SETTINGS);
-		presentationalPreferenceModel = presentationalPreferenceManager.loadModel();
+		this.resourceManager = resourceManager;
+		structuralModelConverter = new StructuralModelConverter();
+		presentationalModelConverter = new PresentationalModelConverter();
+		presentationalModel = getPresentationalModel();
 		propertyChangeListener = new PropertyChangeListener();
 		addPropertyChangeListener(propertyChangeListener);
 	}
@@ -78,44 +85,102 @@ public final class PreferenceManager {
 		return store.getInt(LOGS_REFRESHING_TIME);
 	}
 
-	public StructuralPreferenceModel[] getStructuralPreferenceModel() {
-		return structuralPreferenceManager.loadStructure();
+	public StructuralModel getDefaultStructuralModel() {
+		String data = store.getDefaultString(STRUCTURAL_TABLE_SETTINGS);
+		return getStructuralModel(data);
 	}
 
-	public StructuralPreferenceModel[] getStructuralPreferenceModel(String structure) {
-		return structuralPreferenceManager.loadStructure(structure);
+	public StructuralModel getStructuralModel() {
+		String data = store.getString(STRUCTURAL_TABLE_SETTINGS);
+		return getStructuralModel(data);
 	}
 
-	public void setStructuralPreferenceModel(String columnName, int width) {
-		StructuralPreferenceModel[] structure = getStructuralPreferenceModel();
+	public StructuralModel getStructuralModel(String data) {
+		return structuralModelConverter.getModel(data);
+	}
 
-		for (StructuralPreferenceModel model : structure) {
-			if (columnName.equals(model.getName())) {
-				model.setWidth(width);
-				structuralPreferenceManager.storeTableStructure(structure);
-				break;
+	public void storeStructuralModel(String columnName, int width) {
+		StructuralModel model = getStructuralModel();
+
+		for (StructuralModel.ModelItem item : model.getModelItems()) {
+			if (columnName.equalsIgnoreCase(item.getName())) {
+				item.setWidth(width);
+			}
+		}
+		storeStructuralModel(model);
+	}
+
+	public void storeStructuralModel(StructuralModel model) {
+		String data = structuralModelConverter.modelAsJson(model);
+		store.setValue(STRUCTURAL_TABLE_SETTINGS, data);
+	}
+
+	public PresentationalModel getDefaultPresentationalModel() {
+		String data = store.getDefaultString(PRESENTATIONAL_TABLE_SETTINGS);
+		return getPresentationalModel(data);
+	}
+
+	public PresentationalModel getPresentationalModel() {
+		String data = store.getString(PRESENTATIONAL_TABLE_SETTINGS);
+		return getPresentationalModel(data);
+	}
+
+	public PresentationalModel getPresentationalModel(String data) {
+		return presentationalModelConverter.getModel(data);
+	}
+
+	public boolean isLevelAsImage() {
+		return presentationalModel.isLevelAsImage();
+	}
+
+	public Font getFont() {
+		Display display = Display.getCurrent();
+
+		if (display == null) {
+			return null;
+		} else {
+			return resourceManager.getFont(display, presentationalModel.getFontSize());
+		}
+	}
+
+	public Color getColor(String levelName, int colorType) {
+		PresentationalModel.ModelItem modelItem = presentationalModel.getModelItemsMap().get(levelName);
+		Display display = Display.getCurrent();
+
+		if (modelItem == null || display == null) {
+			return null;
+		} else {
+			switch (colorType) {
+			case SWT.BACKGROUND:
+				return resourceManager.getColor(display, modelItem.getBackground());
+			case SWT.FOREGROUND:
+				return resourceManager.getColor(display, modelItem.getForeground());
+			default:
+				throw new IllegalArgumentException("No such color type: " + colorType);
 			}
 		}
 	}
 
-	public boolean isLevelAsImage() {
-		return presentationalPreferenceModel.isLevelAsImage();
-	}
-
-	public int getFontSize() {
-		return presentationalPreferenceModel.getFontSize();
-	}
-
-	public RGB getForeground(String levelName) {
-		return presentationalPreferenceModel.getForeground(levelName);
-	}
-
-	public RGB getBackground(String levelName) {
-		return presentationalPreferenceModel.getBackground(levelName);
-	}
-
 	public Image getLevelImage(String levelName) {
-		return presentationalPreferenceModel.getImage(levelName);
+		switch (levelName) {
+		case LogConstants.DEBUG_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.DEBUG_LEVEL_ICON);
+		case LogConstants.INFO_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.INFO_LEVEL_ICON);
+		case LogConstants.WARN_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.WARN_LEVEL_ICON);
+		case LogConstants.ERROR_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.ERROR_LEVEL_ICON);
+		case LogConstants.FATAL_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.FATAL_LEVEL_ICON);
+		default:
+			throw new IllegalArgumentException("No log level with such name: " + levelName);
+		}
+	}
+
+	public void storePresentationalModel(PresentationalModel model) {
+		String data = presentationalModelConverter.modelAsJson(model);
+		store.setValue(PRESENTATIONAL_TABLE_SETTINGS, data);
 	}
 
 	public void dispose() {
@@ -127,7 +192,7 @@ public final class PreferenceManager {
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			if (PRESENTATIONAL_TABLE_SETTINGS.equals(event.getProperty())) {
-				presentationalPreferenceModel = presentationalPreferenceManager.loadModel();
+				presentationalModel = getPresentationalModel();
 			}
 		}
 	}

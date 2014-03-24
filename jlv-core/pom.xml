@@ -15,13 +15,13 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-        </dependency>
-        <!-- End testing tools -->
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+		<!-- End testing tools -->
 
 		<!-- Logging tools -->
 		<dependency>
@@ -51,7 +51,21 @@
 			<artifactId>h2</artifactId>
 			<version>1.3.171</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

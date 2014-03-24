@@ -7,25 +7,19 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
-	private ResourceManager resourceManager;
-
 	private PreferenceManager preferenceManager;
 
 	public LevelColumnLabelProvider() {
-		this.resourceManager = JlvActivator.getDefault().getResourceManager();
 		this.preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
 
@@ -74,34 +68,14 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			RGB rgb = preferenceManager.getBackground(log.getLevel());
-			return resourceManager.getColor(display, rgb);
-		}
+		return preferenceManager.getColor(log.getLevel(), SWT.BACKGROUND);
 	}
 
 	private Color getForeground(Log log) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			RGB rgb = preferenceManager.getForeground(log.getLevel());
-			return resourceManager.getColor(display, rgb);
-		}
+		return preferenceManager.getColor(log.getLevel(), SWT.FOREGROUND);
 	}
 
 	private Font getFont(Log log) {
-		Display display = Display.getCurrent();
-
-		if (display == null) {
-			return null;
-		} else {
-			return resourceManager.getFont(display, preferenceManager.getFontSize());
-		}
+		return preferenceManager.getFont();
 	}
 }
