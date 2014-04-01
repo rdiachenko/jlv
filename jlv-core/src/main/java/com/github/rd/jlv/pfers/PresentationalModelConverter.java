@@ -12,13 +12,15 @@ import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 
-public class PresentationalModelConverter {
+public class PresentationalModelConverter
+    implements AbstractConverter<PresentationalModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
-	public String defaultModelToJson() {
+	@Override
+    public String defaultModelToJson() {
 		List<ModelItem> items = new ArrayList<>();
 		items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
 		items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
@@ -33,7 +35,8 @@ public class PresentationalModelConverter {
 		return modelToJson(model);
 	}
 
-	public PresentationalModel jsonToModel(String json) {
+	@Override
+    public PresentationalModel jsonToModel(String json) {
 		try {
 			PresentationalModel model = mapper.readValue(json, PresentationalModel.class);
 			return model;
@@ -45,7 +48,8 @@ public class PresentationalModelConverter {
 		return model;
 	}
 
-	public String modelToJson(PresentationalModel model) {
+	@Override
+    public String modelToJson(PresentationalModel model) {
 		try {
 			return mapper.writeValueAsString(model);
 		} catch (IOException e) {
