@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -68,14 +69,14 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		return preferenceManager.getColor(log.getLevel(), SWT.BACKGROUND);
+		return preferenceManager.getColor(log.getLevel(), SWT.BACKGROUND, Display.getCurrent());
 	}
 
 	private Color getForeground(Log log) {
-		return preferenceManager.getColor(log.getLevel(), SWT.FOREGROUND);
+		return preferenceManager.getColor(log.getLevel(), SWT.FOREGROUND, Display.getCurrent());
 	}
 
 	private Font getFont(Log log) {
-		return preferenceManager.getFont();
+		return preferenceManager.getFont(Display.getCurrent());
 	}
 }

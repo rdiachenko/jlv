@@ -184,6 +184,16 @@ public class PresentationalModel {
 
 			private int blue;
 
+			public Rgb() {
+				// used for jackson during serialization
+			}
+
+			public Rgb(int red, int green, int blue) {
+				this.red = red;
+				this.green = green;
+				this.blue = blue;
+			}
+
 			public int getRed() {
 				return red;
 			}

@@ -6,13 +6,13 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class PresentationalModel {
 
-    @JsonProperty(value="img")
+	@JsonProperty(value = "img")
 	private boolean levelAsImage;
 
-	@JsonProperty(value="font")
+	@JsonProperty(value = "font")
 	private int fontSize;
 
-	@JsonProperty(value="items")
+	@JsonProperty(value = "items")
 	private List<ModelItem> modelItems;
 
 	public boolean isLevelAsImage() {
@@ -85,13 +85,13 @@ public class PresentationalModel {
 
 	public static class ModelItem {
 
-	    @JsonProperty(value="level")
+		@JsonProperty(value = "level")
 		private String levelName;
 
-	    @JsonProperty(value="fcolor")
+		@JsonProperty(value = "fcolor")
 		private Rgb foreground;
 
-	    @JsonProperty(value="bcolor")
+		@JsonProperty(value = "bcolor")
 		private Rgb background;
 
 		public String getLevelName() {
@@ -172,13 +172,13 @@ public class PresentationalModel {
 
 		public static class Rgb {
 
-		    @JsonProperty(value="r")
+			@JsonProperty(value = "r")
 			private int red;
 
-		    @JsonProperty(value="g")
+			@JsonProperty(value = "g")
 			private int green;
 
-		    @JsonProperty(value="b")
+			@JsonProperty(value = "b")
 			private int blue;
 
 			public int getRed() {

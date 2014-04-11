@@ -13,14 +13,14 @@ import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 
 public class PresentationalModelConverter
-    implements AbstractConverter<PresentationalModel> {
+implements AbstractConverter<PresentationalModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-    public String defaultModelToJson() {
+	public PresentationalModel getDefaultModel() {
 		List<ModelItem> items = new ArrayList<>();
 		items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
 		items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
@@ -32,11 +32,11 @@ public class PresentationalModelConverter
 		model.setLevelAsImage(true);
 		model.setFontSize(11);
 		model.setModelItems(items);
-		return modelToJson(model);
+		return model;
 	}
 
 	@Override
-    public PresentationalModel jsonToModel(String json) {
+	public PresentationalModel jsonToModel(String json) {
 		try {
 			PresentationalModel model = mapper.readValue(json, PresentationalModel.class);
 			return model;
@@ -49,7 +49,7 @@ public class PresentationalModelConverter
 	}
 
 	@Override
-    public String modelToJson(PresentationalModel model) {
+	public String modelToJson(PresentationalModel model) {
 		try {
 			return mapper.writeValueAsString(model);
 		} catch (IOException e) {

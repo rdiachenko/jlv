@@ -5,6 +5,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.log4j.LogUtil;
@@ -44,16 +45,16 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public Color getForeground(Object element) {
-		return preferenceManager.getColor(((Log) element).getLevel(), SWT.FOREGROUND);
+		return preferenceManager.getColor(((Log) element).getLevel(), SWT.FOREGROUND, Display.getCurrent());
 	}
 
 	@Override
 	public Color getBackground(Object element) {
-		return preferenceManager.getColor(((Log) element).getLevel(), SWT.BACKGROUND);
+		return preferenceManager.getColor(((Log) element).getLevel(), SWT.BACKGROUND, Display.getCurrent());
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		return preferenceManager.getFont();
+		return preferenceManager.getFont(Display.getCurrent());
 	}
 }

@@ -2,9 +2,9 @@ package com.github.rd.jlv.pfers;
 
 public interface AbstractConverter<T> {
 
-    String defaultModelToJson();
+	T getDefaultModel();
 
-    T jsonToModel(String json);
+	T jsonToModel(String json);
 
-    String modelToJson(T model);
+	String modelToJson(T model);
 }

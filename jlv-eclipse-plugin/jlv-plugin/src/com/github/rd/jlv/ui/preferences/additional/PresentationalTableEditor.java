@@ -141,7 +141,7 @@ public class PresentationalTableEditor extends FieldEditor {
 					tableViewer = null;
 				}
 			});
-			createTableColumns(tableViewer, presentationalModel);
+			createTableColumns(tableViewer);
 			tableViewer.setContentProvider(new ArrayContentProvider());
 			tableViewer.setInput(presentationalModel.getModelItems());
 		} else {
@@ -150,7 +150,7 @@ public class PresentationalTableEditor extends FieldEditor {
 		return tableViewer;
 	}
 
-	private void createTableColumns(TableViewer tableViewer, PresentationalModel model) {
+	private void createTableColumns(TableViewer tableViewer) {
 		for (int i = 0; i < COLUMN_NAMES.length; i++) {
 			TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEAD);
 			viewerColumn.getColumn().setText(COLUMN_NAMES[i]);
@@ -158,7 +158,7 @@ public class PresentationalTableEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case LEVEL_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(model));
+				viewerColumn.setLabelProvider(new LevelColumnLabelProvider());
 				break;
 			case FOREGROUND_COLUMN_HEADER:
 				viewerColumn.setLabelProvider(new ColorColumnLabelProvider(SWT.FOREGROUND));
@@ -266,12 +266,6 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
-		private PresentationalModel model;
-
-		public LevelColumnLabelProvider(PresentationalModel model) {
-			this.model = model;
-		}
-
 		@Override
 		protected void measure(Event event, Object element) {
 			// no code
@@ -283,7 +277,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			ModelItem modelItem = (ModelItem) item.getData();
 			Rectangle bounds = item.getBounds(event.index);
 
-			if (model.isLevelAsImage()) {
+			if (presentationalModel.isLevelAsImage()) {
 				Image image = preferenceManager.getLevelImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
@@ -319,14 +313,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		public Color getForeground(Object element) {
 			ModelItem modelItem = (ModelItem) element;
-			return preferenceManager.getColor(modelItem.getLevelName(), SWT.FOREGROUND);
+			return preferenceManager.getColor(modelItem.getLevelName(), SWT.FOREGROUND, Display.getCurrent());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
 			if (column == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
-				return preferenceManager.getColor(modelItem.getLevelName(), SWT.BACKGROUND);
+				return preferenceManager.getColor(modelItem.getLevelName(), SWT.BACKGROUND, Display.getCurrent());
 			} else {
 				return super.getBackground(element);
 			}
@@ -371,17 +365,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		protected void setValue(Object element, Object value) {
 			ModelItem modelItem = (ModelItem) element;
-			Rgb rgb = new Rgb();
-			rgb.setRed(((RGB) value).red);
-			rgb.setGreen(((RGB) value).green);
-			rgb.setBlue(((RGB) value).blue);
+			RGB rgb = (RGB) value;
 
 			if (colorState == SWT.FOREGROUND) {
-				modelItem.setForeground(rgb);
+				modelItem.setForeground(new Rgb(rgb.red, rgb.green, rgb.blue));
 			} else {
-				modelItem.setBackground(rgb);
+				modelItem.setBackground(new Rgb(rgb.red, rgb.green, rgb.blue));
 			}
-			viewer.update(element, null);
+			viewer.update(modelItem, null);
 		}
 	}
 }

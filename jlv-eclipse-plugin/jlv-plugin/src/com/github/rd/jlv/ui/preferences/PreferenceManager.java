@@ -133,9 +133,7 @@ public final class PreferenceManager {
 		return presentationalModel.isLevelAsImage();
 	}
 
-	public Font getFont() {
-		Display display = Display.getCurrent();
-
+	public Font getFont(Display display) {
 		if (display == null) {
 			return null;
 		} else {
@@ -143,9 +141,8 @@ public final class PreferenceManager {
 		}
 	}
 
-	public Color getColor(String levelName, int colorType) {
+	public Color getColor(String levelName, int colorType, Display display) {
 		PresentationalModel.ModelItem modelItem = presentationalModel.getModelItemsMap().get(levelName);
-		Display display = Display.getCurrent();
 
 		if (modelItem == null || display == null) {
 			return null;

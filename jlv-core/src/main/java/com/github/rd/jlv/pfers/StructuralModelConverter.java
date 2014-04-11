@@ -12,14 +12,14 @@ import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
 
 public class StructuralModelConverter
-    implements AbstractConverter<StructuralModel> {
+implements AbstractConverter<StructuralModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-    public String defaultModelToJson() {
+	public StructuralModel getDefaultModel() {
 		List<ModelItem> items = new ArrayList<>();
 		items.add(createItem(LogConstants.LEVEL_FIELD_NAME, 55, true));
 		items.add(createItem(LogConstants.CATEGORY_FIELD_NAME, 100, true));
@@ -30,11 +30,11 @@ public class StructuralModelConverter
 
 		StructuralModel model = new StructuralModel();
 		model.setModelItems(items);
-		return modelToJson(model);
+		return model;
 	}
 
 	@Override
-    public StructuralModel jsonToModel(String json) {
+	public StructuralModel jsonToModel(String json) {
 		try {
 			return mapper.readValue(json, StructuralModel.class);
 		} catch (IOException e) {
@@ -46,7 +46,7 @@ public class StructuralModelConverter
 	}
 
 	@Override
-    public String modelToJson(StructuralModel model) {
+	public String modelToJson(StructuralModel model) {
 		try {
 			return mapper.writeValueAsString(model);
 		} catch (IOException e) {

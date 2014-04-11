@@ -336,7 +336,7 @@ public class StructuralTableEditor extends FieldEditor {
 			ModelItem modelItem = (ModelItem) element;
 			int width = Integer.valueOf((String) value);
 			modelItem.setWidth(width);
-			viewer.update(element, null);
+			viewer.update(modelItem, null);
 		}
 	}
 
@@ -369,7 +369,7 @@ public class StructuralTableEditor extends FieldEditor {
 		protected void setValue(final Object element, final Object value) {
 			ModelItem modelItem = (ModelItem) element;
 			modelItem.setDisplay((Boolean) value);
-			viewer.update(element, null);
+			viewer.update(modelItem, null);
 		}
 	}
 }

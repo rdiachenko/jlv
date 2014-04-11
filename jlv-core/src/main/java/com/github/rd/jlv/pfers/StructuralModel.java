@@ -6,7 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class StructuralModel {
 
-    @JsonProperty(value="items")
+	@JsonProperty(value = "items")
 	private List<ModelItem> modelItems;
 
 	public List<ModelItem> getModelItems() {
@@ -24,13 +24,13 @@ public class StructuralModel {
 
 	public static class ModelItem {
 
-	    @JsonProperty(value="n")
+		@JsonProperty(value = "n")
 		private String name;
 
-		@JsonProperty(value="w")
+		@JsonProperty(value = "w")
 		private int width;
 
-		@JsonProperty(value="d")
+		@JsonProperty(value = "d")
 		private boolean display;
 
 		public String getName() {

@@ -1,6 +1,5 @@
 package com.github.rd.jlv.log4j.dao;
 
-
 public class LogDaoImplTest {
 
 //	private static LogDao logDao;
