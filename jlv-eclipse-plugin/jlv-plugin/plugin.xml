@@ -139,7 +139,7 @@
       <key
             commandId="com.github.rd.jlv.ui.views.quickSearchAction"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="Shift+F">
+            sequence="Strg+F">
       </key>
    </extension>
    <extension
