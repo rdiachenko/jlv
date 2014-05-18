@@ -30,33 +30,33 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
 
 		Group serverSettingsGroup = PreferencePageUtils.createSettingsGroup(parent, "Server settings");
-		IntegerFieldEditor serverPortNumberPrefEditor = new IntegerFieldEditor(
+		IntegerFieldEditor serverPortEditor = new IntegerFieldEditor(
 				PreferenceManager.SERVER_PORT_NUMBER,
 				"Port number:",
 				PreferencePageUtils.createFieldEditorComposite(serverSettingsGroup));
-		addField(serverPortNumberPrefEditor);
+		addField(serverPortEditor);
 
-		BooleanFieldEditor serverAutoStartPrefEditor = new BooleanFieldEditor(
+		BooleanFieldEditor serverStartEditor = new BooleanFieldEditor(
 				PreferenceManager.SERVER_AUTO_START,
 				"Automatic start",
 				PreferencePageUtils.createFieldEditorComposite(serverSettingsGroup));
-		addField(serverAutoStartPrefEditor);
+		addField(serverStartEditor);
 
-		Group jlvLogListViewSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
+		Group logListViewSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"JLV log list view settings");
-		IntegerFieldEditor jlvLogListViewBufferSizePrefEditor = new IntegerFieldEditor(
+		IntegerFieldEditor bufferSizeEditor = new IntegerFieldEditor(
 				PreferenceManager.LOGS_BUFFER_SIZE,
 				"Buffer size (logs):",
-				PreferencePageUtils.createFieldEditorComposite(jlvLogListViewSettingsGroup));
-		jlvLogListViewBufferSizePrefEditor.setValidRange(LOG_LIST_VIEW_BUFFER_SIZE_MIN, LOG_LIST_VIEW_BUFFER_SIZE_MAX);
-		addField(jlvLogListViewBufferSizePrefEditor);
+				PreferencePageUtils.createFieldEditorComposite(logListViewSettingsGroup));
+		bufferSizeEditor.setValidRange(LOG_LIST_VIEW_BUFFER_SIZE_MIN, LOG_LIST_VIEW_BUFFER_SIZE_MAX);
+		addField(bufferSizeEditor);
 
-		IntegerFieldEditor jlvLogListViewRefreshingTimePrefEditor = new IntegerFieldEditor(
+		IntegerFieldEditor refreshingTimeEditor = new IntegerFieldEditor(
 				PreferenceManager.LOGS_REFRESHING_TIME,
 				"Refreshing time (ms):",
-				PreferencePageUtils.createFieldEditorComposite(jlvLogListViewSettingsGroup));
-		jlvLogListViewRefreshingTimePrefEditor.setValidRange(LOG_LIST_VIEW_REFRESHING_TIME_MIN,
+				PreferencePageUtils.createFieldEditorComposite(logListViewSettingsGroup));
+		refreshingTimeEditor.setValidRange(LOG_LIST_VIEW_REFRESHING_TIME_MIN,
 				LOG_LIST_VIEW_REFRESHING_TIME_MAX);
-		addField(jlvLogListViewRefreshingTimePrefEditor);
+		addField(refreshingTimeEditor);
 	}
 }
