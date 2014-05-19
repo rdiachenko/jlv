@@ -1,7 +1,6 @@
 package com.github.rd.jlv.ui.preferences.additional;
 
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
@@ -19,7 +18,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -36,6 +34,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.model.PresentationalModel;
+import com.github.rd.jlv.model.PresentationalModel.ModelItem;
+import com.github.rd.jlv.model.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.google.common.base.Strings;
 
 public class PresentationalTableEditor extends FieldEditor {
@@ -62,15 +64,14 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private TableViewer tableViewer;
 
-	private PresentationalPreferenceManager preferenceManager;
-	private PresentationalPreferenceModel model;
-	private IPreferenceStore store;
+	private PresentationalModel presentationalModel;
+
+	private PreferenceManager preferenceManager;
 
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
-		this.store = JlvActivator.getDefault().getPreferenceStore();
-		preferenceManager = new PresentationalPreferenceManager(store, name);
-		model = preferenceManager.loadDefaultModel();
+		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		presentationalModel = preferenceManager.getDefaultPresentationalModel();
 		createControl(parent);
 	}
 
@@ -97,28 +98,31 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.loadModel());
+		doLoad(preferenceManager.getPresentationalModel());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.loadDefaultModel());
+		doLoad(preferenceManager.getDefaultPresentationalModel());
 	}
 
 	@Override
 	public void doStore() {
 		if (imageSwitcherBox != null && spinnerBox != null && tableViewer != null) {
-			preferenceManager.storeModel(model);
+			preferenceManager.storePresentationalModel(presentationalModel);
 		}
 	}
 
-	private void doLoad(PresentationalPreferenceModel presentationalModel) {
-		if (imageSwitcherBox != null && spinnerBox != null && tableViewer != null) {
-			model.setLevelAsImage(presentationalModel.isLevelAsImage());
-			model.setFontSize(presentationalModel.getFontSize());
-			model.setLogLevelModelList(presentationalModel.getLogLevelModelList());
-			imageSwitcherControl.setSelection(model.isLevelAsImage());
-			spinnerControl.setSelection(model.getFontSize());
+	private void doLoad(PresentationalModel model) {
+		presentationalModel = model;
+
+		if (imageSwitcherBox != null && spinnerBox != null) {
+			imageSwitcherControl.setSelection(presentationalModel.isLevelAsImage());
+			spinnerControl.setSelection(presentationalModel.getFontSize());
+		}
+
+		if (tableViewer != null) {
+			tableViewer.setInput(presentationalModel.getModelItems());
 			tableViewer.refresh();
 		}
 	}
@@ -137,16 +141,16 @@ public class PresentationalTableEditor extends FieldEditor {
 					tableViewer = null;
 				}
 			});
-			createTableColumns(tableViewer, model);
+			createTableColumns(tableViewer);
 			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(model.getLogLevelModelList());
+			tableViewer.setInput(presentationalModel.getModelItems());
 		} else {
 			checkParent(tableViewer.getControl(), parent);
 		}
 		return tableViewer;
 	}
 
-	private void createTableColumns(TableViewer tableViewer, PresentationalPreferenceModel model) {
+	private void createTableColumns(TableViewer tableViewer) {
 		for (int i = 0; i < COLUMN_NAMES.length; i++) {
 			TableViewerColumn viewerColumn = new TableViewerColumn(tableViewer, SWT.LEAD);
 			viewerColumn.getColumn().setText(COLUMN_NAMES[i]);
@@ -154,19 +158,15 @@ public class PresentationalTableEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case LEVEL_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(model));
+				viewerColumn.setLabelProvider(new LevelColumnLabelProvider());
 				break;
 			case FOREGROUND_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(
-						new ColorColumnLabelProvider(ColorColumnLabelProvider.Column.FOREGROUND));
-				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer,
-						ColorColumnCellEditor.ColorState.FOREGROUND));
+				viewerColumn.setLabelProvider(new ColorColumnLabelProvider(SWT.FOREGROUND));
+				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer, SWT.FOREGROUND));
 				break;
 			case BACKGROUND_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(
-						new ColorColumnLabelProvider(ColorColumnLabelProvider.Column.BACKGROUND));
-				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer,
-						ColorColumnCellEditor.ColorState.BACKGROUND));
+				viewerColumn.setLabelProvider(new ColorColumnLabelProvider(SWT.BACKGROUND));
+				viewerColumn.setEditingSupport(new ColorColumnCellEditor(tableViewer, SWT.BACKGROUND));
 				break;
 			default:
 				throw new IllegalArgumentException("No column with such name: " + COLUMN_NAMES[i]);
@@ -195,7 +195,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			imageSwitcherControl.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					model.setLevelAsImage(imageSwitcherControl.getSelection());
+					presentationalModel.setLevelAsImage(imageSwitcherControl.getSelection());
 					tableViewer.refresh();
 				}
 			});
@@ -225,7 +225,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			spinnerControl = new Spinner(spinnerBox, SWT.BORDER);
 			spinnerControl.setMinimum(7);
 			spinnerControl.setMaximum(17);
-			spinnerControl.setSelection(model.getFontSize());
+			spinnerControl.setSelection(presentationalModel.getFontSize());
 			spinnerControl.setIncrement(1);
 			spinnerControl.setPageIncrement(5);
 			spinnerControl.addModifyListener(new ModifyListener() {
@@ -235,8 +235,8 @@ public class PresentationalTableEditor extends FieldEditor {
 					String stringValue = spinner.getText();
 
 					if (!Strings.isNullOrEmpty(stringValue)) {
-						model.setFontSize(Integer.parseInt(stringValue));
-						updateFontSize(model.getFontSize());
+						presentationalModel.setFontSize(Integer.parseInt(stringValue));
+						updateFontSize(presentationalModel.getFontSize());
 					}
 				}
 			});
@@ -253,25 +253,18 @@ public class PresentationalTableEditor extends FieldEditor {
 	}
 
 	private void updateFontSize(int size) {
-		FontData[] fontData = tableViewer.getTable().getFont().getFontData();
+		Display display = Display.getCurrent();
 
-		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(size);
-		}
-		Font newFont = new Font(Display.getCurrent(), fontData);
+		if (display != null) {
+			Font font = JlvActivator.getDefault().getResourceManager().getFont(display, size);
 
-		for (TableItem item : tableViewer.getTable().getItems()) {
-			item.setFont(newFont);
+			for (TableItem item : tableViewer.getTable().getItems()) {
+				item.setFont(font);
+			}
 		}
 	}
 
-	private static class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
-
-		private PresentationalPreferenceModel model;
-
-		public LevelColumnLabelProvider(PresentationalPreferenceModel model) {
-			this.model = model;
-		}
+	private class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
 		@Override
 		protected void measure(Event event, Object element) {
@@ -281,11 +274,11 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		protected void paint(Event event, Object element) {
 			TableItem item = (TableItem) event.item;
-			LogLevelModel logLevelItem = (LogLevelModel) item.getData();
+			ModelItem modelItem = (ModelItem) item.getData();
 			Rectangle bounds = item.getBounds(event.index);
 
-			if (model.isLevelAsImage()) {
-				Image image = logLevelItem.getImage();
+			if (presentationalModel.isLevelAsImage()) {
+				Image image = preferenceManager.getLevelImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
 				int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -293,26 +286,21 @@ public class PresentationalTableEditor extends FieldEditor {
 				int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
 				event.gc.drawImage(image, x, y);
 			} else {
-				Point point = event.gc.stringExtent(logLevelItem.getLevelName());
+				Point point = event.gc.stringExtent(modelItem.getLevelName());
 				int xOffset = bounds.width / 2 - point.x / 2;
 				int yOffset = bounds.height / 2 - point.y / 2;
 				int x = xOffset > 0 ? bounds.x + xOffset : bounds.x;
 				int y = yOffset > 0 ? bounds.y + yOffset : bounds.y;
-				event.gc.drawText(logLevelItem.getLevelName(), x, y, true);
+				event.gc.drawText(modelItem.getLevelName(), x, y, true);
 			}
 		}
 	}
 
-	private static class ColorColumnLabelProvider extends ColumnLabelProvider {
+	private class ColorColumnLabelProvider extends ColumnLabelProvider {
 
-		private enum Column {
-			FOREGROUND,
-			BACKGROUND
-		}
+		private int column;
 
-		private Column column;
-
-		public ColorColumnLabelProvider(Column column) {
+		public ColorColumnLabelProvider(int column) {
 			super();
 			this.column = column;
 		}
@@ -324,35 +312,28 @@ public class PresentationalTableEditor extends FieldEditor {
 
 		@Override
 		public Color getForeground(Object element) {
-			LogLevelModel logLevelItem = (LogLevelModel) element;
-			Color color = new Color(Display.getCurrent(), logLevelItem.getForeground());
-			return color;
+			ModelItem modelItem = (ModelItem) element;
+			return preferenceManager.getColor(modelItem.getLevelName(), SWT.FOREGROUND, Display.getCurrent());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
-			if (column == Column.BACKGROUND) {
-				LogLevelModel logLevelItem = (LogLevelModel) element;
-				Color color = new Color(Display.getCurrent(), logLevelItem.getBackground());
-				return color;
+			if (column == SWT.BACKGROUND) {
+				ModelItem modelItem = (ModelItem) element;
+				return preferenceManager.getColor(modelItem.getLevelName(), SWT.BACKGROUND, Display.getCurrent());
 			} else {
 				return super.getBackground(element);
 			}
 		}
 	}
 
-	private static class ColorColumnCellEditor extends EditingSupport {
-
-		private enum ColorState {
-			FOREGROUND,
-			BACKGROUND
-		}
+	private class ColorColumnCellEditor extends EditingSupport {
 
 		private TableViewer viewer;
 
-		private ColorState colorState;
+		private int colorState;
 
-		public ColorColumnCellEditor(TableViewer viewer, ColorState colorState) {
+		public ColorColumnCellEditor(TableViewer viewer, int colorState) {
 			super(viewer);
 			this.viewer = viewer;
 			this.colorState = colorState;
@@ -370,25 +351,28 @@ public class PresentationalTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(Object element) {
-			LogLevelModel logLevelItem = (LogLevelModel) element;
+			ModelItem modelItem = (ModelItem) element;
+			Rgb rgb;
 
-			if (colorState == ColorState.FOREGROUND) {
-				return logLevelItem.getForeground();
+			if (colorState == SWT.FOREGROUND) {
+				rgb = modelItem.getForeground();
 			} else {
-				return logLevelItem.getBackground();
+				rgb = modelItem.getBackground();
 			}
+			return new RGB(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			LogLevelModel logLevelItem = (LogLevelModel) element;
+			ModelItem modelItem = (ModelItem) element;
+			RGB rgb = (RGB) value;
 
-			if (colorState == ColorState.FOREGROUND) {
-				logLevelItem.setForeground((RGB) value);
+			if (colorState == SWT.FOREGROUND) {
+				modelItem.setForeground(new Rgb(rgb.red, rgb.green, rgb.blue));
 			} else {
-				logLevelItem.setBackground((RGB) value);
+				modelItem.setBackground(new Rgb(rgb.red, rgb.green, rgb.blue));
 			}
-			viewer.update(element, null);
+			viewer.update(modelItem, null);
 		}
 	}
 }

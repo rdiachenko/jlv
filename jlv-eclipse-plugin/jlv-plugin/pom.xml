@@ -12,7 +12,7 @@
 	<artifactId>com.github.rd.jlv.plugin</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>JLV Eclipse plugin</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.github.rd.jlv</groupId>

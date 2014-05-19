@@ -42,14 +42,14 @@ public class LogTableViewer extends TableViewer {
 
 			switch (headers[i]) {
 			case LogConstants.LEVEL_FIELD_NAME:
-				column.setLabelProvider(new LevelColumnLabelProvider(this.getTable()));
+				column.setLabelProvider(new LevelColumnLabelProvider());
 				break;
 			case LogConstants.MESSAGE_FIELD_NAME:
 			case LogConstants.THROWABLE_FIELD_NAME:
-				column.setLabelProvider(new TextColumnLabelProvider(this.getTable(), headers[i]));
+				column.setLabelProvider(new TextColumnLabelProvider(headers[i]));
 				break;
 			default:
-				column.setLabelProvider(new DefaultColumnLabelProvider(this.getTable(), headers[i]));
+				column.setLabelProvider(new DefaultColumnLabelProvider(headers[i]));
 			}
 		}
 	}
