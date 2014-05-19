@@ -5,26 +5,23 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
-	private Table table;
+	private PreferenceManager preferenceManager;
 
-	public LevelColumnLabelProvider(Table table) {
-		super();
-		this.table = table;
+	public LevelColumnLabelProvider() {
+		this.preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
 
 	@Override
@@ -46,8 +43,8 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 		Log log = (Log) element;
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
-		if (JlvActivator.getPreferenceManager().isLevelAsImage()) {
-			Image image = JlvActivator.getPreferenceManager().getLevelImage(log.getLevel());
+		if (preferenceManager.isLevelAsImage()) {
+			Image image = preferenceManager.getLevelImage(log.getLevel());
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
 			int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -72,23 +69,14 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		RGB rgb = JlvActivator.getPreferenceManager().getBackground(log.getLevel());
-		Color color = new Color(Display.getCurrent(), rgb);
-		return color;
+		return preferenceManager.getColor(log.getLevel(), SWT.BACKGROUND, Display.getCurrent());
 	}
 
 	private Color getForeground(Log log) {
-		RGB rgb = JlvActivator.getPreferenceManager().getForeground(log.getLevel());
-		Color color = new Color(Display.getCurrent(), rgb);
-		return color;
+		return preferenceManager.getColor(log.getLevel(), SWT.FOREGROUND, Display.getCurrent());
 	}
 
 	private Font getFont(Log log) {
-		FontData[] fontData = table.getFont().getFontData();
-		for (int i = 0; i < fontData.length; ++i) {
-			fontData[i].setHeight(JlvActivator.getPreferenceManager().getFontSize());
-		}
-		Font font = new Font(Display.getCurrent(), fontData);
-		return font;
+		return preferenceManager.getFont(Display.getCurrent());
 	}
 }

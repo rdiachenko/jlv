@@ -1,6 +1,7 @@
 package com.github.rd.jlv.ui.views;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -21,17 +22,15 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.services.ISourceProviderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.model.StructuralModel;
+import com.github.rd.jlv.model.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
-import com.github.rd.jlv.ui.preferences.additional.StructuralPreferenceModel;
 import com.google.common.base.Strings;
 
 public class LogListView extends ViewPart {
@@ -39,6 +38,7 @@ public class LogListView extends ViewPart {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final LogListViewController controller;
+	private final PreferenceManager preferenceManager;
 
 	private Text quickSearchField;
 	private String quickSearchText;
@@ -55,6 +55,7 @@ public class LogListView extends ViewPart {
 	public LogListView() {
 		controller = new LogListViewController(this);
 		quickFilter = new QuickLogFilter();
+		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
 
 	public LogListViewController getController() {
@@ -81,16 +82,15 @@ public class LogListView extends ViewPart {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceManager.STRUCTURAL_TABLE_SETTINGS.equals(event.getProperty())) {
 					String structure = event.getNewValue().toString();
-					StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager()
-							.getStructuralPreferenceModel(structure);
-					updateColumns(viewer.getTable(), columnStructure);
+					StructuralModel structuralModel = preferenceManager.getStructuralModel(structure);
+					updateColumns(viewer.getTable(), structuralModel);
 				}
 			}
 		};
-		JlvActivator.getPreferenceManager().addPropertyChangeListener(preferenceListener);
+		preferenceManager.addPropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was added to Jlv log list view");
 
-		if (JlvActivator.getPreferenceManager().isQuickSearchFieldVisible()) {
+		if (preferenceManager.isQuickSearchFieldVisible()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}
@@ -102,20 +102,15 @@ public class LogListView extends ViewPart {
 
 	@Override
 	public void dispose() {
-		super.dispose();
-
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		ISourceProviderService service = (ISourceProviderService) window.getService(ISourceProviderService.class);
-		ViewSourceProvider viewSourceProvider = (ViewSourceProvider) service
-				.getSourceProvider(StringConstants.SERVER_STATE_VARIABLE_ID);
-		viewSourceProvider.dispose();
-
-		getController().dispose();
-		getViewSite().getPage().removePartListener(viewLifecycleListener);
-		logger.debug("Lifecycle listener was removed from Jlv log list view");
-
-		JlvActivator.getPreferenceManager().removePropertyChangeListener(preferenceListener);
-		logger.debug("PropertyChange listener was removed from Jlv log list view");
+		try {
+			getController().dispose();
+			getViewSite().getPage().removePartListener(viewLifecycleListener);
+			logger.debug("Lifecycle listener was removed from Jlv log list view");
+			preferenceManager.removePropertyChangeListener(preferenceListener);
+			logger.debug("PropertyChange listener was removed from Jlv log list view");
+		} finally {
+			super.dispose();
+		}
 	}
 
 	public void setSearchFieldVisible(boolean isVisible) {
@@ -209,33 +204,35 @@ public class LogListView extends ViewPart {
 			columns[i].addControlListener(new ColumnResizeListener());
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		StructuralPreferenceModel[] columnStructure = JlvActivator.getPreferenceManager()
-				.getStructuralPreferenceModel();
-		updateColumns(viewer.getTable(), columnStructure);
+		StructuralModel structuralModel = preferenceManager.getStructuralModel();
+		updateColumns(viewer.getTable(), structuralModel);
 	}
 
-	private void updateColumns(Table table, StructuralPreferenceModel[] columnStructure) {
+	private void updateColumns(Table table, StructuralModel structuralModel) {
 		int[] columnOrder = table.getColumnOrder();
 		int[] newColumnOrder = new int[columnOrder.length];
+		List<ModelItem> modelItems = structuralModel.getModelItems();
+		int index = 0;
 
-		for (int i = 0; i < columnStructure.length; i++) {
-			int position = columnOrderMap.get(columnStructure[i].getName());
-			newColumnOrder[i] = columnOrder[position];
-			columnOrderMap.put(columnStructure[i].getName(), i);
+		for (ModelItem item : modelItems) {
+			int position = columnOrderMap.get(item.getName());
+			newColumnOrder[index] = columnOrder[position];
+			columnOrderMap.put(item.getName(), index);
 
-			TableColumn column = table.getColumn(newColumnOrder[i]);
+			TableColumn column = table.getColumn(newColumnOrder[index]);
 
-			if (columnStructure[i].isDisplay()) {
-				column.setWidth(columnStructure[i].getWidth());
+			if (item.isDisplay()) {
+				column.setWidth(item.getWidth());
 			} else {
 				column.setWidth(0);
 			}
+			++index;
 		}
 		table.setColumnOrder(newColumnOrder);
 		table.redraw();
 	}
 
-	private static class ColumnResizeListener implements ControlListener {
+	private class ColumnResizeListener implements ControlListener {
 		@Override
 		public void controlMoved(ControlEvent e) {
 			// no code
@@ -247,7 +244,7 @@ public class LogListView extends ViewPart {
 				TableColumn column = (TableColumn) e.getSource();
 				String columnName = column.getText();
 				int width = column.getWidth();
-				JlvActivator.getPreferenceManager().setStructuralPreferenceModel(columnName, width);
+				preferenceManager.storeStructuralModel(columnName, width);
 			}
 		}
 	}
@@ -285,7 +282,7 @@ public class LogListView extends ViewPart {
 			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
-					boolean isServerAutoStart = JlvActivator.getPreferenceManager().isServerAutoStart();
+					boolean isServerAutoStart = preferenceManager.isServerAutoStart();
 					logger.debug("Server auto start option: {}", isServerAutoStart);
 
 					if (isServerAutoStart) {

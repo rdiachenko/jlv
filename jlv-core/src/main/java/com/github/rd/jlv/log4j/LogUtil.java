@@ -2,6 +2,7 @@ package com.github.rd.jlv.log4j;
 
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
@@ -58,6 +59,10 @@ public final class LogUtil {
 		}
 		Log log = builder.build();
 		return log;
+	}
+
+	public static Log convert(String log, Pattern pattern) {
+		return null; // TODO implement
 	}
 
 	public static String getValue(Log log, String logField) {
