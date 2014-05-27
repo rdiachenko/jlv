@@ -23,6 +23,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.slf4j.Logger;
@@ -63,6 +64,9 @@ public class LogListView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextService.activateContext(StringConstants.JLV_LOG_LIST_VIEW_CONTEXT_ID);
+
 		GridLayout layout = new GridLayout();
 		layout.verticalSpacing = 0;
 		layout.marginWidth = 0;
