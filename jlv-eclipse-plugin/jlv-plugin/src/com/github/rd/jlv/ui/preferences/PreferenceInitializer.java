@@ -4,27 +4,26 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.converters.PresentationalModelConverter;
-import com.github.rd.jlv.model.converters.StructuralModelConverter;
+import com.github.rd.jlv.pfers.Converter;
+import com.github.rd.jlv.pfers.ConverterFactory;
+import com.github.rd.jlv.pfers.GeneralModel;
+import com.github.rd.jlv.pfers.PreferenceEnum;
+import com.github.rd.jlv.pfers.PresentationalModel;
+import com.github.rd.jlv.pfers.StructuralModel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JlvActivator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceManager.SERVER_PORT_NUMBER, 4445);
-		store.setDefault(PreferenceManager.SERVER_AUTO_START, true);
+		setDefault(store, PreferenceEnum.JLV_GENERAL_SETTINGS.getName(), GeneralModel.class);
+		setDefault(store, PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName(), StructuralModel.class);
+		setDefault(store, PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS.getName(), PresentationalModel.class);
+	}
 
-		store.setDefault(PreferenceManager.QUICK_SEARCH_FIELD_VISIBLE, true);
-
-		store.setDefault(PreferenceManager.LOGS_BUFFER_SIZE, 1000);
-		store.setDefault(PreferenceManager.LOGS_REFRESHING_TIME, 500);
-
-		StructuralModelConverter structuralModelConverter = new StructuralModelConverter();
-		store.setDefault(PreferenceManager.STRUCTURAL_TABLE_SETTINGS, structuralModelConverter.defaultModelAsJson());
-
-		PresentationalModelConverter presentationalModelConverter = new PresentationalModelConverter();
-		store.setDefault(PreferenceManager.PRESENTATIONAL_TABLE_SETTINGS,
-				presentationalModelConverter.defaultModelAsJson());
+	private <T> void setDefault(IPreferenceStore store, String preferenceName, Class<T> modelType) {
+		Converter<T> converter = ConverterFactory.getConverter(modelType);
+		T model = converter.getDefaultModel();
+		store.setDefault(preferenceName, converter.modelToJson(model));
 	}
 }

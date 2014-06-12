@@ -73,23 +73,31 @@ public class GeneralModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		GeneralModel other = (GeneralModel) obj;
-		if (autoStart != other.autoStart)
+		if (autoStart != other.autoStart) {
 			return false;
-		if (bufferSize != other.bufferSize)
+		}
+		if (bufferSize != other.bufferSize) {
 			return false;
-		if (portNumber != other.portNumber)
+		}
+		if (portNumber != other.portNumber) {
 			return false;
-		if (quickSearch != other.quickSearch)
+		}
+		if (quickSearch != other.quickSearch) {
 			return false;
-		if (refreshingTime != other.refreshingTime)
+		}
+		if (refreshingTime != other.refreshingTime) {
 			return false;
+		}
 		return true;
 	}
 

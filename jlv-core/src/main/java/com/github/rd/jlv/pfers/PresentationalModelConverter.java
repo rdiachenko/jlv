@@ -12,8 +12,7 @@ import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 
-public class PresentationalModelConverter
-implements AbstractConverter<PresentationalModel> {
+public class PresentationalModelConverter implements Converter<PresentationalModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 

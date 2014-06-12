@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
 
-public class StructuralModelConverter
-implements AbstractConverter<StructuralModel> {
+public class StructuralModelConverter implements Converter<StructuralModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 

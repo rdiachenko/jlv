@@ -6,8 +6,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GeneralModelConverter
-implements AbstractConverter<GeneralModel> {
+public class GeneralModelConverter implements Converter<GeneralModel> {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
