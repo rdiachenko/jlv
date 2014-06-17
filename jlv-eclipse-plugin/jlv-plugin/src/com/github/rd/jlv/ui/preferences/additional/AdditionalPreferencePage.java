@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ui.preferences.PreferenceManager;
+import com.github.rd.jlv.pfers.PreferenceEnum;
 import com.github.rd.jlv.ui.preferences.PreferencePageUtils;
 
 public class AdditionalPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -27,14 +27,14 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 		Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Structural log table settings");
 		FieldEditor structuralTableEditor = new StructuralTableEditor(
-				PreferenceManager.STRUCTURAL_TABLE_SETTINGS,
+				PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName(),
 				PreferencePageUtils.createFieldEditorComposite(structuralSettingsGroup));
 		addField(structuralTableEditor);
 
 		Group presentationalSettingGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Presentational log table settings");
 		FieldEditor presentationalTableEditor = new PresentationalTableEditor(
-				PreferenceManager.PRESENTATIONAL_TABLE_SETTINGS,
+				PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS.getName(),
 				PreferencePageUtils.createFieldEditorComposite(presentationalSettingGroup));
 		addField(presentationalTableEditor);
 	}

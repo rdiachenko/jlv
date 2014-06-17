@@ -30,7 +30,7 @@ public class JlvActivator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		resourceManager = new ResourceManager();
-		preferenceManager = new PreferenceManager(getPreferenceStore(), resourceManager);
+		preferenceManager = new PreferenceManager(getPreferenceStore());
 		configureLogging();
 	}
 
@@ -39,7 +39,6 @@ public class JlvActivator extends AbstractUIPlugin {
 		try {
 			plugin = null;
 			resourceManager.dispose();
-			preferenceManager.dispose();
 		} finally {
 			super.stop(context);
 		}

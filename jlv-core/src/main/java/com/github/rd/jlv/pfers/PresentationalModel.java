@@ -181,6 +181,16 @@ public class PresentationalModel {
 			@JsonProperty(value = "b")
 			private int blue;
 
+			public Rgb(int red, int green, int blue) {
+				this.red = red;
+				this.green = green;
+				this.blue = blue;
+			}
+
+			public Rgb() {
+				// no code
+			}
+
 			public int getRed() {
 				return red;
 			}

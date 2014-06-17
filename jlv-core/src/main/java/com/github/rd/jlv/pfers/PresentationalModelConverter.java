@@ -18,20 +18,24 @@ public class PresentationalModelConverter implements Converter<PresentationalMod
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
+	private PresentationalModel defaultModel;
+
 	@Override
 	public PresentationalModel getDefaultModel() {
-		List<ModelItem> items = new ArrayList<>();
-		items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
-		items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
-		items.add(createItem(LogConstants.WARN_LEVEL_NAME, createRgb(255, 128, 0), createRgb(255, 255, 255)));
-		items.add(createItem(LogConstants.ERROR_LEVEL_NAME, createRgb(255, 0, 0), createRgb(255, 255, 255)));
-		items.add(createItem(LogConstants.FATAL_LEVEL_NAME, createRgb(165, 42, 42), createRgb(255, 255, 255)));
+		if (defaultModel == null) {
+			List<ModelItem> items = new ArrayList<>();
+			items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
+			items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
+			items.add(createItem(LogConstants.WARN_LEVEL_NAME, createRgb(255, 128, 0), createRgb(255, 255, 255)));
+			items.add(createItem(LogConstants.ERROR_LEVEL_NAME, createRgb(255, 0, 0), createRgb(255, 255, 255)));
+			items.add(createItem(LogConstants.FATAL_LEVEL_NAME, createRgb(165, 42, 42), createRgb(255, 255, 255)));
 
-		PresentationalModel model = new PresentationalModel();
-		model.setLevelAsImage(true);
-		model.setFontSize(11);
-		model.setModelItems(items);
-		return model;
+			defaultModel = new PresentationalModel();
+			defaultModel.setLevelAsImage(true);
+			defaultModel.setFontSize(11);
+			defaultModel.setModelItems(items);
+		}
+		return defaultModel;
 	}
 
 	@Override

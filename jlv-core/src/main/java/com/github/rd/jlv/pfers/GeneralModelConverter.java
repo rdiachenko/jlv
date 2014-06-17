@@ -12,15 +12,19 @@ public class GeneralModelConverter implements Converter<GeneralModel> {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
+	private GeneralModel defaultModel;
+
 	@Override
 	public GeneralModel getDefaultModel() {
-		GeneralModel model = new GeneralModel();
-		model.setPortNumber(4445);
-		model.setAutoStart(true);
-		model.setQuickSearch(true);
-		model.setBufferSize(1000);
-		model.setRefreshingTime(500);
-		return model;
+		if (defaultModel == null) {
+			defaultModel = new GeneralModel();
+			defaultModel.setPortNumber(4445);
+			defaultModel.setAutoStart(true);
+			defaultModel.setQuickSearch(true);
+			defaultModel.setBufferSize(1000);
+			defaultModel.setRefreshingTime(500);
+		}
+		return defaultModel;
 	}
 
 	@Override

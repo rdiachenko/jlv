@@ -33,10 +33,13 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
+import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.PresentationalModel;
-import com.github.rd.jlv.model.PresentationalModel.ModelItem;
-import com.github.rd.jlv.model.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.ResourceManager;
+import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.pfers.PresentationalModel;
+import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
+import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.google.common.base.Strings;
 
@@ -46,9 +49,9 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final String FOREGROUND_COLUMN_HEADER = "Foreground";
 	private static final String BACKGROUND_COLUMN_HEADER = "Background";
 	private static final String[] COLUMN_NAMES = {
-			LEVEL_COLUMN_HEADER,
-			FOREGROUND_COLUMN_HEADER,
-			BACKGROUND_COLUMN_HEADER
+		LEVEL_COLUMN_HEADER,
+		FOREGROUND_COLUMN_HEADER,
+		BACKGROUND_COLUMN_HEADER
 	};
 
 	private static final int LEVEL_COLUMN_WIDTH = 60;
@@ -68,10 +71,13 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private PreferenceManager preferenceManager;
 
+	private ResourceManager resourceManager;
+
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		presentationalModel = preferenceManager.getDefaultPresentationalModel();
+		presentationalModel = preferenceManager.getDefaultPresentationalPrefs();
+		resourceManager = JlvActivator.getDefault().getResourceManager();
 		createControl(parent);
 	}
 
@@ -98,18 +104,18 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getPresentationalModel());
+		doLoad(preferenceManager.getPresentationalPrefs());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefaultPresentationalModel());
+		doLoad(preferenceManager.getDefaultPresentationalPrefs());
 	}
 
 	@Override
 	public void doStore() {
 		if (imageSwitcherBox != null && spinnerBox != null && tableViewer != null) {
-			preferenceManager.storePresentationalModel(presentationalModel);
+			preferenceManager.storePresentationalPrefs(presentationalModel);
 		}
 	}
 
@@ -264,6 +270,23 @@ public class PresentationalTableEditor extends FieldEditor {
 		}
 	}
 
+	private Image getLevelImage(String levelName) {
+		switch (levelName) {
+		case LogConstants.DEBUG_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.DEBUG_LEVEL_ICON);
+		case LogConstants.INFO_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.INFO_LEVEL_ICON);
+		case LogConstants.WARN_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.WARN_LEVEL_ICON);
+		case LogConstants.ERROR_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.ERROR_LEVEL_ICON);
+		case LogConstants.FATAL_LEVEL_NAME:
+			return resourceManager.getImage(ImageType.FATAL_LEVEL_ICON);
+		default:
+			throw new IllegalArgumentException("No log level with such name: " + levelName);
+		}
+	}
+
 	private class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
 		@Override
@@ -278,7 +301,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			Rectangle bounds = item.getBounds(event.index);
 
 			if (presentationalModel.isLevelAsImage()) {
-				Image image = preferenceManager.getLevelImage(modelItem.getLevelName());
+				Image image = getLevelImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
 				int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -313,14 +336,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		public Color getForeground(Object element) {
 			ModelItem modelItem = (ModelItem) element;
-			return preferenceManager.getColor(modelItem.getLevelName(), SWT.FOREGROUND, Display.getCurrent());
+			return resourceManager.getColor(Display.getCurrent(), modelItem.getForeground());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
 			if (column == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
-				return preferenceManager.getColor(modelItem.getLevelName(), SWT.BACKGROUND, Display.getCurrent());
+				return resourceManager.getColor(Display.getCurrent(), modelItem.getBackground());
 			} else {
 				return super.getBackground(element);
 			}

@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.model.StructuralModel;
-import com.github.rd.jlv.model.StructuralModel.ModelItem;
+import com.github.rd.jlv.pfers.StructuralModel;
+import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class StructuralTableEditor extends FieldEditor {
@@ -70,7 +70,7 @@ public class StructuralTableEditor extends FieldEditor {
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		structuralModel = preferenceManager.getDefaultStructuralModel();
+		structuralModel = preferenceManager.getDefaultStructuralPrefs();
 		createControl(parent);
 	}
 
@@ -98,18 +98,18 @@ public class StructuralTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getStructuralModel());
+		doLoad(preferenceManager.getStructuralPrefs());
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefaultStructuralModel());
+		doLoad(preferenceManager.getDefaultStructuralPrefs());
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			preferenceManager.storeStructuralModel(structuralModel);
+			preferenceManager.storeStructuralPrefs(structuralModel);
 		}
 	}
 

@@ -17,19 +17,23 @@ public class StructuralModelConverter implements Converter<StructuralModel> {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
+	private StructuralModel defaultModel;
+
 	@Override
 	public StructuralModel getDefaultModel() {
-		List<ModelItem> items = new ArrayList<>();
-		items.add(createItem(LogConstants.LEVEL_FIELD_NAME, 55, true));
-		items.add(createItem(LogConstants.CATEGORY_FIELD_NAME, 100, true));
-		items.add(createItem(LogConstants.MESSAGE_FIELD_NAME, 100, true));
-		items.add(createItem(LogConstants.LINE_FIELD_NAME, 100, true));
-		items.add(createItem(LogConstants.DATE_FIELD_NAME, 100, true));
-		items.add(createItem(LogConstants.THROWABLE_FIELD_NAME, 100, true));
+		if (defaultModel == null) {
+			List<ModelItem> items = new ArrayList<>();
+			items.add(createItem(LogConstants.LEVEL_FIELD_NAME, 55, true));
+			items.add(createItem(LogConstants.CATEGORY_FIELD_NAME, 100, true));
+			items.add(createItem(LogConstants.MESSAGE_FIELD_NAME, 100, true));
+			items.add(createItem(LogConstants.LINE_FIELD_NAME, 100, true));
+			items.add(createItem(LogConstants.DATE_FIELD_NAME, 100, true));
+			items.add(createItem(LogConstants.THROWABLE_FIELD_NAME, 100, true));
 
-		StructuralModel model = new StructuralModel();
-		model.setModelItems(items);
-		return model;
+			defaultModel = new StructuralModel();
+			defaultModel.setModelItems(items);
+		}
+		return defaultModel;
 	}
 
 	@Override
