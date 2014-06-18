@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceUtility;
+import com.github.rd.jlv.ResourceUtils;
 import com.github.rd.jlv.log4j.LogUtil;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -38,17 +38,17 @@ public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public Color getForeground(Object element) {
 		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel());
-		return ResourceUtility.getColor(rgb);
+		return ResourceUtils.getColor(rgb);
 	}
 
 	@Override
 	public Color getBackground(Object element) {
 		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel(), false);
-		return ResourceUtility.getColor(rgb);
+		return ResourceUtils.getColor(rgb);
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		return ResourceUtility.getFont(preferenceManager.getDetailedPrefs().getFontSize());
+		return ResourceUtils.getFont(preferenceManager.getDetailedPrefs().getFontSize());
 	}
 }

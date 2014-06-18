@@ -8,11 +8,11 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class DaoUtil {
+public final class DaoUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DaoUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DaoUtils.class);
 
-	private DaoUtil() {
+	private DaoUtils() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
 

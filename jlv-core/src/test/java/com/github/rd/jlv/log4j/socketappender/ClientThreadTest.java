@@ -18,7 +18,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 
 public class ClientThreadTest {
@@ -59,19 +59,19 @@ public class ClientThreadTest {
 		ObjectInputStream inputStream = new ObjectInputStream(client.getInputStream());
 
 		// Wrapping LoggingEvents into Log object in order to compare them
-		Log expectedLog = LogUtil.convert(mockLoggingEvent1);
+		Log expectedLog = LogUtils.convert(mockLoggingEvent1);
 		Object logObj = inputStream.readObject();
-		Log actualLog = LogUtil.convert((LoggingEvent) logObj);
+		Log actualLog = LogUtils.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 
-		expectedLog = LogUtil.convert(mockLoggingEvent2);
+		expectedLog = LogUtils.convert(mockLoggingEvent2);
 		logObj = inputStream.readObject();
-		actualLog = LogUtil.convert((LoggingEvent) logObj);
+		actualLog = LogUtils.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 
-		expectedLog = LogUtil.convert(mockLoggingEvent3);
+		expectedLog = LogUtils.convert(mockLoggingEvent3);
 		logObj = inputStream.readObject();
-		actualLog = LogUtil.convert((LoggingEvent) logObj);
+		actualLog = LogUtils.convert((LoggingEvent) logObj);
 		Assert.assertEquals(expectedLog, actualLog);
 	}
 

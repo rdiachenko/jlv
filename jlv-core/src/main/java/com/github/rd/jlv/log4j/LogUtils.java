@@ -11,9 +11,9 @@ import org.apache.log4j.spi.ThrowableInformation;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.google.common.base.Strings;
 
-public final class LogUtil {
+public final class LogUtils {
 
-	private LogUtil() {
+	private LogUtils() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
 

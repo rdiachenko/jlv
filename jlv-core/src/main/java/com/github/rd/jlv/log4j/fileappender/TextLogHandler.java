@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.log4j.domain.LogEventContainer;
 
@@ -54,7 +54,7 @@ public class TextLogHandler implements Runnable {
 	}
 
 	private void send(String input) {
-		Log log = LogUtil.convert(input, pattern);
+		Log log = LogUtils.convert(input, pattern);
 		LogEventContainer.notifyListeners(log);
 	}
 

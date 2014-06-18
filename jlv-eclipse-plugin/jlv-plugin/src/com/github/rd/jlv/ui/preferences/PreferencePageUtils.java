@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Layout;
 
-public final class PreferencePageUtility {
+public final class PreferencePageUtils {
 
 	public static Composite createFieldEditorComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.FILL);
@@ -34,7 +34,7 @@ public final class PreferencePageUtility {
 		return layout;
 	}
 
-	private PreferencePageUtility() {
+	private PreferencePageUtils() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
 }

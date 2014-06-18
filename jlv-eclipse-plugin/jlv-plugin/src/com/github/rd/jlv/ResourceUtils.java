@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.RGB;
 import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 
-public final class ResourceUtility {
+public final class ResourceUtils {
 
 	public static final Rgb FOREGROUND = new Rgb(0, 0, 0);
 
@@ -29,8 +29,8 @@ public final class ResourceUtility {
 		imageNameMap.put(LogConstants.FATAL_LEVEL_NAME, ImageType.FATAL_LEVEL_ICON);
 	}
 
-	private ResourceUtility() {
-		throw new IllegalStateException("This is an utility class. The object should not be created.");
+	private ResourceUtils() {
+		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
 
 	public static Image getImage(String name) {

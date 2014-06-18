@@ -10,7 +10,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.log4j.domain.LogEventContainer;
 
@@ -76,7 +76,7 @@ public class SocketLogHandler implements Runnable {
 	}
 
 	private void send(LoggingEvent le) {
-		Log log = LogUtil.convert(le);
+		Log log = LogUtils.convert(le);
 		LogEventContainer.notifyListeners(log);
 	}
 }

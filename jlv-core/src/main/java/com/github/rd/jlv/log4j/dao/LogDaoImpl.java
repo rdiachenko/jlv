@@ -105,7 +105,7 @@ public class LogDaoImpl implements LogDao {
 		} catch (SQLException e) {
 			logger.error("", e);
 		} finally {
-			DaoUtil.close(conn, preparedStatement, result);
+			DaoUtils.close(conn, preparedStatement, result);
 		}
 		logger.info("{} logs were selected", logs.size());
 		return logs.toArray();
@@ -141,18 +141,18 @@ public class LogDaoImpl implements LogDao {
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		} finally {
-			DaoUtil.close(conn, preparedStatement);
+			DaoUtils.close(conn, preparedStatement);
 		}
 	}
 
 	private void dropLogsTable() {
 		String dropTableQueryString = "DROP TABLE log4j1x IF EXISTS";
-		DaoUtil.executeQuery(connectionPool.getConnection(), dropTableQueryString);
+		DaoUtils.executeQuery(connectionPool.getConnection(), dropTableQueryString);
 		logger.info("log4j1x table was dropped");
 	}
 
 	private void createLogsTable() {
-		DaoUtil.executeQuery(connectionPool.getConnection(), createTableQueryString);
+		DaoUtils.executeQuery(connectionPool.getConnection(), createTableQueryString);
 		logger.info("log4j1x table was created");
 	}
 }

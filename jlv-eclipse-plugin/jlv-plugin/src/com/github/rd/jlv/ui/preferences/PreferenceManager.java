@@ -3,7 +3,7 @@ package com.github.rd.jlv.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 
-import com.github.rd.jlv.ResourceUtility;
+import com.github.rd.jlv.ResourceUtils;
 import com.github.rd.jlv.pfers.Converter;
 import com.github.rd.jlv.pfers.ConverterFactory;
 import com.github.rd.jlv.pfers.GeneralModel;
@@ -171,9 +171,9 @@ public final class PreferenceManager {
 			}
 
 			if (foreground) {
-				return ResourceUtility.FOREGROUND;
+				return ResourceUtils.FOREGROUND;
 			} else {
-				return ResourceUtility.BACKGROUND;
+				return ResourceUtils.BACKGROUND;
 			}
 		}
 	}

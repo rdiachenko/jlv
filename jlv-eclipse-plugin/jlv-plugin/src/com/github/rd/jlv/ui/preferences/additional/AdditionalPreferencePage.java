@@ -9,7 +9,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.ui.preferences.PreferencePageUtility;
+import com.github.rd.jlv.ui.preferences.PreferencePageUtils;
 
 public class AdditionalPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -22,20 +22,20 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 	@Override
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
-		parent.setLayout(PreferencePageUtility.createFieldEditorParentLayout());
+		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
 
-		Group structuralSettingsGroup = PreferencePageUtility.createSettingsGroup(parent,
+		Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Structural log table settings");
 		FieldEditor structuralTableEditor = new StructuralTableEditor(
 				PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName(),
-				PreferencePageUtility.createFieldEditorComposite(structuralSettingsGroup));
+				PreferencePageUtils.createFieldEditorComposite(structuralSettingsGroup));
 		addField(structuralTableEditor);
 
-		Group presentationalSettingGroup = PreferencePageUtility.createSettingsGroup(parent,
+		Group presentationalSettingGroup = PreferencePageUtils.createSettingsGroup(parent,
 				"Presentational log table settings");
 		FieldEditor presentationalTableEditor = new PresentationalTableEditor(
 				PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS.getName(),
-				PreferencePageUtility.createFieldEditorComposite(presentationalSettingGroup));
+				PreferencePageUtils.createFieldEditorComposite(presentationalSettingGroup));
 		addField(presentationalTableEditor);
 	}
 }

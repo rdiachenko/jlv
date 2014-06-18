@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceUtility;
+import com.github.rd.jlv.ResourceUtils;
 import com.github.rd.jlv.pfers.PresentationalModel;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -253,7 +253,7 @@ public class PresentationalTableEditor extends FieldEditor {
 	}
 
 	private void updateFontSize(int size) {
-		Font font = ResourceUtility.getFont(size);
+		Font font = ResourceUtils.getFont(size);
 
 		for (TableItem item : tableViewer.getTable().getItems()) {
 			item.setFont(font);
@@ -274,7 +274,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			Rectangle bounds = item.getBounds(event.index);
 
 			if (presentationalModel.isLevelAsImage()) {
-				Image image = ResourceUtility.getImage(modelItem.getLevelName());
+				Image image = ResourceUtils.getImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
 				int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -309,14 +309,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		public Color getForeground(Object element) {
 			ModelItem modelItem = (ModelItem) element;
-			return ResourceUtility.getColor(modelItem.getForeground());
+			return ResourceUtils.getColor(modelItem.getForeground());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
 			if (column == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
-				return ResourceUtility.getColor(modelItem.getBackground());
+				return ResourceUtils.getColor(modelItem.getBackground());
 			} else {
 				return super.getBackground(element);
 			}
@@ -355,13 +355,13 @@ public class PresentationalTableEditor extends FieldEditor {
 			} else {
 				rgb = modelItem.getBackground();
 			}
-			return ResourceUtility.toSystemRgb(rgb);
+			return ResourceUtils.toSystemRgb(rgb);
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
 			ModelItem modelItem = (ModelItem) element;
-			Rgb rgb = ResourceUtility.fromSystemRgb((RGB) value);
+			Rgb rgb = ResourceUtils.fromSystemRgb((RGB) value);
 
 			if (colorState == SWT.FOREGROUND) {
 				modelItem.setForeground(rgb);
