@@ -12,10 +12,13 @@ import com.github.rd.jlv.log4j.domain.LogCollection;
 import com.github.rd.jlv.log4j.domain.LogEventContainer;
 import com.github.rd.jlv.log4j.domain.LogEventListener;
 import com.github.rd.jlv.log4j.socketappender.Server;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class LogListViewController {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+
+	private static final PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 
 	private final LogCollection logContainer;
 
@@ -26,7 +29,7 @@ public class LogListViewController {
 	private Server server;
 
 	public LogListViewController(LogListView view) {
-		logContainer = new LogCollection(JlvActivator.getDefault().getPreferenceManager().getLogsBufferSize());
+		logContainer = new LogCollection(preferenceManager.getDetailedPrefs().getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -46,7 +49,7 @@ public class LogListViewController {
 
 	public void startServer() {
 		try {
-			server = new Server(JlvActivator.getDefault().getPreferenceManager().getServerPortNumber());
+			server = new Server(preferenceManager.getDetailedPrefs().getServerPortNumber());
 			server.start();
 		} catch (IOException e) {
 			logger.error("IOException occurred while starting server:", e);
@@ -95,7 +98,7 @@ public class LogListViewController {
 					}
 				});
 				try {
-					sleep(JlvActivator.getDefault().getPreferenceManager().getLogsRefreshingTime());
+					sleep(preferenceManager.getDetailedPrefs().getRefreshingTime());
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					logger.error("Timer thread was interrupted:", e);

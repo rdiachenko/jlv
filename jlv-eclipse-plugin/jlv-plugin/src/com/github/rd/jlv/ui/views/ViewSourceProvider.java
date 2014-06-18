@@ -10,12 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private boolean isServerStarted = JlvActivator.getDefault().getPreferenceManager().isServerAutoStart();
+	private PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+
+	private boolean isServerStarted = preferenceManager.getDetailedPrefs().isServerAutoStart();
 
 	public void setServerStarted(boolean state) {
 		isServerStarted = state;
@@ -24,7 +27,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public void dispose() {
-		setServerStarted(JlvActivator.getDefault().getPreferenceManager().isServerAutoStart());
+		setServerStarted(preferenceManager.getDetailedPrefs().isServerAutoStart());
 		logger.debug("View source provider has been disposed.");
 	}
 

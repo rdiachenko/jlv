@@ -8,6 +8,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
+import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class QuickSearchAction extends AbstractHandler {
 
@@ -17,10 +18,12 @@ public class QuickSearchAction extends AbstractHandler {
 				.findView(StringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
+			PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+			boolean visible = !preferenceManager.getDetailedPrefs().isQuickSearchVisible();
+
 			LogListView view = (LogListView) part;
-			boolean isVisible = !JlvActivator.getDefault().getPreferenceManager().isQuickSearchFieldVisible();
-			view.setSearchFieldVisible(isVisible);
-			JlvActivator.getDefault().getPreferenceManager().setQuickSearchFieldVisible(isVisible);
+			view.setSearchFieldVisible(visible);
+			preferenceManager.getDetailedPrefs().storeQuickSearchState(visible);
 		}
 		return null;
 	}

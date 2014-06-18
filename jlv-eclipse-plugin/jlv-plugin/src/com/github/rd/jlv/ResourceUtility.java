@@ -13,6 +13,10 @@ import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 
 public final class ResourceUtility {
 
+	public static final Rgb FOREGROUND = new Rgb(0, 0, 0);
+
+	public static final Rgb BACKGROUND = new Rgb(255, 255, 255);
+
 	private static final ResourceManager resourceManager = JlvActivator.getDefault().getResourceManager();
 
 	private static final Map<String, ImageType> imageNameMap = new HashMap<>();

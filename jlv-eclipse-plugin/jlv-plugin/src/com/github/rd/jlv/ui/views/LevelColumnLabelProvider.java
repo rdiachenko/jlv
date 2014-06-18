@@ -8,13 +8,13 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceUtility;
 import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
@@ -44,7 +44,7 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 		Log log = (Log) element;
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
-		if (preferenceManager.isLevelAsImage()) {
+		if (preferenceManager.getDetailedPrefs().isLogLevelAsImage()) {
 			Image image = ResourceUtility.getImage(log.getLevel());
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
@@ -70,14 +70,16 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		return preferenceManager.getColor(log.getLevel(), SWT.BACKGROUND, Display.getCurrent());
+		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(log.getLevel(), false);
+		return ResourceUtility.getColor(rgb);
 	}
 
 	private Color getForeground(Log log) {
-		return preferenceManager.getColor(log.getLevel(), SWT.FOREGROUND, Display.getCurrent());
+		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(log.getLevel());
+		return ResourceUtility.getColor(rgb);
 	}
 
 	private Font getFont(Log log) {
-		return preferenceManager.getFont(Display.getCurrent());
+		return ResourceUtility.getFont(preferenceManager.getDetailedPrefs().getFontSize());
 	}
 }
