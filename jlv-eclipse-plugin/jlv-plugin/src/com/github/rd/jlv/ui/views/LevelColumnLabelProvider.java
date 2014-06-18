@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.ResourceUtility;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
@@ -44,7 +45,7 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
 		if (preferenceManager.isLevelAsImage()) {
-			Image image = preferenceManager.getLevelImage(log.getLevel());
+			Image image = ResourceUtility.getImage(log.getLevel());
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
 			int yOffset = bounds.height / 2 - imageBounds.height / 2;

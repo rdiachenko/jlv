@@ -26,17 +26,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceManager;
-import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.ResourceUtility;
 import com.github.rd.jlv.pfers.PresentationalModel;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -49,9 +46,9 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final String FOREGROUND_COLUMN_HEADER = "Foreground";
 	private static final String BACKGROUND_COLUMN_HEADER = "Background";
 	private static final String[] COLUMN_NAMES = {
-		LEVEL_COLUMN_HEADER,
-		FOREGROUND_COLUMN_HEADER,
-		BACKGROUND_COLUMN_HEADER
+			LEVEL_COLUMN_HEADER,
+			FOREGROUND_COLUMN_HEADER,
+			BACKGROUND_COLUMN_HEADER
 	};
 
 	private static final int LEVEL_COLUMN_WIDTH = 60;
@@ -71,13 +68,10 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private PreferenceManager preferenceManager;
 
-	private ResourceManager resourceManager;
-
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 		presentationalModel = preferenceManager.getDefaultPresentationalPrefs();
-		resourceManager = JlvActivator.getDefault().getResourceManager();
 		createControl(parent);
 	}
 
@@ -259,31 +253,10 @@ public class PresentationalTableEditor extends FieldEditor {
 	}
 
 	private void updateFontSize(int size) {
-		Display display = Display.getCurrent();
+		Font font = ResourceUtility.getFont(size);
 
-		if (display != null) {
-			Font font = JlvActivator.getDefault().getResourceManager().getFont(display, size);
-
-			for (TableItem item : tableViewer.getTable().getItems()) {
-				item.setFont(font);
-			}
-		}
-	}
-
-	private Image getLevelImage(String levelName) {
-		switch (levelName) {
-		case LogConstants.DEBUG_LEVEL_NAME:
-			return resourceManager.getImage(ImageType.DEBUG_LEVEL_ICON);
-		case LogConstants.INFO_LEVEL_NAME:
-			return resourceManager.getImage(ImageType.INFO_LEVEL_ICON);
-		case LogConstants.WARN_LEVEL_NAME:
-			return resourceManager.getImage(ImageType.WARN_LEVEL_ICON);
-		case LogConstants.ERROR_LEVEL_NAME:
-			return resourceManager.getImage(ImageType.ERROR_LEVEL_ICON);
-		case LogConstants.FATAL_LEVEL_NAME:
-			return resourceManager.getImage(ImageType.FATAL_LEVEL_ICON);
-		default:
-			throw new IllegalArgumentException("No log level with such name: " + levelName);
+		for (TableItem item : tableViewer.getTable().getItems()) {
+			item.setFont(font);
 		}
 	}
 
@@ -301,7 +274,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			Rectangle bounds = item.getBounds(event.index);
 
 			if (presentationalModel.isLevelAsImage()) {
-				Image image = getLevelImage(modelItem.getLevelName());
+				Image image = ResourceUtility.getImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
 				int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -336,14 +309,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		public Color getForeground(Object element) {
 			ModelItem modelItem = (ModelItem) element;
-			return resourceManager.getColor(Display.getCurrent(), modelItem.getForeground());
+			return ResourceUtility.getColor(modelItem.getForeground());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
 			if (column == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
-				return resourceManager.getColor(Display.getCurrent(), modelItem.getBackground());
+				return ResourceUtility.getColor(modelItem.getBackground());
 			} else {
 				return super.getBackground(element);
 			}
@@ -382,18 +355,18 @@ public class PresentationalTableEditor extends FieldEditor {
 			} else {
 				rgb = modelItem.getBackground();
 			}
-			return new RGB(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
+			return ResourceUtility.toSystemRgb(rgb);
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
 			ModelItem modelItem = (ModelItem) element;
-			RGB rgb = (RGB) value;
+			Rgb rgb = ResourceUtility.fromSystemRgb((RGB) value);
 
 			if (colorState == SWT.FOREGROUND) {
-				modelItem.setForeground(new Rgb(rgb.red, rgb.green, rgb.blue));
+				modelItem.setForeground(rgb);
 			} else {
-				modelItem.setBackground(new Rgb(rgb.red, rgb.green, rgb.blue));
+				modelItem.setBackground(rgb);
 			}
 			viewer.update(modelItem, null);
 		}

@@ -10,7 +10,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
@@ -41,21 +40,22 @@ public class ResourceManager {
 		return imageRegistry.get(type);
 	}
 
-	public Color getColor(Display display, Rgb rgb) {
+	public Color getColor(Rgb rgb) {
 		Color color = colorRegistry.get(rgb);
 
 		if (color == null || color.isDisposed()) {
-			color = new Color(display, new RGB(rgb.getRed(), rgb.getGreen(), rgb.getBlue()));
+			color = new Color(Display.getCurrent(), rgb.getRed(), rgb.getGreen(), rgb.getBlue());
 			colorRegistry.put(rgb, color);
 			logger.debug("A new color was added to color registry: {}", color);
 		}
 		return color;
 	}
 
-	public Font getFont(Display display, int fontSize) {
+	public Font getFont(int fontSize) {
 		Font font = fontRegistry.get(fontSize);
 
 		if (font == null || font.isDisposed()) {
+			Display display = Display.getCurrent();
 			font = new Font(display, getFontData(display, fontSize));
 			fontRegistry.put(fontSize, font);
 			logger.debug("A new font was added to font registry: {}", font);
