@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceUtils;
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
@@ -29,7 +29,7 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
 		Log log = (Log) element;
-		String value = LogUtil.getValue(log, fieldName);
+		String value = LogUtils.getValue(log, fieldName);
 		value = value.replaceAll("\\r|\\n", " ");
 
 		if (value.length() > TEXT_LENGTH_LIMIT) {

@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import com.github.rd.jlv.log4j.LogConstants;
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.google.common.base.Strings;
 
@@ -28,7 +28,7 @@ public class QuickLogFilter extends ViewerFilter {
 			Log log = (Log) element;
 
 			for (String logFieldName : LogConstants.LOG_FIELD_NAMES) {
-				if (LogUtil.getValue(log, logFieldName).matches(searchText)) {
+				if (LogUtils.getValue(log, logFieldName).matches(searchText)) {
 					isPastFilter = true;
 					break;
 				}

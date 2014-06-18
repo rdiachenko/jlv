@@ -7,7 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceUtils;
-import com.github.rd.jlv.log4j.LogUtil;
+import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
@@ -27,7 +27,7 @@ public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
 		Log log = (Log) element;
-		return LogUtil.getValue(log, fieldName);
+		return LogUtils.getValue(log, fieldName);
 	}
 
 	@Override
