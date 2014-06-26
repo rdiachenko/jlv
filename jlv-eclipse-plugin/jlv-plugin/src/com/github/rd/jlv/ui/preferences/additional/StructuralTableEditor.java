@@ -63,14 +63,14 @@ public class StructuralTableEditor extends FieldEditor {
 
 	private SelectionListener selectionListener;
 
-	private StructuralModel structuralModel;
+	private StructuralModel model;
 
 	private PreferenceManager preferenceManager;
 
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		structuralModel = preferenceManager.getDefaultStructuralPrefs();
+		model = preferenceManager.getDefaultStructuralPrefs();
 		createControl(parent);
 	}
 
@@ -109,15 +109,15 @@ public class StructuralTableEditor extends FieldEditor {
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			preferenceManager.storeStructuralPrefs(structuralModel);
+			preferenceManager.storeStructuralPrefs(model);
 		}
 	}
 
 	private void doLoad(StructuralModel model) {
-		structuralModel = model;
+		this.model = model;
 
 		if (tableViewer != null) {
-			tableViewer.setInput(structuralModel.getModelItems());
+			tableViewer.setInput(this.model.getModelItems());
 			tableViewer.refresh();
 		}
 	}
@@ -146,7 +146,7 @@ public class StructuralTableEditor extends FieldEditor {
 			});
 			createTableColumns(tableViewer);
 			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(structuralModel.getModelItems());
+			tableViewer.setInput(model.getModelItems());
 		} else {
 			checkParent(tableViewer.getControl(), parent);
 		}
@@ -266,7 +266,7 @@ public class StructuralTableEditor extends FieldEditor {
 		int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			List<ModelItem> modelItems = structuralModel.getModelItems();
+			List<ModelItem> modelItems = model.getModelItems();
 			Collections.swap(modelItems, index, target);
 			tableViewer.refresh();
 			tableViewer.getTable().setSelection(target);

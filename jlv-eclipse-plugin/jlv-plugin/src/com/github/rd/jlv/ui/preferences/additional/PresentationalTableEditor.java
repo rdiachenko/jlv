@@ -38,6 +38,7 @@ import com.github.rd.jlv.pfers.PresentationalModel;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
+import com.github.rd.jlv.ui.preferences.PreferencePageUtils;
 import com.google.common.base.Strings;
 
 public class PresentationalTableEditor extends FieldEditor {
@@ -56,22 +57,20 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final int BACKGROUND_COLUMN_WIDTH = 260;
 	private static final int[] COLUMN_WIDTHS = { LEVEL_COLUMN_WIDTH, FOREGROUND_COLUMN_WIDTH, BACKGROUND_COLUMN_WIDTH };
 
-	private Composite imageSwitcherBox;
 	private Button imageSwitcherControl;
 
-	private Composite spinnerBox;
 	private Spinner spinnerControl;
 
 	private TableViewer tableViewer;
 
-	private PresentationalModel presentationalModel;
+	private PresentationalModel model;
 
 	private PreferenceManager preferenceManager;
 
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		presentationalModel = preferenceManager.getDefaultPresentationalPrefs();
+		model = preferenceManager.getDefaultPresentationalPrefs();
 		createControl(parent);
 	}
 
@@ -87,10 +86,10 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doFillIntoGrid(Composite parent, int numColumns) {
-		imageSwitcherBox = getImageSwitcherBoxControl(parent);
-		spinnerBox = getSpinnerBoxControl(parent);
+		createImageSwitcherControl(parent);
+		createSpinnerBoxControl(parent);
 
-		tableViewer = getTableViewerControl(parent);
+		createTableViewerControl(parent);
 		GridData gridData = new GridData();
 		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		tableViewer.getControl().setLayoutData(gridData);
@@ -108,26 +107,26 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doStore() {
-		if (imageSwitcherBox != null && spinnerBox != null && tableViewer != null) {
-			preferenceManager.storePresentationalPrefs(presentationalModel);
+		if (!(tableViewer == null || imageSwitcherControl == null || spinnerControl == null)) {
+			preferenceManager.storePresentationalPrefs(model);
 		}
 	}
 
 	private void doLoad(PresentationalModel model) {
-		presentationalModel = model;
+		this.model = model;
 
-		if (imageSwitcherBox != null && spinnerBox != null) {
-			imageSwitcherControl.setSelection(presentationalModel.isLevelAsImage());
-			spinnerControl.setSelection(presentationalModel.getFontSize());
+		if (!(imageSwitcherControl == null || spinnerControl == null)) {
+			imageSwitcherControl.setSelection(this.model.isLevelAsImage());
+			spinnerControl.setSelection(this.model.getFontSize());
 		}
 
 		if (tableViewer != null) {
-			tableViewer.setInput(presentationalModel.getModelItems());
+			tableViewer.setInput(this.model.getModelItems());
 			tableViewer.refresh();
 		}
 	}
 
-	private TableViewer getTableViewerControl(Composite parent) {
+	private void createTableViewerControl(Composite parent) {
 		if (tableViewer == null) {
 			tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
 					| SWT.HIDE_SELECTION);
@@ -143,11 +142,10 @@ public class PresentationalTableEditor extends FieldEditor {
 			});
 			createTableColumns(tableViewer);
 			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(presentationalModel.getModelItems());
+			tableViewer.setInput(model.getModelItems());
 		} else {
 			checkParent(tableViewer.getControl(), parent);
 		}
-		return tableViewer;
 	}
 
 	private void createTableColumns(TableViewer tableViewer) {
@@ -174,58 +172,27 @@ public class PresentationalTableEditor extends FieldEditor {
 		}
 	}
 
-	private Composite getImageSwitcherBoxControl(Composite parent) {
-		if (imageSwitcherBox == null) {
-			imageSwitcherBox = new Composite(parent, SWT.FILL);
-			GridLayout layout = new GridLayout();
-			imageSwitcherBox.setLayout(layout);
-			GridData layoutData = new GridData(SWT.BEGINNING, SWT.NONE, true, false);
-			layoutData.horizontalIndent = -5;
-			imageSwitcherBox.setLayoutData(layoutData);
-			imageSwitcherBox.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent event) {
-					imageSwitcherControl = null;
-					imageSwitcherBox = null;
-				}
-			});
-
-			imageSwitcherControl = new Button(imageSwitcherBox, SWT.CHECK);
-			imageSwitcherControl.setText("Use image to display log level");
+	private void createImageSwitcherControl(Composite parent) {
+		if (imageSwitcherControl == null) {
+			imageSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Use image to display log level");
 			imageSwitcherControl.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					presentationalModel.setLevelAsImage(imageSwitcherControl.getSelection());
+					model.setLevelAsImage(imageSwitcherControl.getSelection());
 					tableViewer.refresh();
 				}
 			});
 		} else {
-			checkParent(imageSwitcherBox, parent);
+			checkParent(imageSwitcherControl, parent);
 		}
-		return imageSwitcherBox;
 	}
 
-	private Composite getSpinnerBoxControl(Composite parent) {
-		if (spinnerBox == null) {
-			spinnerBox = new Composite(parent, SWT.FILL);
-			GridLayout layout = new GridLayout();
-			layout.numColumns = 2;
-			spinnerBox.setLayout(layout);
-			GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-			layoutData.horizontalIndent = -5;
-			spinnerBox.setLayoutData(layoutData);
-			spinnerBox.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent event) {
-					spinnerControl = null;
-					spinnerBox = null;
-				}
-			});
-
-			spinnerControl = new Spinner(spinnerBox, SWT.BORDER);
+	private void createSpinnerBoxControl(Composite parent) {
+		if (spinnerControl == null) {
+			spinnerControl = PreferencePageUtils.createSpinnerControl(parent, "Log's font size");
 			spinnerControl.setMinimum(7);
 			spinnerControl.setMaximum(17);
-			spinnerControl.setSelection(presentationalModel.getFontSize());
+			spinnerControl.setSelection(model.getFontSize());
 			spinnerControl.setIncrement(1);
 			spinnerControl.setPageIncrement(5);
 			spinnerControl.addModifyListener(new ModifyListener() {
@@ -235,21 +202,14 @@ public class PresentationalTableEditor extends FieldEditor {
 					String stringValue = spinner.getText();
 
 					if (!Strings.isNullOrEmpty(stringValue)) {
-						presentationalModel.setFontSize(Integer.parseInt(stringValue));
-						updateFontSize(presentationalModel.getFontSize());
+						model.setFontSize(Integer.parseInt(stringValue));
+						updateFontSize(model.getFontSize());
 					}
 				}
 			});
-			layoutData = new GridData();
-			layoutData.widthHint = 20;
-			spinnerControl.setLayoutData(layoutData);
-
-			Label label = new Label(spinnerControl.getParent(), SWT.NONE);
-			label.setText("Log's font size");
 		} else {
-			checkParent(spinnerBox, parent);
+			checkParent(spinnerControl, parent);
 		}
-		return spinnerBox;
 	}
 
 	private void updateFontSize(int size) {
@@ -273,7 +233,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			ModelItem modelItem = (ModelItem) item.getData();
 			Rectangle bounds = item.getBounds(event.index);
 
-			if (presentationalModel.isLevelAsImage()) {
+			if (model.isLevelAsImage()) {
 				Image image = ResourceUtils.getImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
