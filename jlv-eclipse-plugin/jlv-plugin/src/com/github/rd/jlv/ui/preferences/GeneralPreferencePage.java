@@ -21,10 +21,8 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
 		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
-		
 		FieldEditor generalPreferenceEditor = new GeneralPreferenceEditor(
-				PreferenceEnum.JLV_GENERAL_SETTINGS.getName(),
-				parent);
+				PreferenceEnum.JLV_GENERAL_SETTINGS.getName(), parent);
 		addField(generalPreferenceEditor);
 	}
 }

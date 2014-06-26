@@ -84,6 +84,10 @@ public class LogListView extends ViewPart {
 				if (PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName().equals(event.getProperty())) {
 					updateColumns(viewer.getTable(), preferenceManager.getStructuralPrefs());
 				}
+
+				if (PreferenceEnum.JLV_GENERAL_SETTINGS.getName().equals(event.getProperty())) {
+					setSearchFieldVisible(preferenceManager.getDetailedPrefs().isQuickSearchVisible());
+				}
 			}
 		};
 		preferenceManager.addPropertyChangeListener(preferenceListener);

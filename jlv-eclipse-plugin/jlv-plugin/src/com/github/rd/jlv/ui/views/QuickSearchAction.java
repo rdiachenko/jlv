@@ -20,9 +20,6 @@ public class QuickSearchAction extends AbstractHandler {
 		if (part != null) {
 			PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 			boolean visible = !preferenceManager.getDetailedPrefs().isQuickSearchVisible();
-
-			LogListView view = (LogListView) part;
-			view.setSearchFieldVisible(visible);
 			preferenceManager.getDetailedPrefs().storeQuickSearchState(visible);
 		}
 		return null;

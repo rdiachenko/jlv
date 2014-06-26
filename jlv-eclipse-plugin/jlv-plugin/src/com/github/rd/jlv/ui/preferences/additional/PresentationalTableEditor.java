@@ -23,17 +23,15 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceUtils;
+import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.pfers.PresentationalModel;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -67,9 +65,12 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private PreferenceManager preferenceManager;
 
+	private ResourceManager resourceManager;
+
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		resourceManager = JlvActivator.getDefault().getResourceManager();
 		model = preferenceManager.getDefaultPresentationalPrefs();
 		createControl(parent);
 	}
@@ -213,7 +214,7 @@ public class PresentationalTableEditor extends FieldEditor {
 	}
 
 	private void updateFontSize(int size) {
-		Font font = ResourceUtils.getFont(size);
+		Font font = resourceManager.getFont(size);
 
 		for (TableItem item : tableViewer.getTable().getItems()) {
 			item.setFont(font);
@@ -234,7 +235,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			Rectangle bounds = item.getBounds(event.index);
 
 			if (model.isLevelAsImage()) {
-				Image image = ResourceUtils.getImage(modelItem.getLevelName());
+				Image image = resourceManager.getImage(modelItem.getLevelName());
 				Rectangle imageBounds = image.getBounds();
 				int xOffset = bounds.width / 2 - imageBounds.width / 2;
 				int yOffset = bounds.height / 2 - imageBounds.height / 2;
@@ -269,14 +270,14 @@ public class PresentationalTableEditor extends FieldEditor {
 		@Override
 		public Color getForeground(Object element) {
 			ModelItem modelItem = (ModelItem) element;
-			return ResourceUtils.getColor(modelItem.getForeground());
+			return resourceManager.getColor(modelItem.getForeground());
 		}
 
 		@Override
 		public Color getBackground(Object element) {
 			if (column == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
-				return ResourceUtils.getColor(modelItem.getBackground());
+				return resourceManager.getColor(modelItem.getBackground());
 			} else {
 				return super.getBackground(element);
 			}
@@ -315,13 +316,13 @@ public class PresentationalTableEditor extends FieldEditor {
 			} else {
 				rgb = modelItem.getBackground();
 			}
-			return ResourceUtils.toSystemRgb(rgb);
+			return resourceManager.toSystemRgb(rgb);
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
 			ModelItem modelItem = (ModelItem) element;
-			Rgb rgb = ResourceUtils.fromSystemRgb((RGB) value);
+			Rgb rgb = resourceManager.fromSystemRgb((RGB) value);
 
 			if (colorState == SWT.FOREGROUND) {
 				modelItem.setForeground(rgb);

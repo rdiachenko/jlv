@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.ResourceUtils;
+import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -20,10 +20,13 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	private PreferenceManager preferenceManager;
 
+	private ResourceManager resourceManager;
+
 	public TextColumnLabelProvider(String fieldName) {
 		super();
 		this.fieldName = fieldName;
-		this.preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		resourceManager = JlvActivator.getDefault().getResourceManager();
 	}
 
 	@Override
@@ -46,17 +49,17 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 	@Override
 	public Color getForeground(Object element) {
 		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel());
-		return ResourceUtils.getColor(rgb);
+		return resourceManager.getColor(rgb);
 	}
 
 	@Override
 	public Color getBackground(Object element) {
 		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel(), false);
-		return ResourceUtils.getColor(rgb);
+		return resourceManager.getColor(rgb);
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		return ResourceUtils.getFont(preferenceManager.getDetailedPrefs().getFontSize());
+		return resourceManager.getFont(preferenceManager.getDetailedPrefs().getFontSize());
 	}
 }
