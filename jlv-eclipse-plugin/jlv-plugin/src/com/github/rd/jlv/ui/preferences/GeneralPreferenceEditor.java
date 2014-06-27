@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.pfers.GeneralModel;
+import com.github.rd.jlv.pfers.PreferenceEnum;
 
 public class GeneralPreferenceEditor extends FieldEditor {
 
@@ -27,7 +28,7 @@ public class GeneralPreferenceEditor extends FieldEditor {
 	public GeneralPreferenceEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		model = preferenceManager.getDefaultGeneralPrefs();
+		model = preferenceManager.getDefault(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class);
 		createControl(parent);
 	}
 
@@ -58,17 +59,17 @@ public class GeneralPreferenceEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getGeneralPrefs());
+		doLoad(preferenceManager.getValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class));
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefaultGeneralPrefs());
+		doLoad(preferenceManager.getDefault(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class));
 	}
 
 	@Override
 	public void doStore() {
-		preferenceManager.storeGeneralPrefs(model);
+		preferenceManager.setValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class, model);
 	}
 
 	private void doLoad(GeneralModel model) {

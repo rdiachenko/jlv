@@ -82,18 +82,19 @@ public class LogListView extends ViewPart {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName().equals(event.getProperty())) {
-					updateColumns(viewer.getTable(), preferenceManager.getStructuralPrefs());
+					updateColumns(viewer.getTable(), preferenceManager.getValue(
+							PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
 				}
 
 				if (PreferenceEnum.JLV_GENERAL_SETTINGS.getName().equals(event.getProperty())) {
-					setSearchFieldVisible(preferenceManager.getDetailedPrefs().isQuickSearchVisible());
+					setSearchFieldVisible(preferenceManager.isQuickSearchVisible());
 				}
 			}
 		};
 		preferenceManager.addPropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was added to Jlv log list view");
 
-		if (preferenceManager.getDetailedPrefs().isQuickSearchVisible()) {
+		if (preferenceManager.isQuickSearchVisible()) {
 			quickSearchField = createQuickSearchField(parent);
 		}
 	}
@@ -207,7 +208,8 @@ public class LogListView extends ViewPart {
 			columns[i].addControlListener(new ColumnResizeListener());
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		updateColumns(viewer.getTable(), preferenceManager.getStructuralPrefs());
+		updateColumns(viewer.getTable(),
+				preferenceManager.getValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
 	}
 
 	private void updateColumns(Table table, StructuralModel structuralModel) {
@@ -246,7 +248,7 @@ public class LogListView extends ViewPart {
 				TableColumn column = (TableColumn) e.getSource();
 				String columnName = column.getText();
 				int width = column.getWidth();
-				preferenceManager.getDetailedPrefs().storeColumnWidth(columnName, width);
+				preferenceManager.storeColumnWidth(columnName, width);
 			}
 		}
 	}
@@ -284,7 +286,7 @@ public class LogListView extends ViewPart {
 			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
 
 				if (part instanceof LogListView) {
-					boolean isServerAutoStart = preferenceManager.getDetailedPrefs().isServerAutoStart();
+					boolean isServerAutoStart = preferenceManager.isServerAutoStart();
 					logger.debug("Server auto start option: {}", isServerAutoStart);
 
 					if (isServerAutoStart) {

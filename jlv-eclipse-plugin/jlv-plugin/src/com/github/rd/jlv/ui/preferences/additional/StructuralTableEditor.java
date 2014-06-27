@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.pfers.PreferenceEnum;
 import com.github.rd.jlv.pfers.StructuralModel;
 import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
@@ -70,7 +71,7 @@ public class StructuralTableEditor extends FieldEditor {
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		model = preferenceManager.getDefaultStructuralPrefs();
+		model = preferenceManager.getDefault(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class);
 		createControl(parent);
 	}
 
@@ -98,18 +99,18 @@ public class StructuralTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getStructuralPrefs());
+		doLoad(preferenceManager.getValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefaultStructuralPrefs());
+		doLoad(preferenceManager.getDefault(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
 	}
 
 	@Override
 	public void doStore() {
 		if (tableViewer != null) {
-			preferenceManager.storeStructuralPrefs(model);
+			preferenceManager.setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class, model);
 		}
 	}
 

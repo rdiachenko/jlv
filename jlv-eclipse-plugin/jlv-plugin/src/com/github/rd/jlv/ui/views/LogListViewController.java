@@ -29,7 +29,7 @@ public class LogListViewController {
 	private Server server;
 
 	public LogListViewController(LogListView view) {
-		logContainer = new LogCollection(preferenceManager.getDetailedPrefs().getLogsBufferSize());
+		logContainer = new LogCollection(preferenceManager.getLogsBufferSize());
 
 		logEventListener = new LogEventListener() {
 			@Override
@@ -49,7 +49,7 @@ public class LogListViewController {
 
 	public void startServer() {
 		try {
-			server = new Server(preferenceManager.getDetailedPrefs().getServerPortNumber());
+			server = new Server(preferenceManager.getServerPortNumber());
 			server.start();
 		} catch (IOException e) {
 			logger.error("IOException occurred while starting server:", e);
@@ -98,7 +98,7 @@ public class LogListViewController {
 					}
 				});
 				try {
-					sleep(preferenceManager.getDetailedPrefs().getRefreshingTime());
+					sleep(preferenceManager.getRefreshingTime());
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 					logger.error("Timer thread was interrupted:", e);

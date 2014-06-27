@@ -47,7 +47,7 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 		Log log = (Log) element;
 		Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
 
-		if (preferenceManager.getDetailedPrefs().isLogLevelAsImage()) {
+		if (preferenceManager.isLogLevelAsImage()) {
 			Image image = resourceManager.getImage(log.getLevel());
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
@@ -73,16 +73,16 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	}
 
 	private Color getBackground(Log log) {
-		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(log.getLevel(), false);
+		Rgb rgb = preferenceManager.getLogLevelRgb(log.getLevel(), false);
 		return resourceManager.getColor(rgb);
 	}
 
 	private Color getForeground(Log log) {
-		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(log.getLevel());
+		Rgb rgb = preferenceManager.getLogLevelRgb(log.getLevel());
 		return resourceManager.getColor(rgb);
 	}
 
 	private Font getFont(Log log) {
-		return resourceManager.getFont(preferenceManager.getDetailedPrefs().getFontSize());
+		return resourceManager.getFont(preferenceManager.getFontSize());
 	}
 }

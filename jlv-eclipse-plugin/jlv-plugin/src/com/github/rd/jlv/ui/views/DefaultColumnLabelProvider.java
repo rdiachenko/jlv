@@ -40,18 +40,18 @@ public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public Color getForeground(Object element) {
-		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel());
+		Rgb rgb = preferenceManager.getLogLevelRgb(((Log) element).getLevel());
 		return resourceManager.getColor(rgb);
 	}
 
 	@Override
 	public Color getBackground(Object element) {
-		Rgb rgb = preferenceManager.getDetailedPrefs().getLogLevelRgb(((Log) element).getLevel(), false);
+		Rgb rgb = preferenceManager.getLogLevelRgb(((Log) element).getLevel(), false);
 		return resourceManager.getColor(rgb);
 	}
 
 	@Override
 	public Font getFont(Object element) {
-		return resourceManager.getFont(preferenceManager.getDetailedPrefs().getFontSize());
+		return resourceManager.getFont(preferenceManager.getFontSize());
 	}
 }

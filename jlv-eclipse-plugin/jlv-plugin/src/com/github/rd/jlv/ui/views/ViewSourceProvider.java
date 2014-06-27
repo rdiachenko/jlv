@@ -18,7 +18,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	private PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 
-	private boolean isServerStarted = preferenceManager.getDetailedPrefs().isServerAutoStart();
+	private boolean isServerStarted = preferenceManager.isServerAutoStart();
 
 	public void setServerStarted(boolean state) {
 		isServerStarted = state;
@@ -27,7 +27,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 
 	@Override
 	public void dispose() {
-		setServerStarted(preferenceManager.getDetailedPrefs().isServerAutoStart());
+		setServerStarted(preferenceManager.isServerAutoStart());
 		logger.debug("View source provider has been disposed.");
 	}
 

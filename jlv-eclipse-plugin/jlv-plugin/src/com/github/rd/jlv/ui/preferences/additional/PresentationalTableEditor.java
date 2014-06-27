@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceManager;
+import com.github.rd.jlv.pfers.PreferenceEnum;
 import com.github.rd.jlv.pfers.PresentationalModel;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
 import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
@@ -45,9 +46,9 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final String FOREGROUND_COLUMN_HEADER = "Foreground";
 	private static final String BACKGROUND_COLUMN_HEADER = "Background";
 	private static final String[] COLUMN_NAMES = {
-			LEVEL_COLUMN_HEADER,
-			FOREGROUND_COLUMN_HEADER,
-			BACKGROUND_COLUMN_HEADER
+		LEVEL_COLUMN_HEADER,
+		FOREGROUND_COLUMN_HEADER,
+		BACKGROUND_COLUMN_HEADER
 	};
 
 	private static final int LEVEL_COLUMN_WIDTH = 60;
@@ -71,7 +72,8 @@ public class PresentationalTableEditor extends FieldEditor {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 		resourceManager = JlvActivator.getDefault().getResourceManager();
-		model = preferenceManager.getDefaultPresentationalPrefs();
+		model = preferenceManager.getDefault(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
+				PresentationalModel.class);
 		createControl(parent);
 	}
 
@@ -98,18 +100,21 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getPresentationalPrefs());
+		doLoad(preferenceManager.getValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
+				PresentationalModel.class));
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefaultPresentationalPrefs());
+		doLoad(preferenceManager.getDefault(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
+				PresentationalModel.class));
 	}
 
 	@Override
 	public void doStore() {
 		if (!(tableViewer == null || imageSwitcherControl == null || spinnerControl == null)) {
-			preferenceManager.storePresentationalPrefs(model);
+			preferenceManager.setValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
+					PresentationalModel.class, model);
 		}
 	}
 
