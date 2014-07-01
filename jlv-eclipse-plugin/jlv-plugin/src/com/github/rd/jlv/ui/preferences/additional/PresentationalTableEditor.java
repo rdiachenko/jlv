@@ -1,17 +1,16 @@
 package com.github.rd.jlv.ui.preferences.additional;
 
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,13 +55,13 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final int BACKGROUND_COLUMN_WIDTH = 260;
 	private static final int[] COLUMN_WIDTHS = { LEVEL_COLUMN_WIDTH, FOREGROUND_COLUMN_WIDTH, BACKGROUND_COLUMN_WIDTH };
 
+	private Composite topComposite;
+
 	private Button imageSwitcherControl;
 
 	private Spinner spinnerControl;
 
 	private TableViewer tableViewer;
-
-	private PresentationalModel model;
 
 	private PreferenceManager preferenceManager;
 
@@ -72,14 +71,12 @@ public class PresentationalTableEditor extends FieldEditor {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 		resourceManager = JlvActivator.getDefault().getResourceManager();
-		model = preferenceManager.getDefault(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
-				PresentationalModel.class);
 		createControl(parent);
 	}
 
 	@Override
 	public void adjustForNumColumns(int numColumns) {
-		((GridData) tableViewer.getControl().getLayoutData()).horizontalSpan = numColumns;
+		((GridData) topComposite.getLayoutData()).horizontalSpan = numColumns;
 	}
 
 	@Override
@@ -89,6 +86,8 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doFillIntoGrid(Composite parent, int numColumns) {
+		topComposite = parent;
+
 		createImageSwitcherControl(parent);
 		createSpinnerBoxControl(parent);
 
@@ -112,46 +111,27 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doStore() {
-		if (!(tableViewer == null || imageSwitcherControl == null || spinnerControl == null)) {
-			preferenceManager.setValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
-					PresentationalModel.class, model);
-		}
+		PresentationalModel model = (PresentationalModel) tableViewer.getInput();
+		preferenceManager.setValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
+				PresentationalModel.class, model);
 	}
 
 	private void doLoad(PresentationalModel model) {
-		this.model = model;
-
-		if (!(imageSwitcherControl == null || spinnerControl == null)) {
-			imageSwitcherControl.setSelection(this.model.isLevelAsImage());
-			spinnerControl.setSelection(this.model.getFontSize());
-		}
-
-		if (tableViewer != null) {
-			tableViewer.setInput(this.model.getModelItems());
-			tableViewer.refresh();
-		}
+		imageSwitcherControl.setSelection(model.isLevelAsImage());
+		spinnerControl.setSelection(model.getFontSize());
+		tableViewer.setInput(model);
+		tableViewer.refresh();
 	}
 
 	private void createTableViewerControl(Composite parent) {
-		if (tableViewer == null) {
-			tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
-					| SWT.HIDE_SELECTION);
-			tableViewer.setUseHashlookup(true);
-			final Table table = tableViewer.getTable();
-			table.setLinesVisible(true);
-			table.setHeaderVisible(true);
-			table.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent event) {
-					tableViewer = null;
-				}
-			});
-			createTableColumns(tableViewer);
-			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(model.getModelItems());
-		} else {
-			checkParent(tableViewer.getControl(), parent);
-		}
+		tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
+				| SWT.HIDE_SELECTION);
+		tableViewer.setUseHashlookup(true);
+		final Table table = tableViewer.getTable();
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		createTableColumns(tableViewer);
+		tableViewer.setContentProvider(new ModelContentProvider());
 	}
 
 	private void createTableColumns(TableViewer tableViewer) {
@@ -162,7 +142,7 @@ public class PresentationalTableEditor extends FieldEditor {
 
 			switch (COLUMN_NAMES[i]) {
 			case LEVEL_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(new LevelColumnLabelProvider());
+				viewerColumn.setLabelProvider(new LevelColumnLabelProvider(tableViewer));
 				break;
 			case FOREGROUND_COLUMN_HEADER:
 				viewerColumn.setLabelProvider(new ColorColumnLabelProvider(SWT.FOREGROUND));
@@ -179,43 +159,37 @@ public class PresentationalTableEditor extends FieldEditor {
 	}
 
 	private void createImageSwitcherControl(Composite parent) {
-		if (imageSwitcherControl == null) {
-			imageSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Use image to display log level");
-			imageSwitcherControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setLevelAsImage(imageSwitcherControl.getSelection());
-					tableViewer.refresh();
-				}
-			});
-		} else {
-			checkParent(imageSwitcherControl, parent);
-		}
+		imageSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Use image to display log level");
+		imageSwitcherControl.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PresentationalModel model = (PresentationalModel) tableViewer.getInput();
+				model.setLevelAsImage(imageSwitcherControl.getSelection());
+				tableViewer.refresh();
+			}
+		});
 	}
 
 	private void createSpinnerBoxControl(Composite parent) {
-		if (spinnerControl == null) {
-			spinnerControl = PreferencePageUtils.createSpinnerControl(parent, "Log's font size");
-			spinnerControl.setMinimum(7);
-			spinnerControl.setMaximum(17);
-			spinnerControl.setSelection(model.getFontSize());
-			spinnerControl.setIncrement(1);
-			spinnerControl.setPageIncrement(5);
-			spinnerControl.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(final ModifyEvent e) {
-					Spinner spinner = (Spinner) e.getSource();
-					String stringValue = spinner.getText();
+		spinnerControl = PreferencePageUtils.createSpinnerControl(parent, "Log's font size");
+		spinnerControl.setMinimum(7);
+		spinnerControl.setMaximum(17);
+		spinnerControl.setSelection(11);
+		spinnerControl.setIncrement(1);
+		spinnerControl.setPageIncrement(5);
+		spinnerControl.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(final ModifyEvent e) {
+				Spinner spinner = (Spinner) e.getSource();
+				String stringValue = spinner.getText();
 
-					if (!Strings.isNullOrEmpty(stringValue)) {
-						model.setFontSize(Integer.parseInt(stringValue));
-						updateFontSize(model.getFontSize());
-					}
+				if (!Strings.isNullOrEmpty(stringValue)) {
+					PresentationalModel model = (PresentationalModel) tableViewer.getInput();
+					model.setFontSize(Integer.parseInt(stringValue));
+					updateFontSize(model.getFontSize());
 				}
-			});
-		} else {
-			checkParent(spinnerControl, parent);
-		}
+			}
+		});
 	}
 
 	private void updateFontSize(int size) {
@@ -226,7 +200,33 @@ public class PresentationalTableEditor extends FieldEditor {
 		}
 	}
 
+	private static class ModelContentProvider implements IStructuredContentProvider {
+
+		@Override
+		public void dispose() {
+			// no code
+		}
+
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// no code
+		}
+
+		@Override
+		public Object[] getElements(Object inputElement) {
+			PresentationalModel model = (PresentationalModel) inputElement;
+			return model.getModelItems().toArray();
+		}
+	}
+
 	private class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
+
+		private final TableViewer viewer;
+
+		public LevelColumnLabelProvider(TableViewer viewer) {
+			super();
+			this.viewer = viewer;
+		}
 
 		@Override
 		protected void measure(Event event, Object element) {
@@ -238,6 +238,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			TableItem item = (TableItem) event.item;
 			ModelItem modelItem = (ModelItem) item.getData();
 			Rectangle bounds = item.getBounds(event.index);
+			PresentationalModel model = (PresentationalModel) viewer.getInput();
 
 			if (model.isLevelAsImage()) {
 				Image image = resourceManager.getImage(modelItem.getLevelName());
@@ -260,11 +261,11 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private class ColorColumnLabelProvider extends ColumnLabelProvider {
 
-		private int column;
+		private int columnType;
 
-		public ColorColumnLabelProvider(int column) {
+		public ColorColumnLabelProvider(int columnType) {
 			super();
-			this.column = column;
+			this.columnType = columnType;
 		}
 
 		@Override
@@ -280,7 +281,7 @@ public class PresentationalTableEditor extends FieldEditor {
 
 		@Override
 		public Color getBackground(Object element) {
-			if (column == SWT.BACKGROUND) {
+			if (columnType == SWT.BACKGROUND) {
 				ModelItem modelItem = (ModelItem) element;
 				return resourceManager.getColor(modelItem.getBackground());
 			} else {
@@ -291,19 +292,22 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	private class ColorColumnCellEditor extends EditingSupport {
 
-		private TableViewer viewer;
+		private final TableViewer viewer;
 
-		private int colorState;
+		private final int colorType;
 
-		public ColorColumnCellEditor(TableViewer viewer, int colorState) {
+		private final CellEditor editor;
+
+		public ColorColumnCellEditor(TableViewer viewer, int colorType) {
 			super(viewer);
 			this.viewer = viewer;
-			this.colorState = colorState;
+			this.colorType = colorType;
+			editor = new ColorCellEditor(viewer.getTable());
 		}
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return new ColorCellEditor(viewer.getTable());
+			return editor;
 		}
 
 		@Override
@@ -316,7 +320,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			ModelItem modelItem = (ModelItem) element;
 			Rgb rgb;
 
-			if (colorState == SWT.FOREGROUND) {
+			if (colorType == SWT.FOREGROUND) {
 				rgb = modelItem.getForeground();
 			} else {
 				rgb = modelItem.getBackground();
@@ -329,7 +333,7 @@ public class PresentationalTableEditor extends FieldEditor {
 			ModelItem modelItem = (ModelItem) element;
 			Rgb rgb = resourceManager.fromSystemRgb((RGB) value);
 
-			if (colorState == SWT.FOREGROUND) {
+			if (colorType == SWT.FOREGROUND) {
 				modelItem.setForeground(rgb);
 			} else {
 				modelItem.setBackground(rgb);

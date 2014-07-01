@@ -45,14 +45,8 @@ public final class PreferenceManager {
 		return model;
 	}
 
-	public <T> void setDefault(PreferenceEnum preference, Class<T> modelType) {
-		Converter<T> converter = ConverterFactory.getConverter(modelType);
-		T model = converter.getDefaultModel();
-		store.setDefault(preference.getName(), converter.modelToJson(model));
-	}
-
 	public <T> T getValue(PreferenceEnum preference, Class<T> modelType) {
-		T model = getExistingValue(preference, modelType);
+		T model = getExistingModel(preference, modelType);
 
 		if (model == null) {
 			Converter<T> converter = ConverterFactory.getConverter(modelType);
@@ -155,7 +149,7 @@ public final class PreferenceManager {
 		}
 	}
 
-	private <T> T getExistingValue(PreferenceEnum preference, Class<T> modelType) {
+	private <T> T getExistingModel(PreferenceEnum preference, Class<T> modelType) {
 		switch (preference) {
 		case JLV_GENERAL_SETTINGS:
 			return modelType.cast(generalModel);

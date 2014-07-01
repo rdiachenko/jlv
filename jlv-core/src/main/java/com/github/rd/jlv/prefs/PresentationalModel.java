@@ -40,44 +40,6 @@ public class PresentationalModel {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + fontSize;
-		result = prime * result + (levelAsImage ? 1231 : 1237);
-		result = prime * result + ((modelItems == null) ? 0 : modelItems.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		PresentationalModel other = (PresentationalModel) obj;
-		if (fontSize != other.fontSize) {
-			return false;
-		}
-		if (levelAsImage != other.levelAsImage) {
-			return false;
-		}
-		if (modelItems == null) {
-			if (other.modelItems != null) {
-				return false;
-			}
-		} else if (!modelItems.equals(other.modelItems)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		return "PresentationalModel [levelAsImage=" + levelAsImage + ", fontSize=" + fontSize + ", modelItems="
 				+ modelItems + "]";
@@ -116,52 +78,6 @@ public class PresentationalModel {
 
 		public void setBackground(Rgb background) {
 			this.background = background;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((background == null) ? 0 : background.hashCode());
-			result = prime * result + ((foreground == null) ? 0 : foreground.hashCode());
-			result = prime * result + ((levelName == null) ? 0 : levelName.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			ModelItem other = (ModelItem) obj;
-			if (background == null) {
-				if (other.background != null) {
-					return false;
-				}
-			} else if (!background.equals(other.background)) {
-				return false;
-			}
-			if (foreground == null) {
-				if (other.foreground != null) {
-					return false;
-				}
-			} else if (!foreground.equals(other.foreground)) {
-				return false;
-			}
-			if (levelName == null) {
-				if (other.levelName != null) {
-					return false;
-				}
-			} else if (!levelName.equals(other.levelName)) {
-				return false;
-			}
-			return true;
 		}
 
 		@Override

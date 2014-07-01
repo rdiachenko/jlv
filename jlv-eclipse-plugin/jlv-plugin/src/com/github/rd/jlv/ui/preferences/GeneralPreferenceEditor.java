@@ -1,8 +1,15 @@
 package com.github.rd.jlv.ui.preferences;
 
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -14,9 +21,17 @@ import com.github.rd.jlv.prefs.PreferenceEnum;
 
 public class GeneralPreferenceEditor extends FieldEditor {
 
+	private static final int LOG_LIST_VIEW_BUFFER_SIZE_MIN = 50; // log's number
+	private static final int LOG_LIST_VIEW_BUFFER_SIZE_MAX = 100000; // log's number
+
+	private static final int LOG_LIST_VIEW_REFRESHING_TIME_MIN = 500; // ms
+	private static final int LOG_LIST_VIEW_REFRESHING_TIME_MAX = 60000; // ms
+
 	private GeneralModel model;
 
 	private PreferenceManager preferenceManager;
+
+	private Composite topComposite;
 
 	private Text serverPortFieldControl;
 	private Button autoStartServerSwitcherControl;
@@ -28,13 +43,12 @@ public class GeneralPreferenceEditor extends FieldEditor {
 	public GeneralPreferenceEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		model = preferenceManager.getDefault(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class);
 		createControl(parent);
 	}
 
 	@Override
 	public void adjustForNumColumns(int numColumns) {
-		// no code
+		((GridData) topComposite.getLayoutData()).horizontalSpan = numColumns;
 	}
 
 	@Override
@@ -44,6 +58,8 @@ public class GeneralPreferenceEditor extends FieldEditor {
 
 	@Override
 	public void doFillIntoGrid(Composite parent, int numColumns) {
+		topComposite = parent;
+
 		Group serverSettingsGroup = PreferencePageUtils.createSettingsGroup(parent, "Server settings");
 		Composite groupComposite = PreferencePageUtils.createFieldEditorComposite(serverSettingsGroup);
 		createServerPortFieldControl(groupComposite);
@@ -82,72 +98,101 @@ public class GeneralPreferenceEditor extends FieldEditor {
 	}
 
 	private void createServerPortFieldControl(Composite parent) {
-		if (serverPortFieldControl == null) {
-			serverPortFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Port number:");
-			serverPortFieldControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setPortNumber(Integer.parseInt(serverPortFieldControl.getText()));
-				}
-			});
-		} else {
-			checkParent(serverPortFieldControl, parent);
-		}
+		serverPortFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Port number:");
+		final ValueHandler valueHandler = new ValueHandler() {
+			@Override
+			protected void valueChanged() {
+				model.setPortNumber(Integer.parseInt(serverPortFieldControl.getText()));
+			}
+		};
+		addListeners(serverPortFieldControl, valueHandler);
 	}
 
 	private void createAutoStartServerSwitcherControl(Composite parent) {
-		if (autoStartServerSwitcherControl == null) {
-			autoStartServerSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Automatic start");
-			autoStartServerSwitcherControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setAutoStart(autoStartServerSwitcherControl.getSelection());
-				}
-			});
-		} else {
-			checkParent(autoStartServerSwitcherControl, parent);
-		}
+		autoStartServerSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Automatic start");
+		autoStartServerSwitcherControl.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				model.setAutoStart(autoStartServerSwitcherControl.getSelection());
+			}
+		});
 	}
 
 	private void createBufferSizeFieldControl(Composite parent) {
-		if (bufferSizeFieldControl == null) {
-			bufferSizeFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Buffer size (logs):");
-			bufferSizeFieldControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setBufferSize(Integer.parseInt(bufferSizeFieldControl.getText()));
+		bufferSizeFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Buffer size (logs):");
+		final ValueHandler valueHandler = new ValueHandler() {
+			@Override
+			protected void valueChanged() {
+				int value = Integer.parseInt(bufferSizeFieldControl.getText());
+
+				if (value >= LOG_LIST_VIEW_BUFFER_SIZE_MIN && value <= LOG_LIST_VIEW_BUFFER_SIZE_MAX) {
+					model.setBufferSize(value);
+					clearErrorMessage();
+				} else {
+					showErrorMessage("Buffer size is out of the [" + LOG_LIST_VIEW_BUFFER_SIZE_MIN + ","
+							+ LOG_LIST_VIEW_BUFFER_SIZE_MAX + "] range.");
 				}
-			});
-		} else {
-			checkParent(bufferSizeFieldControl, parent);
-		}
+			}
+		};
+		addListeners(bufferSizeFieldControl, valueHandler);
 	}
 
 	private void createRefreshTimeFieldControl(Composite parent) {
-		if (refreshTimeFieldControl == null) {
-			refreshTimeFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Refreshing time (ms):");
-			refreshTimeFieldControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setRefreshingTime(Integer.parseInt(refreshTimeFieldControl.getText()));
+		refreshTimeFieldControl = PreferencePageUtils.createTextFieldControl(parent, "Refreshing time (ms):");
+		final ValueHandler valueHandler = new ValueHandler() {
+			@Override
+			protected void valueChanged() {
+				int value = Integer.parseInt(refreshTimeFieldControl.getText());
+
+				if (value >= LOG_LIST_VIEW_REFRESHING_TIME_MIN && value <= LOG_LIST_VIEW_REFRESHING_TIME_MAX) {
+					model.setRefreshingTime(value);
+					clearErrorMessage();
+				} else {
+					showErrorMessage("Refreshing time is out of the [" + LOG_LIST_VIEW_REFRESHING_TIME_MIN + ","
+							+ LOG_LIST_VIEW_REFRESHING_TIME_MAX + "] range.");
 				}
-			});
-		} else {
-			checkParent(refreshTimeFieldControl, parent);
-		}
+			}
+		};
+		addListeners(refreshTimeFieldControl, valueHandler);
 	}
 
 	private void createQuickSearchSwitcherControl(Composite parent) {
-		if (quickSearchSwitcherControl == null) {
-			quickSearchSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Quick search");
-			quickSearchSwitcherControl.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					model.setQuickSearch(quickSearchSwitcherControl.getSelection());
-				}
-			});
-		} else {
-			checkParent(quickSearchSwitcherControl, parent);
+		quickSearchSwitcherControl = PreferencePageUtils.createCheckBoxControl(parent, "Quick search");
+		quickSearchSwitcherControl.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				model.setQuickSearch(quickSearchSwitcherControl.getSelection());
+			}
+		});
+	}
+
+	private void addListeners(final Text field, final ValueHandler valueHandler) {
+		field.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				valueHandler.valueChanged();
+			}
+		});
+		field.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				valueHandler.valueChanged();
+			}
+		});
+		field.addVerifyListener(new VerifyListener() {
+			@Override
+			public void verifyText(final VerifyEvent e) {
+				e.doit = valueHandler.isValid(e.text);
+			}
+		});
+	}
+
+	private abstract class ValueHandler {
+
+		protected abstract void valueChanged();
+
+		protected boolean isValid(String value) {
+			return value.matches("[\\d]*");
 		}
 	}
 }

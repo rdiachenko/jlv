@@ -58,44 +58,6 @@ public class StructuralModel {
 		}
 
 		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + (display ? 1231 : 1237);
-			result = prime * result + ((name == null) ? 0 : name.hashCode());
-			result = prime * result + width;
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			ModelItem other = (ModelItem) obj;
-			if (display != other.display) {
-				return false;
-			}
-			if (name == null) {
-				if (other.name != null) {
-					return false;
-				}
-			} else if (!name.equals(other.name)) {
-				return false;
-			}
-			if (width != other.width) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
 		public String toString() {
 			return "ModelItem [name=" + name + ", width=" + width + ", display=" + display + "]";
 		}

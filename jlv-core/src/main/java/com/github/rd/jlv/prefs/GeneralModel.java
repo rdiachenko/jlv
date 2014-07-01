@@ -60,48 +60,6 @@ public class GeneralModel {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (autoStart ? 1231 : 1237);
-		result = prime * result + bufferSize;
-		result = prime * result + portNumber;
-		result = prime * result + (quickSearch ? 1231 : 1237);
-		result = prime * result + refreshingTime;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		GeneralModel other = (GeneralModel) obj;
-		if (autoStart != other.autoStart) {
-			return false;
-		}
-		if (bufferSize != other.bufferSize) {
-			return false;
-		}
-		if (portNumber != other.portNumber) {
-			return false;
-		}
-		if (quickSearch != other.quickSearch) {
-			return false;
-		}
-		if (refreshingTime != other.refreshingTime) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		return "GeneralModel [portNumber=" + portNumber + ", autoStart=" + autoStart + ", quickSearch=" + quickSearch
 				+ ", bufferSize=" + bufferSize

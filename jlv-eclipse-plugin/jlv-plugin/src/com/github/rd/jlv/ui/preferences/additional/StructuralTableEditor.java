@@ -1,21 +1,19 @@
 package com.github.rd.jlv.ui.preferences.additional;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -35,6 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.prefs.PreferenceEnum;
 import com.github.rd.jlv.prefs.StructuralModel;
 import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
@@ -46,9 +45,9 @@ public class StructuralTableEditor extends FieldEditor {
 	private static final String NAME_COLUMN_HEADER = "Name";
 	private static final String WIDTH_COLUMN_HEADER = "Width";
 	private static final String[] COLUMN_NAMES = {
-			DISPLAY_COLUMN_HEADER,
-			NAME_COLUMN_HEADER,
-			WIDTH_COLUMN_HEADER
+		DISPLAY_COLUMN_HEADER,
+		NAME_COLUMN_HEADER,
+		WIDTH_COLUMN_HEADER
 	};
 
 	private static final int DISPLAY_COLUMN_WIDTH = 70;
@@ -56,42 +55,41 @@ public class StructuralTableEditor extends FieldEditor {
 	private static final int WIDTH_COLUMN_WIDTH = 120;
 	private static final int[] COLUMN_WIDTHS = { DISPLAY_COLUMN_WIDTH, NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
 
+	private Composite topComposite;
+
 	private TableViewer tableViewer;
 
-	private Composite buttonBox;
 	private Button upButton;
+
 	private Button downButton;
-
-	private SelectionListener selectionListener;
-
-	private StructuralModel model;
 
 	private PreferenceManager preferenceManager;
 
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
 		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-		model = preferenceManager.getDefault(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class);
 		createControl(parent);
 	}
 
 	@Override
 	public void adjustForNumColumns(int numColumns) {
-		((GridData) tableViewer.getControl().getLayoutData()).horizontalSpan = numColumns;
+		((GridData) topComposite.getLayoutData()).horizontalSpan = numColumns;
 	}
 
 	@Override
 	public int getNumberOfControls() {
-		return 2; // Table and Button box are 2 controls
+		return 2; // Table composite and Button box composite
 	}
 
 	@Override
 	public void doFillIntoGrid(Composite parent, int numColumns) {
+		topComposite = parent;
+
 		tableViewer = getTableViewerControl(parent);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		tableViewer.getControl().setLayoutData(gridData);
 
-		buttonBox = getButtonBoxControl(parent);
+		Composite buttonBox = getButtonBox(parent);
 		gridData = new GridData();
 		gridData.verticalAlignment = GridData.BEGINNING;
 		buttonBox.setLayoutData(gridData);
@@ -109,48 +107,25 @@ public class StructuralTableEditor extends FieldEditor {
 
 	@Override
 	public void doStore() {
-		if (tableViewer != null) {
-			preferenceManager.setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class, model);
-		}
+		StructuralModel model = (StructuralModel) tableViewer.getInput();
+		preferenceManager.setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class, model);
 	}
 
 	private void doLoad(StructuralModel model) {
-		this.model = model;
-
-		if (tableViewer != null) {
-			tableViewer.setInput(this.model.getModelItems());
-			tableViewer.refresh();
-		}
-	}
-
-	private SelectionListener getSelectionListener() {
-		if (selectionListener == null) {
-			createSelectionListener();
-		}
-		return selectionListener;
+		tableViewer.setInput(model);
+		tableViewer.refresh();
 	}
 
 	private TableViewer getTableViewerControl(Composite parent) {
-		if (tableViewer == null) {
-			tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
-					| SWT.HIDE_SELECTION);
-			tableViewer.setUseHashlookup(true);
-			final Table table = tableViewer.getTable();
-			table.setLinesVisible(true);
-			table.setHeaderVisible(true);
-			table.addSelectionListener(getSelectionListener());
-			table.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent event) {
-					tableViewer = null;
-				}
-			});
-			createTableColumns(tableViewer);
-			tableViewer.setContentProvider(new ArrayContentProvider());
-			tableViewer.setInput(model.getModelItems());
-		} else {
-			checkParent(tableViewer.getControl(), parent);
-		}
+		tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
+				| SWT.HIDE_SELECTION);
+		tableViewer.setUseHashlookup(true);
+		final Table table = tableViewer.getTable();
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		table.addSelectionListener(createSelectionListener());
+		createTableColumns(tableViewer);
+		tableViewer.setContentProvider(new ModelContentProvider());
 		return tableViewer;
 	}
 
@@ -179,58 +154,20 @@ public class StructuralTableEditor extends FieldEditor {
 					@Override
 					public String getText(Object element) {
 						ModelItem modelItem = (ModelItem) element;
-						return Integer.toString(modelItem.getWidth());
+						return String.valueOf(modelItem.getWidth());
 					}
 				});
 				viewerColumn.setEditingSupport(new WidthCellEditor(tableViewer));
 				break;
 			default:
-				throw new IllegalArgumentException("No column with such name: " + COLUMN_NAMES[i]
+				throw new IllegalArgumentException("No column with such a name: " + COLUMN_NAMES[i]
 						+ ". Only [Name, Width, Display] are allowed.");
 			}
 		}
 	}
 
-	private Composite getButtonBoxControl(Composite parent) {
-		if (buttonBox == null) {
-			buttonBox = new Composite(parent, SWT.NULL);
-			GridLayout layout = new GridLayout();
-			layout.marginWidth = 0;
-			layout.marginHeight = 0;
-			buttonBox.setLayout(layout);
-			createButtons(buttonBox);
-			buttonBox.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent event) {
-					upButton = null;
-					downButton = null;
-					buttonBox = null;
-				}
-			});
-		} else {
-			checkParent(buttonBox, parent);
-		}
-		selectionChanged();
-		return buttonBox;
-	}
-
-	private void createButtons(Composite box) {
-		upButton = createPushButton(box, "Up");
-		downButton = createPushButton(box, "Down");
-	}
-
-	private Button createPushButton(Composite parent, String name) {
-		Button button = new Button(parent, SWT.PUSH);
-		button.setText(name);
-		button.addSelectionListener(getSelectionListener());
-		GridData gridData = new GridData(SWT.NONE);
-		gridData.widthHint = 95;
-		button.setLayoutData(gridData);
-		return button;
-	}
-
-	private void createSelectionListener() {
-		selectionListener = new SelectionAdapter() {
+	private SelectionListener createSelectionListener() {
+		return new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				Widget widget = event.widget;
@@ -244,6 +181,32 @@ public class StructuralTableEditor extends FieldEditor {
 				}
 			}
 		};
+	}
+
+	private Composite getButtonBox(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		Composite buttonBox = new Composite(parent, SWT.NULL);
+		buttonBox.setLayout(layout);
+		createButtons(buttonBox);
+		selectionChanged();
+		return buttonBox;
+	}
+
+	private void createButtons(Composite box) {
+		upButton = createPushButton(box, "Up");
+		downButton = createPushButton(box, "Down");
+	}
+
+	private Button createPushButton(Composite parent, String name) {
+		Button button = new Button(parent, SWT.PUSH);
+		button.setText(name);
+		button.addSelectionListener(createSelectionListener());
+		GridData gridData = new GridData(SWT.NONE);
+		gridData.widthHint = 95;
+		button.setLayoutData(gridData);
+		return button;
 	}
 
 	private void selectionChanged() {
@@ -267,15 +230,36 @@ public class StructuralTableEditor extends FieldEditor {
 		int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			List<ModelItem> modelItems = model.getModelItems();
-			Collections.swap(modelItems, index, target);
+			StructuralModel model = (StructuralModel) tableViewer.getInput();
+			Collections.swap(model.getModelItems(), index, target);
 			tableViewer.refresh();
 			tableViewer.getTable().setSelection(target);
 		}
 		selectionChanged();
 	}
 
+	private static class ModelContentProvider implements IStructuredContentProvider {
+
+		@Override
+		public void dispose() {
+			// no code
+		}
+
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// no code
+		}
+
+		@Override
+		public Object[] getElements(Object inputElement) {
+			StructuralModel model = (StructuralModel) inputElement;
+			return model.getModelItems().toArray();
+		}
+	}
+
 	private static class DisplayColumnLabelProvider extends OwnerDrawLabelProvider {
+
+		private final ResourceManager resourceManager = JlvActivator.getDefault().getResourceManager();
 
 		@Override
 		protected void measure(Event event, Object element) {
@@ -286,9 +270,8 @@ public class StructuralTableEditor extends FieldEditor {
 		protected void paint(Event event, Object element) {
 			TableItem item = (TableItem) event.item;
 			ModelItem modelItem = (ModelItem) item.getData();
-			Image image = (modelItem.isDisplay()) ? JlvActivator.getDefault().getResourceManager()
-					.getImage(ImageType.CHECKBOX_CHECKED_ICON)
-					: JlvActivator.getDefault().getResourceManager().getImage(ImageType.CHECKBOX_UNCHECKED_ICON);
+			Image image = (modelItem.isDisplay()) ? resourceManager.getImage(ImageType.CHECKBOX_CHECKED_ICON)
+					: resourceManager.getImage(ImageType.CHECKBOX_UNCHECKED_ICON);
 			Rectangle bounds = item.getBounds(event.index);
 			Rectangle imageBounds = image.getBounds();
 			int xOffset = bounds.width / 2 - imageBounds.width / 2;
@@ -303,22 +286,23 @@ public class StructuralTableEditor extends FieldEditor {
 
 		private TableViewer viewer;
 
+		private final CellEditor editor;
+
 		public WidthCellEditor(TableViewer viewer) {
 			super(viewer);
 			this.viewer = viewer;
-		}
-
-		@Override
-		protected CellEditor getCellEditor(Object element) {
-			CellEditor cellEditor = new TextCellEditor(viewer.getTable());
-
-			((Text) cellEditor.getControl()).addVerifyListener(new VerifyListener() {
+			editor = new TextCellEditor(viewer.getTable());
+			((Text) editor.getControl()).addVerifyListener(new VerifyListener() {
 				@Override
 				public void verifyText(final VerifyEvent e) {
 					e.doit = e.text.matches("[\\d]*");
 				}
 			});
-			return cellEditor;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			return editor;
 		}
 
 		@Override
@@ -328,16 +312,14 @@ public class StructuralTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(Object element) {
-			ModelItem modelItem = (ModelItem) element;
-			return Integer.toString(modelItem.getWidth());
+			return String.valueOf(((ModelItem) element).getWidth());
 		}
 
 		@Override
 		protected void setValue(Object element, Object value) {
-			ModelItem modelItem = (ModelItem) element;
-			int width = Integer.valueOf((String) value);
-			modelItem.setWidth(width);
-			viewer.update(modelItem, null);
+			int width = Integer.parseInt(String.valueOf(value));
+			((ModelItem) element).setWidth(width);
+			viewer.update(element, null);
 		}
 	}
 
@@ -345,14 +327,17 @@ public class StructuralTableEditor extends FieldEditor {
 
 		private final TableViewer viewer;
 
+		private final CellEditor editor;
+
 		public DisplayCellEditor(TableViewer viewer) {
 			super(viewer);
 			this.viewer = viewer;
+			editor = new CheckboxCellEditor(viewer.getTable(), SWT.CHECK | SWT.CENTER);
 		}
 
 		@Override
 		protected CellEditor getCellEditor(final Object element) {
-			return new CheckboxCellEditor(viewer.getTable(), SWT.CHECK | SWT.CENTER);
+			return editor;
 		}
 
 		@Override
@@ -362,15 +347,13 @@ public class StructuralTableEditor extends FieldEditor {
 
 		@Override
 		protected Object getValue(final Object element) {
-			ModelItem modelItem = (ModelItem) element;
-			return modelItem.isDisplay();
+			return ((ModelItem) element).isDisplay();
 		}
 
 		@Override
 		protected void setValue(final Object element, final Object value) {
-			ModelItem modelItem = (ModelItem) element;
-			modelItem.setDisplay((Boolean) value);
-			viewer.update(modelItem, null);
+			((ModelItem) element).setDisplay((Boolean) value);
+			viewer.update(element, null);
 		}
 	}
 }
