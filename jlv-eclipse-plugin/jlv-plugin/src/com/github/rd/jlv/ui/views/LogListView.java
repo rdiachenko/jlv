@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
-import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.pfers.StructuralModel;
-import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
+import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.prefs.StructuralModel;
+import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.google.common.base.Strings;
 

@@ -32,10 +32,10 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceManager;
-import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.pfers.PresentationalModel;
-import com.github.rd.jlv.pfers.PresentationalModel.ModelItem;
-import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.prefs.PresentationalModel;
+import com.github.rd.jlv.prefs.PresentationalModel.ModelItem;
+import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 import com.github.rd.jlv.ui.preferences.PreferencePageUtils;
 import com.google.common.base.Strings;

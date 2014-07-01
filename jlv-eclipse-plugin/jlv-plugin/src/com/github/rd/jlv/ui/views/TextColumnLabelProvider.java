@@ -9,7 +9,7 @@ import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class TextColumnLabelProvider extends ColumnLabelProvider {

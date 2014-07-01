@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.LogConstants;
-import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
 
 public final class ResourceManager {
 

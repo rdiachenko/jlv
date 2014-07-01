@@ -9,8 +9,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.pfers.GeneralModel;
-import com.github.rd.jlv.pfers.PreferenceEnum;
+import com.github.rd.jlv.prefs.GeneralModel;
+import com.github.rd.jlv.prefs.PreferenceEnum;
 
 public class GeneralPreferenceEditor extends FieldEditor {
 

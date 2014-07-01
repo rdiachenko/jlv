@@ -4,13 +4,13 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 
 import com.github.rd.jlv.ResourceManager;
-import com.github.rd.jlv.pfers.Converter;
-import com.github.rd.jlv.pfers.ConverterFactory;
-import com.github.rd.jlv.pfers.GeneralModel;
-import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.pfers.PresentationalModel;
-import com.github.rd.jlv.pfers.PresentationalModel.ModelItem.Rgb;
-import com.github.rd.jlv.pfers.StructuralModel;
+import com.github.rd.jlv.prefs.Converter;
+import com.github.rd.jlv.prefs.ConverterFactory;
+import com.github.rd.jlv.prefs.GeneralModel;
+import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.prefs.PresentationalModel;
+import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
+import com.github.rd.jlv.prefs.StructuralModel;
 
 public final class PreferenceManager {
 

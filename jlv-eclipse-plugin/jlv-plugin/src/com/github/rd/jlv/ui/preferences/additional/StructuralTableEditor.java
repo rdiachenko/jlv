@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.pfers.StructuralModel;
-import com.github.rd.jlv.pfers.StructuralModel.ModelItem;
+import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.prefs.StructuralModel;
+import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
 
 public class StructuralTableEditor extends FieldEditor {

@@ -7,7 +7,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.pfers.PreferenceEnum;
+import com.github.rd.jlv.prefs.PreferenceEnum;
 
 public class GeneralPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

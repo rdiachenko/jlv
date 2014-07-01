@@ -3,10 +3,10 @@ package com.github.rd.jlv.ui.preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
 import com.github.rd.jlv.JlvActivator;
-import com.github.rd.jlv.pfers.GeneralModel;
-import com.github.rd.jlv.pfers.PreferenceEnum;
-import com.github.rd.jlv.pfers.PresentationalModel;
-import com.github.rd.jlv.pfers.StructuralModel;
+import com.github.rd.jlv.prefs.GeneralModel;
+import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.prefs.PresentationalModel;
+import com.github.rd.jlv.prefs.StructuralModel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
