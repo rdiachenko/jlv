@@ -15,6 +15,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -225,9 +226,13 @@ public class LogListView extends ViewPart {
 		table.redraw();
 	}
 
-	private class ColumnResizeListener implements ControlListener {
+	private class ColumnResizeListener implements ControlListener, Runnable {
 
-		private long startTime = System.currentTimeMillis();
+		private static final int DELAY = 500; // ms
+
+		private long lastEvent = 0;
+
+		private ControlEvent event;
 
 		@Override
 		public void controlMoved(ControlEvent e) {
@@ -237,15 +242,21 @@ public class LogListView extends ViewPart {
 		@Override
 		public void controlResized(ControlEvent e) {
 			if (e.getSource() instanceof TableColumn) {
-				TableColumn column = (TableColumn) e.getSource();
+				event = e;
+				lastEvent = System.currentTimeMillis();
+				Display.getDefault().timerExec(DELAY, this);
+			}
+		}
+
+		@Override
+		public void run() {
+			if ((lastEvent + DELAY) < System.currentTimeMillis()) {
+				TableColumn column = (TableColumn) event.getSource();
 				String columnName = column.getText();
 				int width = column.getWidth();
-				long endTime = System.currentTimeMillis();
-
-				if (endTime - startTime > 1000) {
-					preferenceManager.storeColumnWidth(columnName, width);
-				}
-				startTime = System.currentTimeMillis();
+				preferenceManager.storeColumnWidth(columnName, width);
+			} else {
+				Display.getDefault().timerExec(DELAY, this);
 			}
 		}
 	}
