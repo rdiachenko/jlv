@@ -1,10 +1,11 @@
 package com.github.rd.jlv.prefs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class PresentationalModel {
+public class PresentationalModel implements Model {
 
 	@JsonProperty(value = "img")
 	private boolean levelAsImage;
@@ -14,6 +15,20 @@ public class PresentationalModel {
 
 	@JsonProperty(value = "items")
 	private List<ModelItem> modelItems;
+
+	public PresentationalModel() {
+		// no code
+	}
+
+	public PresentationalModel(PresentationalModel model) {
+		levelAsImage = model.isLevelAsImage();
+		fontSize = model.getFontSize();
+		modelItems = new ArrayList<>();
+
+		for (ModelItem item : model.getModelItems()) {
+			modelItems.add(new ModelItem(item));
+		}
+	}
 
 	public boolean isLevelAsImage() {
 		return levelAsImage;
@@ -56,6 +71,16 @@ public class PresentationalModel {
 		@JsonProperty(value = "bcolor")
 		private Rgb background;
 
+		public ModelItem() {
+			// no code
+		}
+
+		public ModelItem(ModelItem item) {
+			levelName = item.getLevelName();
+			foreground = new Rgb(item.getForeground());
+			background = new Rgb(item.getBackground());
+		}
+
 		public String getLevelName() {
 			return levelName;
 		}
@@ -97,14 +122,18 @@ public class PresentationalModel {
 			@JsonProperty(value = "b")
 			private int blue;
 
+			public Rgb() {
+				// no code
+			}
+
 			public Rgb(int red, int green, int blue) {
 				this.red = red;
 				this.green = green;
 				this.blue = blue;
 			}
 
-			public Rgb() {
-				// no code
+			public Rgb(Rgb rgb) {
+				this(rgb.getRed(), rgb.getGreen(), rgb.getBlue());
 			}
 
 			public int getRed() {

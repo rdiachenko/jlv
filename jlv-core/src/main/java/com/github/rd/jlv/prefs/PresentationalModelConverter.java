@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,34 +11,28 @@ import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.prefs.PresentationalModel.ModelItem;
 import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
 
-public class PresentationalModelConverter implements Converter<PresentationalModel> {
+public class PresentationalModelConverter extends Converter {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final ObjectMapper mapper = new ObjectMapper();
-
-	private PresentationalModel defaultModel;
-
 	@Override
-	public PresentationalModel getDefaultModel() {
-		if (defaultModel == null) {
-			List<ModelItem> items = new ArrayList<>();
-			items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
-			items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
-			items.add(createItem(LogConstants.WARN_LEVEL_NAME, createRgb(255, 128, 0), createRgb(255, 255, 255)));
-			items.add(createItem(LogConstants.ERROR_LEVEL_NAME, createRgb(255, 0, 0), createRgb(255, 255, 255)));
-			items.add(createItem(LogConstants.FATAL_LEVEL_NAME, createRgb(165, 42, 42), createRgb(255, 255, 255)));
+	public Model getDefaultModel() {
+		List<ModelItem> items = new ArrayList<>();
+		items.add(createItem(LogConstants.DEBUG_LEVEL_NAME, createRgb(0, 0, 0), createRgb(255, 255, 255)));
+		items.add(createItem(LogConstants.INFO_LEVEL_NAME, createRgb(0, 255, 0), createRgb(255, 255, 255)));
+		items.add(createItem(LogConstants.WARN_LEVEL_NAME, createRgb(255, 128, 0), createRgb(255, 255, 255)));
+		items.add(createItem(LogConstants.ERROR_LEVEL_NAME, createRgb(255, 0, 0), createRgb(255, 255, 255)));
+		items.add(createItem(LogConstants.FATAL_LEVEL_NAME, createRgb(165, 42, 42), createRgb(255, 255, 255)));
 
-			defaultModel = new PresentationalModel();
-			defaultModel.setLevelAsImage(true);
-			defaultModel.setFontSize(11);
-			defaultModel.setModelItems(items);
-		}
+		PresentationalModel defaultModel = new PresentationalModel();
+		defaultModel.setLevelAsImage(true);
+		defaultModel.setFontSize(11);
+		defaultModel.setModelItems(items);
 		return defaultModel;
 	}
 
 	@Override
-	public PresentationalModel jsonToModel(String json) {
+	public Model jsonToModel(String json) {
 		try {
 			PresentationalModel model = mapper.readValue(json, PresentationalModel.class);
 			return model;
@@ -52,7 +45,7 @@ public class PresentationalModelConverter implements Converter<PresentationalMod
 	}
 
 	@Override
-	public String modelToJson(PresentationalModel model) {
+	public String modelToJson(Model model) {
 		try {
 			return mapper.writeValueAsString(model);
 		} catch (IOException e) {

@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import com.github.rd.jlv.JlvActivator;
+import com.github.rd.jlv.prefs.Converter;
 import com.github.rd.jlv.prefs.GeneralModel;
 import com.github.rd.jlv.prefs.PreferenceEnum;
 
@@ -27,9 +28,10 @@ public class GeneralPreferenceEditor extends FieldEditor {
 	private static final int LOG_LIST_VIEW_REFRESHING_TIME_MIN = 500; // ms
 	private static final int LOG_LIST_VIEW_REFRESHING_TIME_MAX = 60000; // ms
 
-	private GeneralModel model;
+	private static final PreferenceEnum TYPE = PreferenceEnum.JLV_GENERAL_SETTINGS;
+	private static final Converter CONVERTER = Converter.get(TYPE);
 
-	private PreferenceManager preferenceManager;
+	private GeneralModel model;
 
 	private Composite topComposite;
 
@@ -39,6 +41,8 @@ public class GeneralPreferenceEditor extends FieldEditor {
 	private Text bufferSizeFieldControl;
 	private Text refreshTimeFieldControl;
 	private Button quickSearchSwitcherControl;
+
+	private PreferenceManager preferenceManager;
 
 	public GeneralPreferenceEditor(String name, Composite parent) {
 		init(name, "");
@@ -75,26 +79,27 @@ public class GeneralPreferenceEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class));
+		model = (GeneralModel) CONVERTER.jsonToModel(getPreferenceStore().getString(TYPE.getName()));
+		init();
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefault(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class));
+		model = (GeneralModel) CONVERTER.getDefaultModel();
+		init();
 	}
 
 	@Override
 	public void doStore() {
-		preferenceManager.setValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class, model);
+		preferenceManager.setValue(PreferenceEnum.JLV_GENERAL_SETTINGS, model);
 	}
 
-	private void doLoad(GeneralModel model) {
+	private void init() {
 		serverPortFieldControl.setText(String.valueOf(model.getPortNumber()));
 		autoStartServerSwitcherControl.setSelection(model.isAutoStart());
 		bufferSizeFieldControl.setText(String.valueOf(model.getBufferSize()));
 		refreshTimeFieldControl.setText(String.valueOf(model.getRefreshingTime()));
 		quickSearchSwitcherControl.setSelection(model.isQuickSearch());
-		this.model = model;
 	}
 
 	private void createServerPortFieldControl(Composite parent) {

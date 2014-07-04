@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceManager;
+import com.github.rd.jlv.prefs.Converter;
 import com.github.rd.jlv.prefs.PreferenceEnum;
 import com.github.rd.jlv.prefs.PresentationalModel;
 import com.github.rd.jlv.prefs.PresentationalModel.ModelItem;
@@ -55,6 +56,9 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final int BACKGROUND_COLUMN_WIDTH = 260;
 	private static final int[] COLUMN_WIDTHS = { LEVEL_COLUMN_WIDTH, FOREGROUND_COLUMN_WIDTH, BACKGROUND_COLUMN_WIDTH };
 
+	private static final PreferenceEnum TYPE = PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS;
+	private static final Converter CONVERTER = Converter.get(TYPE);
+
 	private Composite topComposite;
 
 	private Button imageSwitcherControl;
@@ -66,6 +70,8 @@ public class PresentationalTableEditor extends FieldEditor {
 	private PreferenceManager preferenceManager;
 
 	private ResourceManager resourceManager;
+
+	private PresentationalModel model;
 
 	public PresentationalTableEditor(String name, Composite parent) {
 		init(name, "");
@@ -99,24 +105,22 @@ public class PresentationalTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
-				PresentationalModel.class));
+		model = (PresentationalModel) CONVERTER.jsonToModel(getPreferenceStore().getString(TYPE.getName()));
+		init();
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefault(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
-				PresentationalModel.class));
+		model = (PresentationalModel) CONVERTER.getDefaultModel();
+		init();
 	}
 
 	@Override
 	public void doStore() {
-		PresentationalModel model = (PresentationalModel) tableViewer.getInput();
-		preferenceManager.setValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS,
-				PresentationalModel.class, model);
+		preferenceManager.setValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS, model);
 	}
 
-	private void doLoad(PresentationalModel model) {
+	private void init() {
 		imageSwitcherControl.setSelection(model.isLevelAsImage());
 		spinnerControl.setSelection(model.getFontSize());
 		tableViewer.setInput(model);
@@ -163,7 +167,6 @@ public class PresentationalTableEditor extends FieldEditor {
 		imageSwitcherControl.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PresentationalModel model = (PresentationalModel) tableViewer.getInput();
 				model.setLevelAsImage(imageSwitcherControl.getSelection());
 				tableViewer.refresh();
 			}
@@ -184,7 +187,6 @@ public class PresentationalTableEditor extends FieldEditor {
 				String stringValue = spinner.getText();
 
 				if (!Strings.isNullOrEmpty(stringValue)) {
-					PresentationalModel model = (PresentationalModel) tableViewer.getInput();
 					model.setFontSize(Integer.parseInt(stringValue));
 					updateFontSize(model.getFontSize());
 				}

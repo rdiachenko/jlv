@@ -1,13 +1,26 @@
 package com.github.rd.jlv.prefs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class StructuralModel {
+public class StructuralModel implements Model {
 
 	@JsonProperty(value = "items")
 	private List<ModelItem> modelItems;
+
+	public StructuralModel() {
+		// no code
+	}
+
+	public StructuralModel(StructuralModel model) {
+		modelItems = new ArrayList<>();
+
+		for (ModelItem item : model.getModelItems()) {
+			modelItems.add(new ModelItem(item));
+		}
+	}
 
 	public List<ModelItem> getModelItems() {
 		return modelItems;
@@ -32,6 +45,16 @@ public class StructuralModel {
 
 		@JsonProperty(value = "d")
 		private boolean display;
+
+		public ModelItem() {
+			// no code
+		}
+
+		public ModelItem(ModelItem item) {
+			name = item.getName();
+			width = item.getWidth();
+			display = item.isDisplay();
+		}
 
 		public String getName() {
 			return name;

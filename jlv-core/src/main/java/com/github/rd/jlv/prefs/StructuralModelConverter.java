@@ -4,40 +4,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.LogConstants;
 import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 
-public class StructuralModelConverter implements Converter<StructuralModel> {
+public class StructuralModelConverter extends Converter {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final ObjectMapper mapper = new ObjectMapper();
-
-	private StructuralModel defaultModel;
-
 	@Override
-	public StructuralModel getDefaultModel() {
-		if (defaultModel == null) {
-			List<ModelItem> items = new ArrayList<>();
-			items.add(createItem(LogConstants.LEVEL_FIELD_NAME, 55, true));
-			items.add(createItem(LogConstants.CATEGORY_FIELD_NAME, 100, true));
-			items.add(createItem(LogConstants.MESSAGE_FIELD_NAME, 100, true));
-			items.add(createItem(LogConstants.LINE_FIELD_NAME, 100, true));
-			items.add(createItem(LogConstants.DATE_FIELD_NAME, 100, true));
-			items.add(createItem(LogConstants.THROWABLE_FIELD_NAME, 100, true));
+	public Model getDefaultModel() {
+		List<ModelItem> items = new ArrayList<>();
+		items.add(createItem(LogConstants.LEVEL_FIELD_NAME, 55, true));
+		items.add(createItem(LogConstants.CATEGORY_FIELD_NAME, 100, true));
+		items.add(createItem(LogConstants.MESSAGE_FIELD_NAME, 100, true));
+		items.add(createItem(LogConstants.LINE_FIELD_NAME, 100, true));
+		items.add(createItem(LogConstants.DATE_FIELD_NAME, 100, true));
+		items.add(createItem(LogConstants.THROWABLE_FIELD_NAME, 100, true));
 
-			defaultModel = new StructuralModel();
-			defaultModel.setModelItems(items);
-		}
+		StructuralModel defaultModel = new StructuralModel();
+		defaultModel.setModelItems(items);
 		return defaultModel;
 	}
 
 	@Override
-	public StructuralModel jsonToModel(String json) {
+	public Model jsonToModel(String json) {
 		try {
 			return mapper.readValue(json, StructuralModel.class);
 		} catch (IOException e) {
@@ -49,7 +42,7 @@ public class StructuralModelConverter implements Converter<StructuralModel> {
 	}
 
 	@Override
-	public String modelToJson(StructuralModel model) {
+	public String modelToJson(Model model) {
 		try {
 			return mapper.writeValueAsString(model);
 		} catch (IOException e) {

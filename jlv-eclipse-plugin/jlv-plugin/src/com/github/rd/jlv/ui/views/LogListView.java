@@ -29,10 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.StringConstants;
 import com.github.rd.jlv.prefs.PreferenceEnum;
-import com.github.rd.jlv.prefs.StructuralModel;
 import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 import com.github.rd.jlv.ui.preferences.PreferenceManager;
-import com.google.common.base.Strings;
 
 public class LogListView extends ViewPart {
 
@@ -82,8 +80,7 @@ public class LogListView extends ViewPart {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName().equals(event.getProperty())) {
-					updateColumns(viewer.getTable(), preferenceManager.getValue(
-							PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
+					updateColumns(viewer.getTable(), preferenceManager.getStructuralItems());
 				}
 
 				if (PreferenceEnum.JLV_GENERAL_SETTINGS.getName().equals(event.getProperty())) {
@@ -94,9 +91,8 @@ public class LogListView extends ViewPart {
 		preferenceManager.addPropertyChangeListener(preferenceListener);
 		logger.debug("PropertyChange listener was added to Jlv log list view");
 
-		if (preferenceManager.isQuickSearchVisible()) {
-			quickSearchField = createQuickSearchField(parent);
-		}
+		quickSearchField = createQuickSearchField(parent);
+		setSearchFieldVisible(preferenceManager.isQuickSearchVisible());
 	}
 
 	@Override
@@ -117,23 +113,18 @@ public class LogListView extends ViewPart {
 		}
 	}
 
-	public void setSearchFieldVisible(boolean isVisible) {
-		Composite parent = viewer.getTable().getParent();
+	public void setSearchFieldVisible(boolean visible) {
+		GridData gridData = (GridData) quickSearchField.getLayoutData();
+		gridData.exclude = !visible;
+		quickSearchField.setVisible(visible);
+		quickSearchField.getParent().layout();
 
-		if (isVisible) {
-			quickSearchField = createQuickSearchField(parent);
-
-			if (!Strings.isNullOrEmpty(quickSearchText)) {
-				quickSearchField.setText(quickSearchText);
-				quickSearchField.selectAll();
-			}
+		if (visible) {
+			quickSearchField.selectAll();
 			quickSearchField.setFocus();
 		} else {
-			quickSearchText = quickSearchField.getText();
-			quickSearchField.dispose();
 			setFocus();
 		}
-		parent.layout();
 	}
 
 	public void clear() {
@@ -208,14 +199,12 @@ public class LogListView extends ViewPart {
 			columns[i].addControlListener(new ColumnResizeListener());
 			columnOrderMap.put(columns[i].getText(), i);
 		}
-		updateColumns(viewer.getTable(),
-				preferenceManager.getValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
+		updateColumns(viewer.getTable(), preferenceManager.getStructuralItems());
 	}
 
-	private void updateColumns(Table table, StructuralModel structuralModel) {
+	private void updateColumns(Table table, List<ModelItem> modelItems) {
 		int[] columnOrder = table.getColumnOrder();
 		int[] newColumnOrder = new int[columnOrder.length];
-		List<ModelItem> modelItems = structuralModel.getModelItems();
 		int index = 0;
 
 		for (ModelItem item : modelItems) {
@@ -237,6 +226,9 @@ public class LogListView extends ViewPart {
 	}
 
 	private class ColumnResizeListener implements ControlListener {
+
+		private long startTime = System.currentTimeMillis();
+
 		@Override
 		public void controlMoved(ControlEvent e) {
 			// no code
@@ -248,7 +240,12 @@ public class LogListView extends ViewPart {
 				TableColumn column = (TableColumn) e.getSource();
 				String columnName = column.getText();
 				int width = column.getWidth();
-				preferenceManager.storeColumnWidth(columnName, width);
+				long endTime = System.currentTimeMillis();
+
+				if (endTime - startTime > 1000) {
+					preferenceManager.storeColumnWidth(columnName, width);
+				}
+				startTime = System.currentTimeMillis();
 			}
 		}
 	}

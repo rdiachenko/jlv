@@ -1,16 +1,21 @@
 package com.github.rd.jlv.ui.preferences;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 
 import com.github.rd.jlv.ResourceManager;
 import com.github.rd.jlv.prefs.Converter;
-import com.github.rd.jlv.prefs.ConverterFactory;
 import com.github.rd.jlv.prefs.GeneralModel;
+import com.github.rd.jlv.prefs.Model;
 import com.github.rd.jlv.prefs.PreferenceEnum;
 import com.github.rd.jlv.prefs.PresentationalModel;
 import com.github.rd.jlv.prefs.PresentationalModel.ModelItem.Rgb;
 import com.github.rd.jlv.prefs.StructuralModel;
+import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 
 public final class PreferenceManager {
 
@@ -20,11 +25,13 @@ public final class PreferenceManager {
 	private StructuralModel structuralModel;
 	private PresentationalModel presentationalModel;
 
+	private Map<PreferenceEnum, Converter> converters = new EnumMap<>(PreferenceEnum.class);
+
 	public PreferenceManager(IPreferenceStore store) {
 		this.store = store;
-		generalModel = getValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class);
-		structuralModel = getValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class);
-		presentationalModel = getValue(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS, PresentationalModel.class);
+		generalModel = (GeneralModel) initAndGetModel(PreferenceEnum.JLV_GENERAL_SETTINGS);
+		structuralModel = (StructuralModel) initAndGetModel(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS);
+		presentationalModel = (PresentationalModel) initAndGetModel(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS);
 	}
 
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
@@ -39,28 +46,11 @@ public final class PreferenceManager {
 		}
 	}
 
-	public <T> T getDefault(PreferenceEnum preference, Class<T> modelType) {
-		Converter<T> converter = ConverterFactory.getConverter(modelType);
-		T model = converter.getDefaultModel();
-		return model;
-	}
-
-	public <T> T getValue(PreferenceEnum preference, Class<T> modelType) {
-		T model = getExistingModel(preference, modelType);
-
-		if (model == null) {
-			Converter<T> converter = ConverterFactory.getConverter(modelType);
-			model = converter.jsonToModel(store.getString(preference.getName()));
-			update(preference, model);
-		}
-		return model;
-	}
-
-	public <T> void setValue(PreferenceEnum preference, Class<T> modelType, T model) {
-		Converter<T> converter = ConverterFactory.getConverter(modelType);
+	public void setValue(PreferenceEnum type, Model model) {
+		update(type, model);
+		Converter converter = converters.get(type);
 		String data = converter.modelToJson(model);
-		store.setValue(preference.getName(), data);
-		update(preference, model);
+		store.setValue(type.getName(), data);
 	}
 
 	// General preferences
@@ -75,7 +65,7 @@ public final class PreferenceManager {
 
 	public void storeQuickSearchState(boolean visible) {
 		generalModel.setQuickSearch(visible);
-		setValue(PreferenceEnum.JLV_GENERAL_SETTINGS, GeneralModel.class, generalModel);
+		setValue(PreferenceEnum.JLV_GENERAL_SETTINGS, generalModel);
 	}
 
 	public int getLogsBufferSize() {
@@ -98,7 +88,12 @@ public final class PreferenceManager {
 				item.setWidth(width);
 			}
 		}
-		setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class, structuralModel);
+		setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, structuralModel);
+	}
+
+	public List<ModelItem> getStructuralItems() {
+		StructuralModel model = new StructuralModel(structuralModel);
+		return model.getModelItems();
 	}
 
 	// Presentational preferences
@@ -133,8 +128,15 @@ public final class PreferenceManager {
 		}
 	}
 
-	private <T> void update(PreferenceEnum preference, T model) {
-		switch (preference) {
+	private Model initAndGetModel(PreferenceEnum type) {
+		Converter converter = Converter.get(type);
+		converters.put(type, converter);
+		Model model = converter.jsonToModel(store.getString(type.getName()));
+		return model;
+	}
+
+	private void update(PreferenceEnum type, Model model) {
+		switch (type) {
 		case JLV_GENERAL_SETTINGS:
 			generalModel = (GeneralModel) model;
 			break;
@@ -145,20 +147,7 @@ public final class PreferenceManager {
 			presentationalModel = (PresentationalModel) model;
 			break;
 		default:
-			throw new IllegalArgumentException("No such a preference found: " + preference.getName());
-		}
-	}
-
-	private <T> T getExistingModel(PreferenceEnum preference, Class<T> modelType) {
-		switch (preference) {
-		case JLV_GENERAL_SETTINGS:
-			return modelType.cast(generalModel);
-		case LOG_LIST_STRUCTURAL_TABLE_SETTINGS:
-			return modelType.cast(structuralModel);
-		case LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS:
-			return modelType.cast(presentationalModel);
-		default:
-			throw new IllegalArgumentException("No such a preference found: " + preference.getName());
+			throw new IllegalArgumentException("No such a preference type found: " + type.getName());
 		}
 	}
 }

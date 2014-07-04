@@ -2,7 +2,7 @@ package com.github.rd.jlv.prefs;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class GeneralModel {
+public class GeneralModel implements Model {
 
 	@JsonProperty(value = "port")
 	private int portNumber;
@@ -18,6 +18,18 @@ public class GeneralModel {
 
 	@JsonProperty(value = "rtime")
 	private int refreshingTime;
+
+	public GeneralModel() {
+		// no code
+	}
+
+	public GeneralModel(GeneralModel model) {
+		portNumber = model.getPortNumber();
+		autoStart = model.isAutoStart();
+		quickSearch = model.isQuickSearch();
+		bufferSize = model.getBufferSize();
+		refreshingTime = model.getRefreshingTime();
+	}
 
 	public int getPortNumber() {
 		return portNumber;

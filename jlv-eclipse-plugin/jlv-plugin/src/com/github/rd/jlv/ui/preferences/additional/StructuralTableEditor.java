@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Widget;
 import com.github.rd.jlv.ImageType;
 import com.github.rd.jlv.JlvActivator;
 import com.github.rd.jlv.ResourceManager;
+import com.github.rd.jlv.prefs.Converter;
 import com.github.rd.jlv.prefs.PreferenceEnum;
 import com.github.rd.jlv.prefs.StructuralModel;
 import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
@@ -45,15 +46,18 @@ public class StructuralTableEditor extends FieldEditor {
 	private static final String NAME_COLUMN_HEADER = "Name";
 	private static final String WIDTH_COLUMN_HEADER = "Width";
 	private static final String[] COLUMN_NAMES = {
-		DISPLAY_COLUMN_HEADER,
-		NAME_COLUMN_HEADER,
-		WIDTH_COLUMN_HEADER
+			DISPLAY_COLUMN_HEADER,
+			NAME_COLUMN_HEADER,
+			WIDTH_COLUMN_HEADER
 	};
 
 	private static final int DISPLAY_COLUMN_WIDTH = 70;
 	private static final int NAME_COLUMN_WIDTH = 120;
 	private static final int WIDTH_COLUMN_WIDTH = 120;
 	private static final int[] COLUMN_WIDTHS = { DISPLAY_COLUMN_WIDTH, NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
+
+	private static final PreferenceEnum TYPE = PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS;
+	private static final Converter CONVERTER = Converter.get(TYPE);
 
 	private Composite topComposite;
 
@@ -64,6 +68,8 @@ public class StructuralTableEditor extends FieldEditor {
 	private Button downButton;
 
 	private PreferenceManager preferenceManager;
+
+	private StructuralModel model;
 
 	public StructuralTableEditor(String name, Composite parent) {
 		init(name, "");
@@ -97,21 +103,22 @@ public class StructuralTableEditor extends FieldEditor {
 
 	@Override
 	public void doLoad() {
-		doLoad(preferenceManager.getValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
+		model = (StructuralModel) CONVERTER.jsonToModel(getPreferenceStore().getString(TYPE.getName()));
+		init();
 	}
 
 	@Override
 	public void doLoadDefault() {
-		doLoad(preferenceManager.getDefault(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class));
+		model = (StructuralModel) CONVERTER.getDefaultModel();
+		init();
 	}
 
 	@Override
 	public void doStore() {
-		StructuralModel model = (StructuralModel) tableViewer.getInput();
-		preferenceManager.setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, StructuralModel.class, model);
+		preferenceManager.setValue(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS, model);
 	}
 
-	private void doLoad(StructuralModel model) {
+	private void init() {
 		tableViewer.setInput(model);
 		tableViewer.refresh();
 	}
@@ -230,7 +237,6 @@ public class StructuralTableEditor extends FieldEditor {
 		int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			StructuralModel model = (StructuralModel) tableViewer.getInput();
 			Collections.swap(model.getModelItems(), index, target);
 			tableViewer.refresh();
 			tableViewer.getTable().setSelection(target);
