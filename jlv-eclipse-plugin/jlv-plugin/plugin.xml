@@ -138,8 +138,9 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="com.github.rd.jlv.ui.views.quickSearchAction"
+            contextId="com.github.rd.jlv.ui.views.loglistview.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="Shift+F">
+            sequence="M1+F">
       </key>
    </extension>
    <extension
@@ -148,6 +149,14 @@
             id="com.github.rd.jlv.ui.views.quickSearchAction"
             name="Quick search">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="com.github.rd.jlv.ui.views.loglistview.context"
+            name="JLV context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
    </extension>
 
 </plugin>

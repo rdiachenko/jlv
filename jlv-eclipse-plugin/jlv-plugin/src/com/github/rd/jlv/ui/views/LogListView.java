@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,6 @@ public class LogListView extends ViewPart {
 	private final PreferenceManager preferenceManager;
 
 	private Text quickSearchField;
-	private String quickSearchText;
 	private QuickLogFilter quickFilter;
 
 	private boolean toggledToBottom;
@@ -64,6 +64,9 @@ public class LogListView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+		contextService.activateContext(StringConstants.JLV_LOG_LIST_VIEW_CONTEXT_ID);
+
 		GridLayout layout = new GridLayout();
 		layout.verticalSpacing = 0;
 		layout.marginWidth = 0;
@@ -167,7 +170,7 @@ public class LogListView extends ViewPart {
 	}
 
 	private TableViewer createViewer(Composite parent) {
-		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL;
+		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 		TableViewer viewer = new LogTableViewer(parent, style);
 		final Table table = viewer.getTable();
 //		table.setItemCount(JlvActivator.getPreferenceManager().getLogsBufferSize());
