@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.rd.jlv</groupId>
 	<artifactId>com.github.rd.jlv.parent</artifactId>
-	<version>1.3.3-SNAPSHOT</version>
+	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Java logging viewer Eclipse plugin (parent)</name>
