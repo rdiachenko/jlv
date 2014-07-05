@@ -40,5 +40,5 @@ check_status $? '[setting up jlv-eclipse-plugin next snapshot version to $2-SNAP
 cd ../
 echo "git add . && git commit -m \"jlv-eclipse-plugin version was bumped to $2-SNAPSHOT\" && git push"
 
-#git tag -a v$1 -m "JLV tagged v$1"
-#git push --tags
+echo "git tag -a v$1 -m \"JLV tagged v$1\""
+echo "git push --tags"
