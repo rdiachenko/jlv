@@ -44,7 +44,7 @@ public class CircularBuffer<T> implements Iterable<T> {
 		buffer = (T[]) new Object[capacity + 1];
 	}
 
-	public int size() {
+	public synchronized int size() {
 		if (head < tail) {
 			return tail - head;
 		} else if (head > tail) {
@@ -54,7 +54,7 @@ public class CircularBuffer<T> implements Iterable<T> {
 		}
 	}
 
-	public void add(T item) {
+	public synchronized void add(T item) {
 		if (item == null) {
 			throw new IllegalArgumentException("item is null");
 		}
@@ -66,21 +66,21 @@ public class CircularBuffer<T> implements Iterable<T> {
 		}
 	}
 
-	public T get(int index) {
+	public synchronized T get(int index) {
 		if (index < 0 || index >= size()) {
 			throw new IllegalArgumentException("Index is out of bounds: " + index);
 		}
 		return buffer[(head + index) % buffer.length];
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		Arrays.fill(buffer, null);
 		head = 0;
 		tail = 0;
 	}
 
 	@SuppressWarnings("unchecked")
-	public T[] toArray() {
+	public synchronized T[] toArray() {
 		T[] array;
 
 		if (head == tail) {
@@ -98,6 +98,10 @@ public class CircularBuffer<T> implements Iterable<T> {
 		return array;
 	}
 
+	/* Should be synchronized manually
+	 *
+	 * @see java.lang.Iterable#iterator()
+	 */
 	@Override
 	public Iterator<T> iterator() {
 		return new CircularBufferIterator();
