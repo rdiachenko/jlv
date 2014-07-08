@@ -1,5 +1,11 @@
 package com.github.rd.jlv.log4j.domain;
 
+/**
+ * The class represents a log entity.It has a builder for creating a log's object. After a build completes the object
+ * becomes immutable.
+ *
+ * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
+ */
 public final class Log {
 
 	private final String categoryName; // %c
@@ -90,6 +96,10 @@ public final class Log {
 		return mdc;
 	}
 
+	public static Builder newBuilder() {
+		return new Builder();
+	}
+
 	@Override
 	public int hashCode() {
 		int result = 17;
@@ -163,20 +173,20 @@ public final class Log {
 
 	public static class Builder {
 
-		private String categoryName = ""; // %c
-		private String className = ""; // %C
-		private String date = ""; // %d
-		private String fileName = ""; // %F
-		private String locationInfo = ""; // %l
-		private String lineNumber = ""; // %L
-		private String methodName = ""; // %M
-		private String level = ""; // %p
-		private String ms = ""; // %r
-		private String threadName = ""; // %t
-		private String message = ""; // %m
-		private String throwable = ""; // %throwable
-		private String ndc = ""; // %x
-		private String mdc = ""; // %X{key}
+		private String categoryName = "";
+		private String className = "";
+		private String date = "";
+		private String fileName = "";
+		private String locationInfo = "";
+		private String lineNumber = "";
+		private String methodName = "";
+		private String level = "";
+		private String ms = "";
+		private String threadName = "";
+		private String message = "";
+		private String throwable = "";
+		private String ndc = "";
+		private String mdc = "";
 
 		public Builder categoryName(String name) {
 			categoryName = name;

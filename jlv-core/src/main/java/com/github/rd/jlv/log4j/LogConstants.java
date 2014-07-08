@@ -1,5 +1,6 @@
 package com.github.rd.jlv.log4j;
 
+
 public final class LogConstants {
 
 	// Human readable log field names
@@ -19,20 +20,20 @@ public final class LogConstants {
 	public static final String MDC_FIELD_NAME = "MDC";
 
 	public static final String[] LOG_FIELD_NAMES = {
-			LEVEL_FIELD_NAME,
-			CATEGORY_FIELD_NAME,
-			MESSAGE_FIELD_NAME,
-			LINE_FIELD_NAME,
-			DATE_FIELD_NAME,
-			THROWABLE_FIELD_NAME,
-			CLASS_FIELD_NAME,
-			FILE_FIELD_NAME,
-			LOCATION_INFO_FIELD_NAME,
-			METHOD_FIELD_NAME,
-			MILLISECONDS_FIELD_NAME,
-			THREAD_FIELD_NAME,
-			NDC_FIELD_NAME,
-			MDC_FIELD_NAME,
+		LEVEL_FIELD_NAME,
+		CATEGORY_FIELD_NAME,
+		MESSAGE_FIELD_NAME,
+		LINE_FIELD_NAME,
+		DATE_FIELD_NAME,
+		THROWABLE_FIELD_NAME,
+		CLASS_FIELD_NAME,
+		FILE_FIELD_NAME,
+		LOCATION_INFO_FIELD_NAME,
+		METHOD_FIELD_NAME,
+		MILLISECONDS_FIELD_NAME,
+		THREAD_FIELD_NAME,
+		NDC_FIELD_NAME,
+		MDC_FIELD_NAME,
 	};
 
 	public static final String DEBUG_LEVEL_NAME = "DEBUG";
@@ -42,11 +43,11 @@ public final class LogConstants {
 	public static final String FATAL_LEVEL_NAME = "FATAL";
 
 	public static final String[] LOG_LEVEL_NAMES = {
-			DATE_FIELD_NAME,
-			INFO_LEVEL_NAME,
-			WARN_LEVEL_NAME,
-			ERROR_LEVEL_NAME,
-			FATAL_LEVEL_NAME,
+		DATE_FIELD_NAME,
+		INFO_LEVEL_NAME,
+		WARN_LEVEL_NAME,
+		ERROR_LEVEL_NAME,
+		FATAL_LEVEL_NAME,
 	};
 
 	private LogConstants() {

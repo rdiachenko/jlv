@@ -7,12 +7,12 @@ public class LogCollectionTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testWrongCapacity() {
-		new LogCollection(0);
+		new CircularBuffer<Log>(0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNegativeIndex() {
-		LogCollection logs = new LogCollection(5);
+		CircularBuffer<Log> logs = new CircularBuffer<>(5);
 		Log log1 = new Log.Builder().message("log1").build();
 		logs.add(log1);
 		logs.get(-7);
@@ -20,7 +20,7 @@ public class LogCollectionTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIndexOutOfBounds() {
-		LogCollection logs = new LogCollection(5);
+		CircularBuffer<Log> logs = new CircularBuffer<>(5);
 		Log log1 = new Log.Builder().message("log1").build();
 		logs.add(log1);
 		logs.get(7);
@@ -28,7 +28,7 @@ public class LogCollectionTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIndexOnZiroSizeArray() {
-		LogCollection logs = new LogCollection(5);
+		CircularBuffer<Log> logs = new CircularBuffer<>(5);
 		logs.get(0);
 	}
 
@@ -39,7 +39,7 @@ public class LogCollectionTest {
 		Log log3 = new Log.Builder().message("log3").build();
 		Log log4 = new Log.Builder().message("log4").build();
 
-		LogCollection logs = new LogCollection(2);
+		CircularBuffer<Log> logs = new CircularBuffer<>(2);
 		logs.add(log1);
 		logs.add(log2);
 		logs.add(log3);
@@ -58,7 +58,7 @@ public class LogCollectionTest {
 	public void testSingleElementCollection() {
 		Log log1 = new Log.Builder().message("log1").build();
 		Log log2 = new Log.Builder().message("log2").build();
-		LogCollection logs = new LogCollection(1);
+		CircularBuffer<Log> logs = new CircularBuffer<>(1);
 		logs.add(log1);
 		logs.add(log2);
 
@@ -76,7 +76,7 @@ public class LogCollectionTest {
 		Log log5 = new Log.Builder().message("log5").build();
 		Log log6 = new Log.Builder().message("log6").build();
 
-		LogCollection logs = new LogCollection(5);
+		CircularBuffer<Log> logs = new CircularBuffer<>(5);
 		logs.add(log1);
 		logs.add(log2);
 		logs.add(log3);

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogEventContainer;
+import com.google.common.eventbus.EventBus;
 
 public class SocketLogHandler implements Runnable {
 
@@ -20,8 +20,11 @@ public class SocketLogHandler implements Runnable {
 
 	private final Socket socket;
 
-	public SocketLogHandler(Socket socket) {
+	private final EventBus eventBus;
+
+	public SocketLogHandler(Socket socket, EventBus eventBus) {
 		this.socket = socket;
+		this.eventBus = eventBus;
 	}
 
 	@Override
@@ -34,11 +37,12 @@ public class SocketLogHandler implements Runnable {
 			objectStream = new ObjectInputStream(inputStream);
 
 			while (!socket.isClosed()) {
-				LoggingEvent log = (LoggingEvent) objectStream.readObject();
-				send(log);
+				LoggingEvent le = (LoggingEvent) objectStream.readObject();
+				Log log = LogUtils.convert(le);
+				eventBus.post(log);
 			}
 		} catch (EOFException e) {
-			// When the client closes the connection, the stream will run out of data, 
+			// When the client closes the connection, the stream will run out of data,
 			// and the ObjectInputStream.readObject method will throw the exception
 			logger.info("Reached EOF, closing client's connection");
 		} catch (IOException e) {
@@ -73,10 +77,5 @@ public class SocketLogHandler implements Runnable {
 		} catch (IOException e) {
 			logger.error("IOException occurred while closing client's connection", e);
 		}
-	}
-
-	private void send(LoggingEvent le) {
-		Log log = LogUtils.convert(le);
-		LogEventContainer.notifyListeners(log);
 	}
 }
