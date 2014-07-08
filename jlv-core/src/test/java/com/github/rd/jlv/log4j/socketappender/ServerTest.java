@@ -32,17 +32,17 @@ public class ServerTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testNegativePortNumber() throws IOException {
-		new Server(-7);
+		new SocketLogServer(-7);
 	}
 
 	@Test(expected = IOException.class)
 	public void testOnePortUsagePerMultipleServers() throws IOException {
-		Server server1 = null;
-		Server server2 = null;
+		SocketLogServer server1 = null;
+		SocketLogServer server2 = null;
 
 		try {
-			server1 = new Server(port);
-			server2 = new Server(port);
+			server1 = new SocketLogServer(port);
+			server2 = new SocketLogServer(port);
 		} finally {
 			if (server1 != null) {
 				server1.shutdown();

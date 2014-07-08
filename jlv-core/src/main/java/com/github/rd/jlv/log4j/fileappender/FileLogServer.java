@@ -2,23 +2,24 @@ package com.github.rd.jlv.log4j.fileappender;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Server extends Thread {
+import com.github.rd.jlv.server.AbstractServer;
+
+/**
+ * TODO: add doc
+ *
+ * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
+ */
+public class FileLogServer extends AbstractServer {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
-	private final BlockingQueue<FileConf> logFiles = new LinkedBlockingQueue<>();
+	private final BlockingQueue<Configuration> logFiles = new LinkedBlockingQueue<>();
 
 	public void addFileToProcess(File file, Pattern pattern) {
 		if (file == null || !file.exists()) {
@@ -28,7 +29,7 @@ public class Server extends Thread {
 		if (pattern == null) {
 			throw new IllegalArgumentException("Pattern shouldn't be a null");
 		}
-		logFiles.add(new FileConf(file, pattern));
+		logFiles.add(new Configuration(file, pattern));
 	}
 
 	@Override
@@ -38,44 +39,33 @@ public class Server extends Thread {
 		while (Thread.currentThread().isInterrupted()) {
 			try {
 				logger.debug("Waiting for a new file entrance");
-				FileConf fileConf = logFiles.take();
-				logger.debug("File has been accepted for the processing: " + fileConf.getFile().getAbsolutePath());
-				executor.execute(new TextLogHandler(fileConf.getFile(), fileConf.getPattern()));
-			} catch (RejectedExecutionException e) {
-				if (!executor.isShutdown()) {
-					logger.warn("Files submission rejected", e);
-				}
+				Configuration config = logFiles.take();
+				logger.debug("File has been accepted for the processing: " + config.getFile().getAbsolutePath());
+				execute(new TextLogHandler(config.getFile(), config.getPattern(), getEventBus()));
 			} catch (InterruptedException e) {
 				logger.warn("Failed to accept a new file: server was stopped.");
 			}
 		}
 	}
 
+	@Override
 	public void shutdown() {
 		try {
 			Thread.currentThread().interrupt();
 			logFiles.clear();
 			logger.debug("Server was stopped");
 		} finally {
-			try {
-				executor.shutdown();
-
-				if (!executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-					executor.shutdownNow();
-				}
-			} catch (InterruptedException e) {
-				logger.error("InterruptedException occurred while shutting down server executor.", e);
-			}
+			super.shutdown();
 		}
 	}
 
-	private static final class FileConf {
+	private static final class Configuration {
 
 		private final File file;
 
 		private final Pattern pattern;
 
-		public FileConf(File file, Pattern pattern) {
+		public Configuration(File file, Pattern pattern) {
 			this.file = file;
 			this.pattern = pattern;
 		}

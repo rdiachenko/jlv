@@ -13,8 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
-import com.github.rd.jlv.log4j.domain.LogEventContainer;
+import com.google.common.eventbus.EventBus;
 
+/**
+ * TODO: add me
+ *
+ * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
+ */
 public class TextLogHandler implements Runnable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -23,9 +28,12 @@ public class TextLogHandler implements Runnable {
 
 	private final Pattern pattern;
 
-	public TextLogHandler(File file, Pattern pattern) {
+	private final EventBus eventBus;
+
+	public TextLogHandler(File file, Pattern pattern, EventBus eventBus) {
 		this.file = file;
 		this.pattern = pattern;
+		this.eventBus = eventBus;
 	}
 
 	@Override
@@ -55,7 +63,7 @@ public class TextLogHandler implements Runnable {
 
 	private void send(String input) {
 		Log log = LogUtils.convert(input, pattern);
-		LogEventContainer.notifyListeners(log);
+		eventBus.post(log);
 	}
 
 	private boolean isMatching(String input) {

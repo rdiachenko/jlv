@@ -14,6 +14,11 @@ import com.github.rd.jlv.log4j.LogUtils;
 import com.github.rd.jlv.log4j.domain.Log;
 import com.google.common.eventbus.EventBus;
 
+/**
+ * The main goal of this class is to read incoming LoggingEvent events, convert them and send to EventBus.
+ *
+ * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
+ */
 public class SocketLogHandler implements Runnable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -44,7 +49,7 @@ public class SocketLogHandler implements Runnable {
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data,
 			// and the ObjectInputStream.readObject method will throw the exception
-			logger.info("Reached EOF, closing client's connection");
+			logger.warn("Reached EOF, closing client's connection");
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
@@ -71,7 +76,6 @@ public class SocketLogHandler implements Runnable {
 
 	private void shutdown() {
 		try {
-			logger.debug("Closing socket");
 			socket.close();
 			logger.debug("Socket was closed");
 		} catch (IOException e) {
