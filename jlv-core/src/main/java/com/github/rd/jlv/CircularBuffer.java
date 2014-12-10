@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.google.common.base.Objects;
+
 /**
  * <p>
  * Implementation of a circular buffer with a specified capacity. Type T represents the object's type which this buffer
@@ -44,7 +46,7 @@ public class CircularBuffer<T> implements Iterable<T> {
 		buffer = (T[]) new Object[capacity + 1];
 	}
 
-	public synchronized int size() {
+	public int size() {
 		if (head < tail) {
 			return tail - head;
 		} else if (head > tail) {
@@ -54,7 +56,7 @@ public class CircularBuffer<T> implements Iterable<T> {
 		}
 	}
 
-	public synchronized void add(T item) {
+	public void add(T item) {
 		if (item == null) {
 			throw new IllegalArgumentException("item is null");
 		}
@@ -66,21 +68,21 @@ public class CircularBuffer<T> implements Iterable<T> {
 		}
 	}
 
-	public synchronized T get(int index) {
+	public T get(int index) {
 		if (index < 0 || index >= size()) {
 			throw new IllegalArgumentException("Index is out of bounds: " + index);
 		}
 		return buffer[(head + index) % buffer.length];
 	}
 
-	public synchronized void clear() {
+	public void clear() {
 		Arrays.fill(buffer, null);
 		head = 0;
 		tail = 0;
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized T[] toArray() {
+	public T[] toArray() {
 		T[] array;
 
 		if (head == tail) {
@@ -98,8 +100,7 @@ public class CircularBuffer<T> implements Iterable<T> {
 		return array;
 	}
 
-	/* Should be synchronized manually
-	 *
+	/*
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
@@ -109,7 +110,12 @@ public class CircularBuffer<T> implements Iterable<T> {
 
 	@Override
 	public String toString() {
-		return "CircularBuffer [buffer=" + Arrays.toString(buffer) + ", head=" + head + ", tail=" + tail + "]";
+		return Objects.toStringHelper(this)
+				.omitNullValues()
+				.add("buffer", buffer)
+				.add("head", head)
+				.add("tail", tail)
+				.toString();
 	}
 
 	private class CircularBufferIterator implements Iterator<T> {
