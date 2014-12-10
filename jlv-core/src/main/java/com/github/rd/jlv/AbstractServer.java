@@ -1,4 +1,4 @@
-package com.github.rd.jlv.server;
+package com.github.rd.jlv;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +15,7 @@ import com.google.common.eventbus.EventBus;
  *
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
-public abstract class AbstractServer implements Server, LogEventListener {
+public abstract class AbstractServer implements Runnable, LogEventListener {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -39,7 +39,6 @@ public abstract class AbstractServer implements Server, LogEventListener {
 		}
 	}
 
-	@Override
 	public void shutdown() {
 		try {
 			executor.shutdown();

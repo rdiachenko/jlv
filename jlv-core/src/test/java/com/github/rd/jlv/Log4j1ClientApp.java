@@ -5,6 +5,7 @@ import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
 import org.apache.log4j.PropertyConfigurator;
 
+// TODO: move to a separate project (e.g. integration-tests, or test-runners, or...)
 public final class Log4j1ClientApp {
 
 	public static void main(String[] args) throws InterruptedException {

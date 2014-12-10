@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j.domain;
+package com.github.rd.jlv;
 
 import java.util.Arrays;
 import java.util.Iterator;

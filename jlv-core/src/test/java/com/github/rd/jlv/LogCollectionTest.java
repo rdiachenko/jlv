@@ -1,7 +1,10 @@
-package com.github.rd.jlv.log4j.domain;
+package com.github.rd.jlv;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.github.rd.jlv.CircularBuffer;
+import com.github.rd.jlv.Log;
 
 public class LogCollectionTest {
 

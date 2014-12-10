@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j.socketappender;
+package com.github.rd.jlv.socketappender;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,7 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.server.AbstractServer;
+import com.github.rd.jlv.AbstractServer;
 
 /**
  * The class represents a server which accepts socket connections. For each accepted connection it creates and runs a
@@ -18,6 +18,8 @@ import com.github.rd.jlv.server.AbstractServer;
 public class SocketLogServer extends AbstractServer {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	private static final int SOCKET_TIMEOUT = 5000; // ms
 
 	private ServerSocket serverSocket;
 
@@ -38,7 +40,7 @@ public class SocketLogServer extends AbstractServer {
 			try {
 				logger.debug("Waiting for a new connection");
 				final Socket socket = serverSocket.accept();
-				socket.setSoTimeout(5000);
+				socket.setSoTimeout(SOCKET_TIMEOUT);
 				logger.debug("Connection has been accepted from " + socket.getInetAddress().getHostName());
 				execute(new SocketLogHandler(socket, getEventBus()));
 			} catch (IOException e) {

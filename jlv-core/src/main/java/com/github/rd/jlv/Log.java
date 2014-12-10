@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j.domain;
+package com.github.rd.jlv;
 
 /**
  * The class represents a log entity.It has a builder for creating a log's object. After a build completes the object
@@ -8,20 +8,20 @@ package com.github.rd.jlv.log4j.domain;
  */
 public final class Log {
 
-	private final String categoryName; // %c
-	private final String className; // %C
-	private final String date; // %d
-	private final String fileName; // %F
-	private final String locationInfo; // %l
-	private final String lineNumber; // %L
-	private final String methodName; // %M
-	private final String level; // %p
-	private final String ms; // %r
-	private final String threadName; // %t
-	private final String message; // %m
-	private final String throwable; // %throwable
-	private final String ndc; // %x
-	private final String mdc; // %X{key}
+	private final String categoryName;
+	private final String className;
+	private final String date;
+	private final String fileName;
+	private final String locationInfo;
+	private final String lineNumber;
+	private final String methodName;
+	private final String level;
+	private final String ms;
+	private final String threadName;
+	private final String message;
+	private final String throwable;
+	private final String ndc;
+	private final String mdc;
 
 	private Log(Builder builder) {
 		categoryName = builder.categoryName;

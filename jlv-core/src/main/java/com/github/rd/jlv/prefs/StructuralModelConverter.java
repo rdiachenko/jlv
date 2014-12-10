@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.LogConstants;
 import com.github.rd.jlv.prefs.StructuralModel.ModelItem;
 
 public class StructuralModelConverter extends Converter {

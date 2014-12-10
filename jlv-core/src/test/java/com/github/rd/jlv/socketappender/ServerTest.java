@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j.socketappender;
+package com.github.rd.jlv.socketappender;
 
 import java.io.IOException;
 
@@ -6,6 +6,8 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Test;
+
+import com.github.rd.jlv.socketappender.SocketLogServer;
 
 public class ServerTest {
 

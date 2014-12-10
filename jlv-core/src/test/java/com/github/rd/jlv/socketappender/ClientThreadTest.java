@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j.socketappender;
+package com.github.rd.jlv.socketappender;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,8 +18,8 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.rd.jlv.log4j.LogUtils;
-import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.Log;
+import com.github.rd.jlv.LogUtils;
 
 public class ClientThreadTest {
 

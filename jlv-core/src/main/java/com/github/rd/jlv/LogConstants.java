@@ -1,5 +1,4 @@
-package com.github.rd.jlv.log4j;
-
+package com.github.rd.jlv;
 
 public final class LogConstants {
 
@@ -41,6 +40,7 @@ public final class LogConstants {
 	public static final String WARN_LEVEL_NAME = "WARN";
 	public static final String ERROR_LEVEL_NAME = "ERROR";
 	public static final String FATAL_LEVEL_NAME = "FATAL";
+	public static final String MARKER_LEVEL_NAME = "MARKER";
 
 	public static final String[] LOG_LEVEL_NAMES = {
 		DATE_FIELD_NAME,
@@ -48,6 +48,7 @@ public final class LogConstants {
 		WARN_LEVEL_NAME,
 		ERROR_LEVEL_NAME,
 		FATAL_LEVEL_NAME,
+		MARKER_LEVEL_NAME,
 	};
 
 	private LogConstants() {

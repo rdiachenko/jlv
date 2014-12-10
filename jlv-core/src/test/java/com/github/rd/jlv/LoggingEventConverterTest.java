@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j;
+package com.github.rd.jlv;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,9 +15,10 @@ import org.apache.log4j.spi.ThrowableInformation;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.Log;
+import com.github.rd.jlv.LogUtils;
 
-public class LogConverterTest {
+public class LoggingEventConverterTest {
 
 	@Test(expected = InvocationTargetException.class)
 	public void illegalInstanceCreation() throws NoSuchMethodException, SecurityException, InstantiationException,

@@ -1,4 +1,4 @@
-package com.github.rd.jlv.log4j;
+package com.github.rd.jlv;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -8,7 +8,8 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import com.github.rd.jlv.log4j.domain.Log;
+import ch.qos.logback.classic.spi.LoggingEventVO;
+
 import com.google.common.base.Strings;
 
 public final class LogUtils {
@@ -16,8 +17,18 @@ public final class LogUtils {
 	private LogUtils() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
+	
+	public static Log convert(Object le) {
+		if (le instanceof LoggingEvent) {
+			return convert((LoggingEvent) le);
+		} else if (le instanceof LoggingEventVO) {
+			return convert((LoggingEventVO) le);
+		} else {
+			throw new IllegalArgumentException("No handler for such a log event: " + le);
+		}
+	}
 
-	public static Log convert(LoggingEvent le) {
+	private static Log convert(LoggingEvent le) {
 		Log.Builder builder = new Log.Builder();
 		builder.categoryName(Strings.nullToEmpty(le.getLoggerName()));
 		builder.threadName(Strings.nullToEmpty(le.getThreadName()));
@@ -60,43 +71,22 @@ public final class LogUtils {
 		Log log = builder.build();
 		return log;
 	}
-
-	public static Log convert(String log, Pattern pattern) {
-		return null; // TODO implement
+	
+	private static Log convert(LoggingEventVO le) {
+		Log.Builder builder = new Log.Builder();
+		builder.categoryName(Strings.nullToEmpty(le.getLoggerName()));
+		builder.threadName(Strings.nullToEmpty(le.getThreadName()));
+		builder.message(Strings.nullToEmpty(le.getMessage()));
+		builder.level(Strings.nullToEmpty(le.getLevel().toString()));
+		
+		if (le.hasCallerData()) {
+			StackTraceElement[] localInfo = le.getCallerData();
+		}
+		Log log = builder.build();
+		return log;
 	}
 
-	public static String getValue(Log log, String logField) {
-		switch (logField) {
-		case LogConstants.LEVEL_FIELD_NAME:
-			return log.getLevel();
-		case LogConstants.CATEGORY_FIELD_NAME:
-			return log.getCategoryName();
-		case LogConstants.MESSAGE_FIELD_NAME:
-			return log.getMessage();
-		case LogConstants.LINE_FIELD_NAME:
-			return log.getLineNumber();
-		case LogConstants.DATE_FIELD_NAME:
-			return log.getDate();
-		case LogConstants.THROWABLE_FIELD_NAME:
-			return log.getThrowable();
-		case LogConstants.CLASS_FIELD_NAME:
-			return log.getClassName();
-		case LogConstants.FILE_FIELD_NAME:
-			return log.getFileName();
-		case LogConstants.LOCATION_INFO_FIELD_NAME:
-			return log.getLocationInfo();
-		case LogConstants.METHOD_FIELD_NAME:
-			return log.getMethodName();
-		case LogConstants.MILLISECONDS_FIELD_NAME:
-			return log.getMs();
-		case LogConstants.THREAD_FIELD_NAME:
-			return log.getThreadName();
-		case LogConstants.NDC_FIELD_NAME:
-			return log.getNdc();
-		case LogConstants.MDC_FIELD_NAME:
-			return log.getMdc();
-		default:
-			throw new IllegalArgumentException("No log field with such name: " + logField);
-		}
+	public static Log convert(String log, Pattern pattern) {
+		return null; // TODO: implement
 	}
 }
