@@ -1,5 +1,7 @@
 package com.github.rd.jlv;
 
+import com.google.common.base.Objects;
+
 /**
  * The class represents a log entity.It has a builder for creating a log's object. After a build completes the object
  * becomes immutable.
@@ -102,73 +104,66 @@ public final class Log {
 
 	@Override
 	public int hashCode() {
-		int result = 17;
-		result = 31 * result + categoryName.hashCode();
-		result = 31 * result + className.hashCode();
-		result = 31 * result + date.hashCode();
-		result = 31 * result + fileName.hashCode();
-		result = 31 * result + locationInfo.hashCode();
-		result = 31 * result + lineNumber.hashCode();
-		result = 31 * result + methodName.hashCode();
-		result = 31 * result + level.hashCode();
-		result = 31 * result + ms.hashCode();
-		result = 31 * result + threadName.hashCode();
-		result = 31 * result + message.hashCode();
-		result = 31 * result + throwable.hashCode();
-		result = 31 * result + ndc.hashCode();
-		result = 31 * result + mdc.hashCode();
-		return result;
+		return Objects.hashCode(categoryName,
+				className,
+				date,
+				fileName,
+				locationInfo,
+				lineNumber,
+				methodName,
+				level,
+				ms,
+				threadName,
+				message,
+				throwable,
+				ndc,
+				mdc);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null) {
-			return false;
-		} else if (!(obj instanceof Log)) {
+		} else if (obj == null || obj.getClass() != getClass()) {
 			return false;
 		} else {
-			Log log = (Log) obj;
-
-			if (!categoryName.equals(log.getCategoryName())
-					|| !className.equals(log.getClassName())
-					|| !date.equals(log.getDate())
-					|| !fileName.equals(log.getFileName())
-					|| !locationInfo.equals(log.getLocationInfo())
-					|| !lineNumber.equals(log.getLineNumber())
-					|| !methodName.equals(log.getMethodName())
-					|| !level.equals(log.getLevel())
-					|| !ms.equals(log.getMs())
-					|| !threadName.equals(log.getThreadName())
-					|| !message.equals(log.getMessage())
-					|| !throwable.equals(log.getThrowable())
-					|| !ndc.equals(log.getNdc())
-					|| !mdc.equals(log.getMdc())) {
-
-				return false;
-			}
+			Log that = (Log) obj;
+			return Objects.equal(categoryName, that.getCategoryName())
+					&& Objects.equal(className,that.getClassName())
+					&& Objects.equal(date,that.getDate())
+					&& Objects.equal(fileName,that.getFileName())
+					&& Objects.equal(locationInfo,that.getLocationInfo())
+					&& Objects.equal(lineNumber,that.getLineNumber())
+					&& Objects.equal(methodName,that.getMethodName())
+					&& Objects.equal(level,that.getLevel())
+					&& Objects.equal(ms,that.getMs())
+					&& Objects.equal(threadName,that.getThreadName())
+					&& Objects.equal(message,that.getMessage())
+					&& Objects.equal(throwable,that.getThrowable())
+					&& Objects.equal(ndc,that.getNdc())
+					&& Objects.equal(mdc,that.getMdc());
 		}
-		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "[categoryName=" + categoryName
-				+ "; className=" + className
-				+ "; date=" + date
-				+ "; fileName=" + fileName
-				+ "; locationInfo=" + locationInfo
-				+ "; lineNumber=" + lineNumber
-				+ "; methodName=" + methodName
-				+ "; level=" + level
-				+ "; ms=" + ms
-				+ "; threadName=" + threadName
-				+ "; message=" + message
-				+ "; throwable=" + throwable
-				+ "; ndc=" + ndc
-				+ "; mdc=" + mdc
-				+ "]";
+		return Objects.toStringHelper(this)
+			.omitNullValues()
+			.add("categoryName",categoryName)
+			.add("className",className)
+			.add("date",date)
+			.add("fileName",fileName)
+			.add("locationInfo",locationInfo)
+			.add("lineNumber",lineNumber)
+			.add("methodName",methodName)
+			.add("level",level)
+			.add("ms",ms)
+			.add("threadName",threadName)
+			.add("message",message)
+			.add("throwable",throwable)
+			.add("ndc",ndc)
+			.add("mdc",mdc)
+			.toString();
 	}
 
 	public static class Builder {

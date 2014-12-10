@@ -33,12 +33,8 @@ public class SocketLogHandler implements Runnable {
 
 	@Override
 	public void run() {
-		ObjectInputStream objectStream = null;
-		BufferedInputStream inputStream = null;
-
-		try {
-			inputStream = new BufferedInputStream(socket.getInputStream());
-			objectStream = new ObjectInputStream(inputStream);
+		try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
+				ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
 
 			while (!socket.isClosed()) {
 				Log log = LogUtils.convert(objectStream.readObject());
@@ -51,21 +47,6 @@ public class SocketLogHandler implements Runnable {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					logger.error("IOException occurred while closing input stream", e);
-				}
-			}
-
-			if (objectStream != null) {
-				try {
-					objectStream.close();
-				} catch (IOException e) {
-					logger.error("IOException occurred while closing object stream", e);
-				}
-			}
 			shutdown();
 		}
 	}
@@ -75,7 +56,7 @@ public class SocketLogHandler implements Runnable {
 			socket.close();
 			logger.debug("Socket was closed");
 		} catch (IOException e) {
-			logger.error("IOException occurred while closing client's connection", e);
+			logger.error("IOException occurred while closing socket", e);
 		}
 	}
 }
