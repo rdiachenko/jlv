@@ -17,7 +17,7 @@ public final class LogUtils {
 	private LogUtils() {
 		throw new IllegalStateException("This is an util class. The object should not be created.");
 	}
-	
+
 	public static Log convert(Object le) {
 		if (le instanceof LoggingEvent) {
 			return convert((LoggingEvent) le);
@@ -71,14 +71,14 @@ public final class LogUtils {
 		Log log = builder.build();
 		return log;
 	}
-	
+
 	private static Log convert(LoggingEventVO le) {
 		Log.Builder builder = new Log.Builder();
 		builder.categoryName(Strings.nullToEmpty(le.getLoggerName()));
 		builder.threadName(Strings.nullToEmpty(le.getThreadName()));
 		builder.message(Strings.nullToEmpty(le.getMessage()));
 		builder.level(Strings.nullToEmpty(le.getLevel().toString()));
-		
+
 		if (le.hasCallerData()) {
 			StackTraceElement[] localInfo = le.getCallerData();
 		}

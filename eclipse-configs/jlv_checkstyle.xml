@@ -353,7 +353,6 @@
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="warning"/>
     </module>
     <module name="InterfaceTypeParameterName"/>
-    <module name="NestedTernary"/>
     <module name="LogicConditionNeedOptimization"/>
     <module name="ForbidReturnInFinalBlock"/>
     <module name="ForbidCCommentsInMethods"/>
