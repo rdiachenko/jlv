@@ -108,16 +108,6 @@ public class CircularBuffer<T> implements Iterable<T> {
 		return new CircularBufferIterator();
 	}
 
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-				.omitNullValues()
-				.add("buffer", buffer)
-				.add("head", head)
-				.add("tail", tail)
-				.toString();
-	}
-
 	private class CircularBufferIterator implements Iterator<T> {
 
 		private int index;

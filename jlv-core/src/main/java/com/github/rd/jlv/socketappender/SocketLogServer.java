@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.AbstractServer;
+import com.github.rd.jlv.server.SocketLogHandler;
 
 /**
  * The class represents a server which accepts socket connections. For each accepted connection it creates and runs a

@@ -1,4 +1,4 @@
-package com.github.rd.jlv.socketappender;
+package com.github.rd.jlv.server;
 
 import java.io.BufferedInputStream;
 import java.io.EOFException;
@@ -43,9 +43,9 @@ public class SocketLogHandler implements Runnable {
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data,
 			// and the ObjectInputStream.readObject method will throw the exception
-			logger.warn("Reached EOF, closing client's connection");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.warn("Reached EOF while reading from socket.");
+		} catch (IOException | ClassNotFoundException e) {
+			logger.error("Couldn't handle input stream.", e);
 		} finally {
 			shutdown();
 		}
@@ -54,9 +54,9 @@ public class SocketLogHandler implements Runnable {
 	private void shutdown() {
 		try {
 			socket.close();
-			logger.debug("Socket was closed");
+			logger.debug("Socket closed.");
 		} catch (IOException e) {
-			logger.error("IOException occurred while closing socket", e);
+			logger.error("Socket close failed.", e);
 		}
 	}
 }
