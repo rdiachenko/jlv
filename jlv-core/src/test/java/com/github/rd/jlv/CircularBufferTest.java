@@ -46,10 +46,10 @@ public class CircularBufferTest {
 
 	@Test
 	public void testBufferOverflow() {
-		Log log1 = createLogFromMessage("log1");
-		Log log2 = createLogFromMessage("log2");
-		Log log3 = createLogFromMessage("log3");
-		Log log4 = createLogFromMessage("log4");
+		Log log1 = TestUtils.createLogFromMessage("log1");
+		Log log2 = TestUtils.createLogFromMessage("log2");
+		Log log3 = TestUtils.createLogFromMessage("log3");
+		Log log4 = TestUtils.createLogFromMessage("log4");
 		buffer.add(log1);
 		buffer.add(log2);
 		buffer.add(log3);
@@ -64,8 +64,8 @@ public class CircularBufferTest {
 	
 	@Test
 	public void testToArray() {
-		Log log1 = createLogFromMessage("log1");
-		Log log2 = createLogFromMessage("log2");
+		Log log1 = TestUtils.createLogFromMessage("log1");
+		Log log2 = TestUtils.createLogFromMessage("log2");
 		buffer.add(log1);
 		Assert.assertArrayEquals(new Log[] { log1 }, buffer.toArray());
 		buffer.clear();
@@ -77,7 +77,7 @@ public class CircularBufferTest {
 	
 	@Test
 	public void testBufferIterator() {
-		Log log = createLogFromMessage("log1");
+		Log log = TestUtils.createLogFromMessage("log1");
 		buffer.add(log);
 		Iterator<Log> iter = buffer.iterator();
 		
@@ -95,9 +95,5 @@ public class CircularBufferTest {
 	@Test(expected = UnsupportedOperationException.class)
 	public void testBufferIteratorRemove() {
 		buffer.iterator().remove();
-	}
-	
-	private static Log createLogFromMessage(String message) {
-		return new Log.Builder().message(message).build();
 	}
 }
