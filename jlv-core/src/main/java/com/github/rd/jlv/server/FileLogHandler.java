@@ -3,7 +3,7 @@ package com.github.rd.jlv.server;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
@@ -51,10 +51,8 @@ public class FileLogHandler implements Runnable {
 			if (logBuilder.length() > 0) {
 				send(logBuilder.toString());
 			}
-		} catch (FileNotFoundException e) {
-			logger.error("Exception occurred while opening file: " + file.getAbsolutePath(), e);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+		} catch (IOException e) {
+			logger.error("Couldn't handle input file: " + file.getAbsolutePath(), e);
 		}
 	}
 
