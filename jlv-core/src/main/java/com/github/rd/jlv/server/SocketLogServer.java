@@ -3,10 +3,6 @@ package com.github.rd.jlv.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +18,9 @@ import com.google.common.base.Preconditions;
 public class SocketLogServer extends Server {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private static final int SOCKET_TIMEOUT = 5000; // ms
 
-	private final ExecutorService bossExecutor = Executors.newSingleThreadExecutor();
-	private final ExecutorService workerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-	
 	private ServerSocket serverSocket;
 
 	public SocketLogServer(int port) {
@@ -41,13 +34,25 @@ public class SocketLogServer extends Server {
 	}
 
 	@Override
-	public void start() {
-		bossExecutor.execute(new Runnable() {
+	public void stop() {
+		try {
+			serverSocket.close();
+			logger.debug("Server socket closed.");
+		} catch (IOException e) {
+			logger.error("Server stop failed.", e);
+		} finally {
+			super.stop();
+		}
+	}
+	
+	@Override
+	protected Runnable getServerProcess() {
+		return new Runnable() {
 			@Override
 			public void run() {
 				while (!serverSocket.isClosed()) {
 					try {
-						logger.debug("Waiting for a new connection");
+						logger.debug("Waiting for a new connection.");
 						final Socket socket = serverSocket.accept();
 						socket.setSoTimeout(SOCKET_TIMEOUT);
 						logger.debug("Connection has been accepted from " + socket.getInetAddress().getHostName());
@@ -57,42 +62,6 @@ public class SocketLogServer extends Server {
 					}
 				}
 			}
-		});
-	}
-
-	@Override
-	public void stop() {
-		try {
-			serverSocket.close();
-			logger.debug("Server socket closed.");
-		} catch (IOException e) {
-			logger.error("Server stop failed.", e);
-		}
-		shutdownExecutor(workerExecutor);
-		shutdownExecutor(bossExecutor);
-	}
-	
-	private void runHandler(Runnable runnable) {
-		if (runnable != null) {
-			try {
-				workerExecutor.execute(runnable);
-			} catch (RejectedExecutionException e) {
-				if (!workerExecutor.isShutdown()) {
-					logger.warn("Connections submission rejected", e);
-				}
-			}
-		}
-	}
-	
-	private void shutdownExecutor(ExecutorService executor) {
-		try {
-			executor.shutdown();
-
-			if (!executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-				executor.shutdownNow();
-			}
-		} catch (InterruptedException e) {
-			logger.error("Executor shutdown failed.", e);
-		}
+		};
 	}
 }

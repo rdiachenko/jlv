@@ -1,4 +1,4 @@
-package com.github.rd.jlv.fileappender;
+package com.github.rd.jlv.server;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,17 +19,15 @@ import com.google.common.eventbus.EventBus;
  *
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
-public class TextLogHandler implements Runnable {
+public class FileLogHandler implements Runnable {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final File file;
-
 	private final Pattern pattern;
-
 	private final EventBus eventBus;
 
-	public TextLogHandler(File file, Pattern pattern, EventBus eventBus) {
+	public FileLogHandler(File file, Pattern pattern, EventBus eventBus) {
 		this.file = file;
 		this.pattern = pattern;
 		this.eventBus = eventBus;
@@ -50,7 +48,7 @@ public class TextLogHandler implements Runnable {
 				logBuilder.append(line).append("\n");
 			}
 
-			if (isMatching(line) && logBuilder.length() > 0) {
+			if (logBuilder.length() > 0) {
 				send(logBuilder.toString());
 			}
 		} catch (FileNotFoundException e) {
