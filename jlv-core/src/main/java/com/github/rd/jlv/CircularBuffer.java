@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Objects;
-
 /**
  * <p>
  * Implementation of a circular buffer with a specified capacity. Type T represents the object's type which this buffer

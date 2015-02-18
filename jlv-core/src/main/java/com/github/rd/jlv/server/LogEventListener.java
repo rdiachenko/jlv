@@ -1,4 +1,4 @@
-package com.github.rd.jlv;
+package com.github.rd.jlv.server;
 
 /**
  * The interface provides methods for adding/removing a listener which is interested in the notifications about incoming

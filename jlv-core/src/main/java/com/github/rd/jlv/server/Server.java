@@ -1,8 +1,26 @@
 package com.github.rd.jlv.server;
 
-public interface Server {
+import com.google.common.eventbus.EventBus;
 
-	void start();
+public abstract class Server implements LogEventListener {
+
+	protected final EventBus eventBus = new EventBus();
 	
-	void stop();
+	public abstract void start();
+	
+	public abstract void stop();
+	
+	@Override
+	public void addLogEventListener(Object listener) {
+		if (listener != null) {
+			eventBus.register(listener);
+		}
+	}
+
+	@Override
+	public void removeLogEventListener(Object listener) {
+		if (listener != null) {
+			eventBus.unregister(listener);
+		}
+	}
 }

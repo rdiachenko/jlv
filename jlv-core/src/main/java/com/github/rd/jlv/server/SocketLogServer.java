@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.eventbus.EventBus;
 
 /**
  * The class represents a server which accepts socket connections. For each accepted connection it creates and runs a
@@ -20,7 +19,7 @@ import com.google.common.eventbus.EventBus;
  *
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
-public class SocketLogServer implements Server {
+public class SocketLogServer extends Server {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -28,7 +27,6 @@ public class SocketLogServer implements Server {
 
 	private final ExecutorService bossExecutor = Executors.newSingleThreadExecutor();
 	private final ExecutorService workerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-	private final EventBus eventBus = new EventBus();
 	
 	private ServerSocket serverSocket;
 
