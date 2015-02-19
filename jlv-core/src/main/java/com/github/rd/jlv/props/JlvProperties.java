@@ -77,12 +77,17 @@ public class JlvProperties {
 		}
 	}
 	
+	private boolean isFileValid(File file) {
+		boolean valid = file != null && file.exists() && file.isFile();
+
+		if (!valid) {
+			logger.warn("jlv properties file {} is not valid.");
+		}
+		return valid;
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <T> PropertyConverter<T> getConverter(PropertyKey key) {
 		return (PropertyConverter<T>) converters.get(key);
-	}
-	
-	private static boolean isFileValid(File file) {
-		return file != null && file.exists() && file.isFile();
 	}
 }
