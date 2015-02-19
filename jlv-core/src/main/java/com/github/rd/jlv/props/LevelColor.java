@@ -27,6 +27,25 @@ public class LevelColor {
 	}
 	
 	@Override
+	public int hashCode() {
+		return Objects.hashCode(red, green, blue);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || obj.getClass() != getClass()) {
+			return false;
+		} else {
+			LevelColor that = (LevelColor) obj;
+			return Objects.equal(red, that.red)
+					&& Objects.equal(green, that.green)
+					&& Objects.equal(blue, that.blue);
+		}
+	}
+	
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.omitNullValues()

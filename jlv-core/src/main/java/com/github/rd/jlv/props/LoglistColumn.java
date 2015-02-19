@@ -27,6 +27,25 @@ public class LoglistColumn {
 	}
 	
 	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, visible, width);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || obj.getClass() != getClass()) {
+			return false;
+		} else {
+			LoglistColumn that = (LoglistColumn) obj;
+			return Objects.equal(name, that.name)
+					&& Objects.equal(visible, that.visible)
+					&& Objects.equal(width, that.width);
+		}
+	}
+	
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.omitNullValues()

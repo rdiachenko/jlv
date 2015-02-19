@@ -23,7 +23,7 @@ public class LoglistLevelColorConverter implements PropertyConverter<List<Loglis
 		
 		for (String partial : value.trim().split(SEMICOLON_SEPARATOR)) {
 			String[] attributes = partial.trim().split(COLON_SEPARATOR);
-			String name = attributes[NAME_INDEX];
+			String name = attributes[NAME_INDEX].trim();
 			LevelColor foreground = stringToColor(attributes[FOREGROUND_INDEX]);
 			LevelColor background = stringToColor(attributes[BACKGROUND_INDEX]);
 			values.add(new LoglistLevelColor(name, foreground, background));

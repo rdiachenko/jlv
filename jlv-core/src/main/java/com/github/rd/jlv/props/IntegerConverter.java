@@ -4,7 +4,7 @@ public class IntegerConverter implements PropertyConverter<Integer> {
 
 	@Override
 	public Integer convertFromString(String value) {
-		return Integer.parseInt(value);
+		return Integer.parseInt(value.trim());
 	}
 
 	@Override

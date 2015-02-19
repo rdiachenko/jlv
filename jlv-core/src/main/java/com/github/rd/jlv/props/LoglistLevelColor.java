@@ -27,6 +27,25 @@ public class LoglistLevelColor {
 	}
 	
 	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, foreground, background);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || obj.getClass() != getClass()) {
+			return false;
+		} else {
+			LoglistLevelColor that = (LoglistLevelColor) obj;
+			return Objects.equal(name, that.name)
+					&& Objects.equal(foreground, that.foreground)
+					&& Objects.equal(background, that.background);
+		}
+	}
+	
+	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.omitNullValues()

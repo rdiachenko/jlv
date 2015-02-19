@@ -4,7 +4,7 @@ public class BooleanConverter implements PropertyConverter<Boolean> {
 
 	@Override
 	public Boolean convertFromString(String value) {
-		return Boolean.parseBoolean(value);
+		return Boolean.parseBoolean(value.trim());
 	}
 
 	@Override
