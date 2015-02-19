@@ -47,7 +47,7 @@ public class FileLogServer extends Server {
 					try {
 						logger.debug("Waiting for a new file entrance.");
 						FilePatternPair pair = files.take();
-						logger.debug("File has been accepted for the processing: " + pair.getFile().getAbsolutePath());
+						logger.debug("File has been accepted for the processing: {}", pair.getFile().getAbsolutePath());
 				        runHandler(new FileLogHandler(pair.getFile(), pair.getPattern(), eventBus));
 					} catch (InterruptedException e) {
 						logger.warn("Failed to accept a new file: server was stopped.");

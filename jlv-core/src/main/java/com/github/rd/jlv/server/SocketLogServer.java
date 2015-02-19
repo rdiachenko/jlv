@@ -55,7 +55,7 @@ public class SocketLogServer extends Server {
 						logger.debug("Waiting for a new connection.");
 						final Socket socket = serverSocket.accept();
 						socket.setSoTimeout(SOCKET_TIMEOUT);
-						logger.debug("Connection has been accepted from " + socket.getInetAddress().getHostName());
+						logger.debug("Connection has been accepted from {}", socket.getInetAddress().getHostName());
 						runHandler(new SocketLogHandler(socket, eventBus));
 					} catch (IOException e) {
 						logger.warn("Failed to accept a new connection: server socket was closed.");

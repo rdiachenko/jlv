@@ -49,7 +49,7 @@ public abstract class Server implements LogEventListener {
 			workerExecutor.execute(runnable);
 		} catch (RejectedExecutionException e) {
 			if (!workerExecutor.isShutdown()) {
-				logger.warn("Connections submission rejected", e);
+				logger.warn("Connections submission rejected.", e);
 			}
 		}
 	}
