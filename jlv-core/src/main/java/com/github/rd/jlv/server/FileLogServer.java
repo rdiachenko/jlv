@@ -23,7 +23,7 @@ public class FileLogServer extends Server {
 
 	public void addFileToProcess(File file, Pattern pattern) {
 		Preconditions.checkNotNull(file, "File mustn't be null.");
-		Preconditions.checkArgument(file.exists(), "File %s doesn't exist.", file.getAbsolutePath());
+		Preconditions.checkArgument(file.exists(), "File %s doesn't exist.", file);
 		Preconditions.checkNotNull(pattern, "Pattern mustn't be null.");
 		files.add(new FilePatternPair(file, pattern));
 	}
@@ -47,7 +47,7 @@ public class FileLogServer extends Server {
 					try {
 						logger.debug("Waiting for a new file entrance.");
 						FilePatternPair pair = files.take();
-						logger.debug("File has been accepted for the processing: {}", pair.getFile().getAbsolutePath());
+						logger.debug("File has been accepted for the processing: {}", pair.getFile());
 				        runHandler(new FileLogHandler(pair.getFile(), pair.getPattern(), eventBus));
 					} catch (InterruptedException e) {
 						logger.warn("Failed to accept a new file: server was stopped.");

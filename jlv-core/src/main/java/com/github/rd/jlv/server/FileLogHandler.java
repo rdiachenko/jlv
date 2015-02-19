@@ -52,7 +52,7 @@ public class FileLogHandler implements Runnable {
 				send(logBuilder.toString());
 			}
 		} catch (IOException e) {
-			logger.error("Couldn't handle input file: {}", file.getAbsolutePath(), e);
+			logger.error("Couldn't handle input file: {}", file, e);
 		}
 	}
 

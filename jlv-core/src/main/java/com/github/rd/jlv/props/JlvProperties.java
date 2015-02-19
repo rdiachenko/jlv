@@ -46,7 +46,7 @@ public class JlvProperties {
 			try (InputStream in = new FileInputStream(propertyFile)) {
 				store.load(in);
 			} catch (IOException e) {
-				logger.warn("Couldn't load jlv properties file {}. The default properties will be used instead.", propertyFile.getAbsolutePath(), e);
+				logger.warn("Couldn't load jlv properties file {}. The default properties will be used instead.", propertyFile, e);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ public class JlvProperties {
 			try (OutputStream out = new FileOutputStream(propertyFile)) {
 				store.store(out, null);
 			} catch (IOException e) {
-				logger.error("Couldn't persist jlv properties file {}.", propertyFile.getAbsolutePath(), e);
+				logger.error("Couldn't persist jlv properties file {}.", propertyFile, e);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ public class JlvProperties {
 		boolean valid = file != null && file.exists() && file.isFile();
 
 		if (!valid) {
-			logger.warn("jlv properties file {} is not valid.");
+			logger.warn("jlv properties file {} is not valid.", file);
 		}
 		return valid;
 	}
