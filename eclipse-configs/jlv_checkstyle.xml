@@ -13,13 +13,6 @@
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
     <module name="FileContentsHolder"/>
-    <module name="Regexp">
-      <property name="severity" value="ignore"/>
-      <property name="format" value="static ULC[A-Za-z]*\s[A-Za-z]*\s|static final ULC[A-Za-z]*\s[A-Za-z\_]*\s"/>
-      <property name="message" value="ULC Objects must not be stored in static fields!"/>
-      <property name="illegalPattern" value="true"/>
-      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
-    </module>
     <module name="IllegalInstantiation">
       <property name="classes" value="java.lang.NullPointerException"/>
     </module>
