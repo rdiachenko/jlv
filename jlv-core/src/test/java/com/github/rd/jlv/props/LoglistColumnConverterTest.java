@@ -9,20 +9,20 @@ import org.junit.Test;
 public class LoglistColumnConverterTest {
 
 	private PropertyConverter<List<LoglistColumn>> converter = new LoglistColumnConverter();
-	
+
 	@Test
 	public void testConvertFromString() {
 		LoglistColumn[] expected = {
 				new LoglistColumn("Level", true, 55),
-				new LoglistColumn("Category", false, 200)	
+				new LoglistColumn("Category", false, 200)
 		};
 		String value = " Level : true : 55 ;  Category: false:200;";
 		List<LoglistColumn> converted = converter.convertFromString(value);
 		LoglistColumn[] actual = converted.toArray(new LoglistColumn[converted.size()]);
-		
+
 		Assert.assertArrayEquals(expected, actual);
 	}
-	
+
 	@Test
 	public void testConvertToString() {
 		List<LoglistColumn> value = new ArrayList<>();

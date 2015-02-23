@@ -1,5 +1,6 @@
 package com.github.rd.jlv.props;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class LevelColor {
@@ -7,7 +8,7 @@ public class LevelColor {
 	private final int red;
 	private final int green;
 	private final int blue;
-	
+
 	public LevelColor(int red, int green, int blue) {
 		this.red = red;
 		this.green = green;
@@ -25,12 +26,12 @@ public class LevelColor {
 	public int getBlue() {
 		return blue;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(red, green, blue);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -44,10 +45,10 @@ public class LevelColor {
 					&& Objects.equal(blue, that.blue);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.omitNullValues()
 				.add("red", red)
 				.add("green", green)

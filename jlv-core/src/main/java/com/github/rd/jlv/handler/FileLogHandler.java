@@ -1,4 +1,4 @@
-package com.github.rd.jlv.server;
+package com.github.rd.jlv.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.Log;
-import com.github.rd.jlv.LogUtils;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -57,8 +55,8 @@ public class FileLogHandler implements Runnable {
 	}
 
 	private void send(String input) {
-		Log log = LogUtils.convert(input, pattern);
-		eventBus.post(log);
+//		Log log = LogUtils.convert(input, pattern);
+//		eventBus.post(log);
 	}
 
 	private boolean isMatching(String input) {

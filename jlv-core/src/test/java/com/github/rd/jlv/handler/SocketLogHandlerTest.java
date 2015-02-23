@@ -1,7 +1,7 @@
-package com.github.rd.jlv.server;
+package com.github.rd.jlv.handler;
 
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,18 +26,18 @@ public class SocketLogHandlerTest {
 	private static final String LOG_MESSAGE_1 = "log1";
 	private static final String LOG_MESSAGE_2 = "log2";
 	private static final String LOG_MESSAGE_3 = "log3";
-	
+
 	private static final LoggingEvent[] LOG4J_1_LOGS = {
 			TestUtils.createLog4j1LogFromMessage(LOG_MESSAGE_1),
 			TestUtils.createLog4j1LogFromMessage(LOG_MESSAGE_2),
 			TestUtils.createLog4j1LogFromMessage(LOG_MESSAGE_3),
 	};
-	
+
 	private final EventBus eventBus = new EventBus();
 	private CircularBuffer<Log> buffer;
 	private LogCollector logCollector;
 	private Socket socket;
-	
+
 	@Before
 	public void init() throws IOException {
 		buffer = new CircularBuffer<>(BUFFER_SIZE);
@@ -47,12 +47,12 @@ public class SocketLogHandlerTest {
 		socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(in);
 	}
-	
+
 	@After
 	public void clean() {
 		eventBus.unregister(logCollector);
 	}
-	
+
 	@Test
 	public void testLogHandling() throws IOException {
 		SocketLogHandler logHandler = new SocketLogHandler(socket, eventBus);

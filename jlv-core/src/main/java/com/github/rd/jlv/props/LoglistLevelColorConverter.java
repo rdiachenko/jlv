@@ -8,19 +8,19 @@ public class LoglistLevelColorConverter implements PropertyConverter<List<Loglis
 	private static final String COLON_SEPARATOR = ":";
 	private static final String SEMICOLON_SEPARATOR = ";";
 	private static final String DASH_SEPARATOR = "-";
-	
+
 	private static final int NAME_INDEX = 0;
 	private static final int FOREGROUND_INDEX = 1;
 	private static final int BACKGROUND_INDEX = 2;
-	
+
 	private static final int RED_INDEX = 0;
 	private static final int GREEN_INDEX = 1;
 	private static final int BLUE_INDEX = 2;
-	
+
 	@Override
 	public List<LoglistLevelColor> convertFromString(String value) {
 		List<LoglistLevelColor> values = new ArrayList<>();
-		
+
 		for (String partial : value.trim().split(SEMICOLON_SEPARATOR)) {
 			String[] attributes = partial.trim().split(COLON_SEPARATOR);
 			String name = attributes[NAME_INDEX].trim();
@@ -34,7 +34,7 @@ public class LoglistLevelColorConverter implements PropertyConverter<List<Loglis
 	@Override
 	public String convertToString(List<LoglistLevelColor> value) {
 		StringBuilder values = new StringBuilder();
-		
+
 		for (LoglistLevelColor partial : value) {
 			values.append(partial.getName()).append(COLON_SEPARATOR);
 			values.append(colorToString(partial.getForeground())).append(COLON_SEPARATOR);
@@ -42,7 +42,7 @@ public class LoglistLevelColorConverter implements PropertyConverter<List<Loglis
 		}
 		return values.toString();
 	}
-	
+
 	private static LevelColor stringToColor(String value) {
 		String[] partial = value.split(DASH_SEPARATOR);
 		int red = Integer.parseInt(partial[RED_INDEX].trim());
@@ -50,7 +50,7 @@ public class LoglistLevelColorConverter implements PropertyConverter<List<Loglis
 		int blue = Integer.parseInt(partial[BLUE_INDEX].trim());
 		return new LevelColor(red, green, blue);
 	}
-	
+
 	private static String colorToString(LevelColor color) {
 		StringBuilder value = new StringBuilder();
 		value.append(color.getRed()).append(DASH_SEPARATOR);

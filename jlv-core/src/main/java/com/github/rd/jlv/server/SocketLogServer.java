@@ -7,6 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.rd.jlv.handler.SocketLogHandler;
 import com.google.common.base.Preconditions;
 
 /**
@@ -44,7 +45,7 @@ public class SocketLogServer extends Server {
 			super.stop();
 		}
 	}
-	
+
 	@Override
 	protected Runnable getServerProcess() {
 		return new Runnable() {

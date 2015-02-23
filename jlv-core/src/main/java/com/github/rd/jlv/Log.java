@@ -1,5 +1,6 @@
 package com.github.rd.jlv;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -24,6 +25,10 @@ public final class Log {
 	private final String throwable;
 	private final String ndc;
 	private final String mdc;
+
+	public static Builder newBuilder() {
+		return new Builder();
+	}
 
 	private Log(Builder builder) {
 		categoryName = builder.categoryName;
@@ -98,10 +103,6 @@ public final class Log {
 		return mdc;
 	}
 
-	public static Builder newBuilder() {
-		return new Builder();
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(categoryName,
@@ -129,41 +130,41 @@ public final class Log {
 		} else {
 			Log that = (Log) obj;
 			return Objects.equal(categoryName, that.getCategoryName())
-					&& Objects.equal(className,that.getClassName())
-					&& Objects.equal(date,that.getDate())
-					&& Objects.equal(fileName,that.getFileName())
-					&& Objects.equal(locationInfo,that.getLocationInfo())
-					&& Objects.equal(lineNumber,that.getLineNumber())
-					&& Objects.equal(methodName,that.getMethodName())
-					&& Objects.equal(level,that.getLevel())
-					&& Objects.equal(ms,that.getMs())
-					&& Objects.equal(threadName,that.getThreadName())
-					&& Objects.equal(message,that.getMessage())
-					&& Objects.equal(throwable,that.getThrowable())
-					&& Objects.equal(ndc,that.getNdc())
-					&& Objects.equal(mdc,that.getMdc());
+					&& Objects.equal(className, that.getClassName())
+					&& Objects.equal(date, that.getDate())
+					&& Objects.equal(fileName, that.getFileName())
+					&& Objects.equal(locationInfo, that.getLocationInfo())
+					&& Objects.equal(lineNumber, that.getLineNumber())
+					&& Objects.equal(methodName, that.getMethodName())
+					&& Objects.equal(level, that.getLevel())
+					&& Objects.equal(ms, that.getMs())
+					&& Objects.equal(threadName, that.getThreadName())
+					&& Objects.equal(message, that.getMessage())
+					&& Objects.equal(throwable, that.getThrowable())
+					&& Objects.equal(ndc, that.getNdc())
+					&& Objects.equal(mdc, that.getMdc());
 		}
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-			.omitNullValues()
-			.add("categoryName",categoryName)
-			.add("className",className)
-			.add("date",date)
-			.add("fileName",fileName)
-			.add("locationInfo",locationInfo)
-			.add("lineNumber",lineNumber)
-			.add("methodName",methodName)
-			.add("level",level)
-			.add("ms",ms)
-			.add("threadName",threadName)
-			.add("message",message)
-			.add("throwable",throwable)
-			.add("ndc",ndc)
-			.add("mdc",mdc)
-			.toString();
+		return MoreObjects.toStringHelper(this)
+				.omitNullValues()
+				.add("categoryName", categoryName)
+				.add("className", className)
+				.add("date", date)
+				.add("fileName", fileName)
+				.add("locationInfo", locationInfo)
+				.add("lineNumber", lineNumber)
+				.add("methodName", methodName)
+				.add("level", level)
+				.add("ms", ms)
+				.add("threadName", threadName)
+				.add("message", message)
+				.add("throwable", throwable)
+				.add("ndc", ndc)
+				.add("mdc", mdc)
+				.toString();
 	}
 
 	public static class Builder {

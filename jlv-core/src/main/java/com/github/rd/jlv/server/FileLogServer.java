@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.rd.jlv.handler.FileLogHandler;
 import com.google.common.base.Preconditions;
 
 /**
@@ -18,7 +19,7 @@ import com.google.common.base.Preconditions;
 public class FileLogServer extends Server {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private final BlockingQueue<FilePatternPair> files = new LinkedBlockingQueue<>();
 
 	public void addFileToProcess(File file, Pattern pattern) {
@@ -37,7 +38,7 @@ public class FileLogServer extends Server {
 			super.stop();
 		}
 	}
-	
+
 	@Override
 	public Runnable getServerProcess() {
 		return new Runnable() {
@@ -48,7 +49,7 @@ public class FileLogServer extends Server {
 						logger.debug("Waiting for a new file entrance.");
 						FilePatternPair pair = files.take();
 						logger.debug("File has been accepted for the processing: {}", pair.getFile());
-				        runHandler(new FileLogHandler(pair.getFile(), pair.getPattern(), eventBus));
+						runHandler(new FileLogHandler(pair.getFile(), pair.getPattern(), eventBus));
 					} catch (InterruptedException e) {
 						logger.warn("Failed to accept a new file: server was stopped.");
 					}
@@ -56,7 +57,7 @@ public class FileLogServer extends Server {
 			}
 		};
 	}
-	
+
 	private static final class FilePatternPair {
 
 		private final File file;

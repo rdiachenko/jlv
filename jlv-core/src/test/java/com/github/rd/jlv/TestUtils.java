@@ -18,13 +18,13 @@ public final class TestUtils {
 	private TestUtils() {
 		throw new IllegalStateException("Utils class constructor mustn't be called.");
 	}
-	
+
 	public static <T> byte[] objectsToBytes(T[] objects) throws IOException {
 		byte[] bytes = new byte[0];
-		
+
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutput out = new ObjectOutputStream(bos)) {
-			
+
 			for (T obj : objects) {
 				out.writeObject(obj);
 			}
@@ -32,11 +32,11 @@ public final class TestUtils {
 		}
 		return bytes;
 	}
-	
+
 	public static Log createLogFromMessage(String message) {
 		return new Log.Builder().message(message).build();
 	}
-	
+
 	public static LoggingEvent createLog4j1LogFromMessage(String message) {
 		Category category = mock(Category.class);
 		LoggingEvent log = new LoggingEvent(
@@ -49,19 +49,19 @@ public final class TestUtils {
 				null, null, null, null);
 		return log;
 	}
-	
+
 	public static LogCollector createLogCollector(CircularBuffer<Log> buffer) {
 		return new LogCollector(buffer);
 	}
-	
+
 	public static final class LogCollector {
-		
+
 		private CircularBuffer<Log> buffer;
-		
+
 		public LogCollector(CircularBuffer<Log> buffer) {
 			this.buffer = buffer;
 		}
-		
+
 		@Subscribe
 		public void handle(Log log) {
 			buffer.add(log);

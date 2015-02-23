@@ -8,12 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CircularBufferTest {
-	
+
 	private static final int BUFFER_SIZE_ZERO = 0;
 	private static final int BUFFER_SIZE_ONE = 1;
-	
+
 	private CircularBuffer<Log> buffer;
-	
+
 	@Before
 	public void init() {
 		buffer = new CircularBuffer<>(BUFFER_SIZE_ONE);
@@ -38,7 +38,7 @@ public class CircularBufferTest {
 	public void testRetrivalOnEmptyBuffer() {
 		buffer.get(0);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddNull() {
 		buffer.add(null);
@@ -61,7 +61,7 @@ public class CircularBufferTest {
 		buffer.clear();
 		Assert.assertTrue(buffer.size() == 0);
 	}
-	
+
 	@Test
 	public void testToArray() {
 		Log log1 = TestUtils.createLogFromMessage("log1");
@@ -69,29 +69,29 @@ public class CircularBufferTest {
 		buffer.add(log1);
 		Assert.assertArrayEquals(new Log[] { log1 }, buffer.toArray());
 		buffer.clear();
-		Assert.assertArrayEquals(new Log[] { }, buffer.toArray());
+		Assert.assertArrayEquals(new Log[] {}, buffer.toArray());
 		buffer.add(log1);
 		buffer.add(log2);
 		Assert.assertArrayEquals(new Log[] { log2 }, buffer.toArray());
 	}
-	
+
 	@Test
 	public void testBufferIterator() {
 		Log log = TestUtils.createLogFromMessage("log1");
 		buffer.add(log);
 		Iterator<Log> iter = buffer.iterator();
-		
+
 		Assert.assertTrue(buffer.size() == 1);
 		Assert.assertTrue(iter.hasNext());
 		Assert.assertEquals(log, iter.next());
 		Assert.assertFalse(iter.hasNext());
 	}
-	
+
 	@Test(expected = NoSuchElementException.class)
 	public void testBufferIteratorNoNext() {
 		buffer.iterator().next();
 	}
-	
+
 	@Test(expected = UnsupportedOperationException.class)
 	public void testBufferIteratorRemove() {
 		buffer.iterator().remove();

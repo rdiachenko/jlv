@@ -1,5 +1,6 @@
 package com.github.rd.jlv.props;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class LoglistColumn {
@@ -7,7 +8,7 @@ public class LoglistColumn {
 	private final String name;
 	private final boolean visible;
 	private final int width;
-	
+
 	public LoglistColumn(String name, boolean visible, int width) {
 		this.name = name;
 		this.visible = visible;
@@ -25,12 +26,12 @@ public class LoglistColumn {
 	public int getWidth() {
 		return width;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(name, visible, width);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -44,10 +45,10 @@ public class LoglistColumn {
 					&& Objects.equal(width, that.width);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 				.omitNullValues()
 				.add("name", name)
 				.add("visible", visible)

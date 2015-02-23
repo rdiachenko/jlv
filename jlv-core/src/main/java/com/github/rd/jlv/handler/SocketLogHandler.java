@@ -1,4 +1,4 @@
-package com.github.rd.jlv.server;
+package com.github.rd.jlv.handler;
 
 import java.io.BufferedInputStream;
 import java.io.EOFException;
@@ -9,8 +9,6 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.Log;
-import com.github.rd.jlv.LogUtils;
 import com.google.common.eventbus.EventBus;
 
 /**
@@ -36,9 +34,15 @@ public class SocketLogHandler implements Runnable {
 		try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
 				ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
 
+			LogConverter logConverter = null;
+
 			while (!socket.isClosed()) {
-				Log log = LogUtils.convert(objectStream.readObject());
-				eventBus.post(log);
+				Object log = objectStream.readObject();
+
+				if (logConverter == null) {
+					logConverter = LogType.typeOf(log).converter();
+				}
+				eventBus.post(logConverter.convert(log));
 			}
 		} catch (EOFException e) {
 			// When the client closes the connection, the stream will run out of data,
