@@ -32,9 +32,8 @@ public class Log4j1Converter implements LogConverter {
 	}
 
 	private void fillLocationInfo(Log.Builder builder, LoggingEvent log) {
-		LocationInfo localInfo = log.getLocationInformation();
-
-		if (localInfo != null) {
+		if (log.locationInformationExists()) {
+			LocationInfo localInfo = log.getLocationInformation();
 			builder.className(Strings.nullToEmpty(localInfo.getClassName()));
 			builder.fileName(Strings.nullToEmpty(localInfo.getFileName()));
 			builder.lineNumber(Strings.nullToEmpty(localInfo.getLineNumber()));
