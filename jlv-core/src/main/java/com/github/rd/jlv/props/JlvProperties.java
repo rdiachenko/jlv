@@ -88,15 +88,6 @@ public class JlvProperties {
 			}
 		}
 	}
-
-	private boolean isFileValid(File file) {
-		boolean valid = file != null && file.exists() && file.isFile();
-
-		if (!valid) {
-			logger.warn("jlv properties file {} is not valid.", file);
-		}
-		return valid;
-	}
 	
 	public void addPropertyChangeListener(Object listener) {
 		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
@@ -106,6 +97,15 @@ public class JlvProperties {
 	public void removePropertyChangeListener(Object listener) {
 		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
 		eventBus.unregister(listener);
+	}
+
+	private boolean isFileValid(File file) {
+		boolean valid = file != null && file.exists() && file.isFile();
+
+		if (!valid) {
+			logger.warn("jlv properties file {} is not valid.", file);
+		}
+		return valid;
 	}
 
 	@SuppressWarnings("unchecked")
