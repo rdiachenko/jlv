@@ -19,7 +19,7 @@ import com.google.common.eventbus.EventBus;
  *
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
-public abstract class Server implements LogEventListener {
+public abstract class Server {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -40,13 +40,11 @@ public abstract class Server implements LogEventListener {
 		shutdownExecutor(bossExecutor);
 	}
 
-	@Override
 	public void addLogEventListener(Object listener) {
 		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
 		eventBus.register(listener);
 	}
 
-	@Override
 	public void removeLogEventListener(Object listener) {
 		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
 		eventBus.unregister(listener);

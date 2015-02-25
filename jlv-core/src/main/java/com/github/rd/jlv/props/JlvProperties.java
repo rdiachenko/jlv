@@ -14,6 +14,9 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+import com.google.common.eventbus.EventBus;
+
 public class JlvProperties {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -23,6 +26,8 @@ public class JlvProperties {
 	private static final PropertyConverter<Integer> INTEGER_CONVERTER = new IntegerConverter();
 	private static final PropertyConverter<Boolean> BOOLEAN_CONVERTER = new BooleanConverter();
 	private static final Map<PropertyKey, PropertyConverter<?>> CONVERTERS = new EnumMap<>(PropertyKey.class);
+	
+	private final EventBus eventBus = new EventBus();
 
 	private Properties store = new Properties();
 	private File propertyFile;
@@ -53,7 +58,13 @@ public class JlvProperties {
 	}
 
 	public <T> void save(PropertyKey key, T value) {
+		Preconditions.checkNotNull(value, "Property value musn't be null");
 		PropertyConverter<T> converter = getConverter(key);
+		T oldValue = load(key);
+		
+		if (!value.equals(oldValue)) {
+			eventBus.post(new PropertyChangeEvent(key, oldValue, value));
+		}
 		store.setProperty(key.keyName(), converter.convertToString(value));
 	}
 
@@ -85,6 +96,16 @@ public class JlvProperties {
 			logger.warn("jlv properties file {} is not valid.", file);
 		}
 		return valid;
+	}
+	
+	public void addPropertyChangeListener(Object listener) {
+		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
+		eventBus.register(listener);
+	}
+
+	public void removePropertyChangeListener(Object listener) {
+		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
+		eventBus.unregister(listener);
 	}
 
 	@SuppressWarnings("unchecked")

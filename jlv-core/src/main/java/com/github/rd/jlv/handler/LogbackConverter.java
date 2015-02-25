@@ -1,6 +1,6 @@
 package com.github.rd.jlv.handler;
 
-import ch.qos.logback.classic.spi.LoggingEventVO;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import com.github.rd.jlv.Log;
 import com.google.common.base.Strings;
@@ -9,7 +9,7 @@ public class LogbackConverter implements LogConverter {
 
 	@Override
 	public Log convert(Object value) {
-		LoggingEventVO log = (LoggingEventVO) value;
+		ILoggingEvent log = (ILoggingEvent) value;
 
 		Log.Builder builder = new Log.Builder();
 		builder.categoryName(Strings.nullToEmpty(log.getLoggerName()));
