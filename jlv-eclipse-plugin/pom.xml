@@ -1,58 +1,79 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.rd.jlv</groupId>
-	<artifactId>com.github.rd.jlv.parent</artifactId>
+	
+	<groupId>com.github.rd.jlv.eclipse</groupId>
+	<artifactId>jlv.eclipse.parent</artifactId>
 	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Java logging viewer Eclipse plugin (parent)</name>
-
-	<modules>
-		<module>jlv-plugin</module>
-		<module>jlv-plugin-tests</module>
-		<module>jlv-feature</module>
-		<module>jlv-update-site</module>
-	</modules>
-
 	<properties>
-		<tycho-version>0.19.0</tycho-version>
-		<jlv-core.version>1.0.0-SNAPSHOT</jlv-core.version>
-		<kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<tycho.version>0.21.0</tycho.version>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>kepler</id>
-			<layout>p2</layout>
-			<url>${kepler-repo.url}</url>
-		</repository>
-	</repositories>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.github.rd.jlv</groupId>
-				<artifactId>jlv-core</artifactId>
-				<version>${jlv-core.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	
+	<modules>
+		<module>jlv.eclipse.feature</module>
+		<module>jlv.eclipse.plugin</module>
+		<module>jlv.eclipse.plugintests</module>
+		<module>jlv.eclipse.updatesite</module>
+	</modules>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 			</plugin>
+			<plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <environments>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86</arch>
+                        </environment>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>luna</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna/</url>
+		</repository>
+	</repositories>
 </project>

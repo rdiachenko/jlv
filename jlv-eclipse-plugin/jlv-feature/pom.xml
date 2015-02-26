@@ -4,13 +4,11 @@
 
 	<parent>
 		<relativePath>../pom.xml</relativePath>
-		<groupId>com.github.rd.jlv</groupId>
-		<artifactId>com.github.rd.jlv.parent</artifactId>
+		<groupId>com.github.rd.jlv.eclipse</groupId>
+		<artifactId>jlv.eclipse.parent</artifactId>
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>com.github.rd.jlv.feature</artifactId>
+	<artifactId>jlv.eclipse.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
-
-    <name>JLV Eclipse feature</name>
 </project>

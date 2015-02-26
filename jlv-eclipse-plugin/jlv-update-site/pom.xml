@@ -4,28 +4,27 @@
 	
 	<parent>
 		<relativePath>../pom.xml</relativePath>
-		<groupId>com.github.rd.jlv</groupId>
-		<artifactId>com.github.rd.jlv.parent</artifactId>
+		<groupId>com.github.rd.jlv.eclipse</groupId>
+		<artifactId>jlv.eclipse.parent</artifactId>
 		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>com.github.rd.jlv.updatesite</artifactId>
+	<artifactId>jlv.eclipse.updatesite</artifactId>
 	<packaging>eclipse-repository</packaging>
-        <name>JLV Eclipse update site</name>
 
-        <build>
-                <plugins>
-                        <plugin>
-                          <groupId>org.codehaus.mojo</groupId>
-                          <artifactId>wagon-maven-plugin</artifactId>
-                          <version>1.0-beta-5</version>
-                            <configuration>
-                              <fromDir>${project.build.directory}/repository/</fromDir>
-                              <includes>**</includes>
-                              <toDir>eclipse</toDir>
-                              <url>file://${project.build.directory}/../../../repo</url>
-                            </configuration>
-                        </plugin>
-                </plugins>
-        </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-5</version>
+				<configuration>
+					<fromDir>${project.build.directory}/repository/</fromDir>
+					<includes>**</includes>
+					<toDir>eclipse</toDir>
+					<url>file://${project.build.directory}/../../../repo</url>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
