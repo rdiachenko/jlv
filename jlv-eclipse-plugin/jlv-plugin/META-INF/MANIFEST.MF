@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: jlv-plugin
-Bundle-SymbolicName: com.github.rd.jlv.plugin;singleton:=true
+Bundle-Name: JLV Eclipse Plug-in
+Bundle-SymbolicName: jlv.eclipse.plugin;singleton:=true
 Bundle-Version: 1.4.0.qualifier
 Bundle-Activator: com.github.rd.jlv.eclipse.JlvActivator
 Bundle-Vendor: Ruslan Diachenko
@@ -9,5 +9,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: dependencies/jlv-core-1.0.0-SNAPSHOT.jar,
- .
+Bundle-ClassPath: .,
+ dependencies/jlv-core-2.0.0-SNAPSHOT-all.jar

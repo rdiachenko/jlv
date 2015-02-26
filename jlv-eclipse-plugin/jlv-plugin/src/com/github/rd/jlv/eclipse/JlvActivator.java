@@ -14,6 +14,8 @@ import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
 
 /**
  * The activator class controls the plug-in life cycle
+ *
+ * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
 public class JlvActivator extends AbstractUIPlugin {
 

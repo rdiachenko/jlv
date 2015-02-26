@@ -26,7 +26,7 @@ public class JlvProperties {
 	private static final PropertyConverter<Integer> INTEGER_CONVERTER = new IntegerConverter();
 	private static final PropertyConverter<Boolean> BOOLEAN_CONVERTER = new BooleanConverter();
 	private static final Map<PropertyKey, PropertyConverter<?>> CONVERTERS = new EnumMap<>(PropertyKey.class);
-	
+
 	private final EventBus eventBus = new EventBus();
 
 	private Properties store = new Properties();
@@ -61,7 +61,7 @@ public class JlvProperties {
 		Preconditions.checkNotNull(value, "Property value musn't be null");
 		PropertyConverter<T> converter = getConverter(key);
 		T oldValue = load(key);
-		
+
 		if (!value.equals(oldValue)) {
 			eventBus.post(new PropertyChangeEvent(key, oldValue, value));
 		}
@@ -88,7 +88,7 @@ public class JlvProperties {
 			}
 		}
 	}
-	
+
 	public void addPropertyChangeListener(Object listener) {
 		Preconditions.checkNotNull(listener, "Listener object mustn't be null.");
 		eventBus.register(listener);

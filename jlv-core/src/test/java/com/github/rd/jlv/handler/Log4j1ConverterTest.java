@@ -29,9 +29,9 @@ public class Log4j1ConverterTest {
 	private static String ndc;
 	private static LocationInfo localInfo;
 	private static Map<String, String> mdc;
-	
+
 	private LogConverter converter = new Log4j1Converter();
-	
+
 	@BeforeClass
 	public static void init() {
 		categoryClass = Log4j1ConverterTest.class.getSimpleName();
@@ -42,24 +42,24 @@ public class Log4j1ConverterTest {
 		threadName = "test-thread";
 		throwable = new ThrowableInformation(new IllegalArgumentException("wrong parameter format"), category);
 		ndc = "test-ndc";
-		
+
 		localInfo = mock(LocationInfo.class);
 		when(localInfo.getClassName()).thenReturn(Log4j1ConverterTest.class.getName());
 		when(localInfo.getFileName()).thenReturn("Log4j1ConverterTest");
 		when(localInfo.getLineNumber()).thenReturn("7");
 		when(localInfo.getMethodName()).thenReturn("createFullLog");
-		localInfo.fullInfo = localInfo.getClassName() 
-				+ "." + localInfo.getMethodName() 
-				+ "(" + localInfo.getFileName() 
-				+ ".java:" 
-				+ localInfo.getLineNumber() 
+		localInfo.fullInfo = localInfo.getClassName()
+				+ "." + localInfo.getMethodName()
+				+ "(" + localInfo.getFileName()
+				+ ".java:"
+				+ localInfo.getLineNumber()
 				+ ")";
-		
+
 		mdc = new HashMap<>();
 		mdc.put("client_id", "5");
 		mdc.put("session_id", "a7b");
 	}
-	
+
 	@Test
 	public void testConvertFullLog() {
 		Log actual = converter.convert(createFullLog());
@@ -77,7 +77,7 @@ public class Log4j1ConverterTest {
 		Assert.assertEquals(localInfo.getMethodName(), actual.getMethodName());
 		Assert.assertEquals(mdc.toString(), actual.getMdc());
 	}
-	
+
 	@Test
 	public void testConvertPartialLog() {
 		Log actual = converter.convert(createPartialLog());
@@ -95,7 +95,7 @@ public class Log4j1ConverterTest {
 		Assert.assertTrue(actual.getMethodName().isEmpty());
 		Assert.assertTrue(actual.getMdc().isEmpty());
 	}
-	
+
 	private static LoggingEvent createFullLog() {
 		LoggingEvent log = new LoggingEvent(
 				categoryClass,
@@ -110,7 +110,7 @@ public class Log4j1ConverterTest {
 				mdc);
 		return log;
 	}
-	
+
 	private static LoggingEvent createPartialLog() {
 		LoggingEvent log = new LoggingEvent(
 				categoryClass,
@@ -125,7 +125,7 @@ public class Log4j1ConverterTest {
 				null);
 		return log;
 	}
-	
+
 	private static String throwableToString(ThrowableInformation throwable) {
 		StringBuilder res = new StringBuilder();
 		String lineSeparator = "\n";

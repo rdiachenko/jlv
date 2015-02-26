@@ -105,22 +105,23 @@ public class JlvPropertiesTest {
 		Assert.assertEquals(Integer.valueOf(oldPort), store.load(PropertyKey.SERVER_PORT_KEY));
 		Assert.assertEquals(oldQuickSearch, store.load(PropertyKey.LOGLIST_QUICK_SEARCH_KEY));
 	}
-	
+
 	@Test
 	public void testPropertyChange() {
 		JlvProperties store = new JlvProperties(null);
-		
+
 		class PropertyChangeListener {
 			@Subscribe
 			public void propertyChange(PropertyChangeEvent event) {
-				Assert.assertFalse("property old and new values are the same", event.getOldValue().equals(event.getNewValue()));
+				Assert.assertFalse("property old and new values are the same",
+						event.getOldValue().equals(event.getNewValue()));
 			}
 		}
 		PropertyChangeListener listener = new PropertyChangeListener();
 		store.addPropertyChangeListener(listener);
 		store.save(PropertyKey.SERVER_PORT_KEY, 4445);
 		store.save(PropertyKey.SERVER_PORT_KEY, 1234);
-		store.save(PropertyKey.LOGLIST_LEVEL_COLOR_KEY, 
+		store.save(PropertyKey.LOGLIST_LEVEL_COLOR_KEY,
 				Arrays.asList(new LoglistLevelColor("WARN", new LevelColor(1, 2, 3), new LevelColor(4, 5, 6))));
 		store.save(PropertyKey.LOGLIST_COLUMN_KEY, Arrays.asList(new LoglistColumn("Line", true, 77)));
 		store.removePropertyChangeListener(listener);
