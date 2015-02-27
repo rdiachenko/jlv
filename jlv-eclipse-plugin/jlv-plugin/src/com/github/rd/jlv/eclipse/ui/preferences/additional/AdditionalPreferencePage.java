@@ -1,20 +1,21 @@
 package com.github.rd.jlv.eclipse.ui.preferences.additional;
 
-import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ui.preferences.PreferencePageUtils;
-import com.github.rd.jlv.prefs.PreferenceEnum;
+import com.github.rd.jlv.props.JlvProperties;
 
 public class AdditionalPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	private JlvProperties store;
+
 	@Override
 	public void init(IWorkbench workbench) {
+		store = JlvActivator.getDefault().getStore();
 		setPreferenceStore(JlvActivator.getDefault().getPreferenceStore());
 		setDescription("Additional settings");
 	}
@@ -24,18 +25,10 @@ public class AdditionalPreferencePage extends FieldEditorPreferencePage implemen
 		Composite parent = getFieldEditorParent();
 		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
 
-		Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
-				"Structural log table settings");
-		FieldEditor structuralTableEditor = new StructuralTableEditor(
-				PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS.getName(),
-				PreferencePageUtils.createFieldEditorComposite(structuralSettingsGroup));
-		addField(structuralTableEditor);
+		Composite composite = PreferencePageUtils.createCompositeGroup(parent, "Loglist column settings");
+		// addField();
 
-		Group presentationalSettingGroup = PreferencePageUtils.createSettingsGroup(parent,
-				"Presentational log table settings");
-		FieldEditor presentationalTableEditor = new PresentationalTableEditor(
-				PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS.getName(),
-				PreferencePageUtils.createFieldEditorComposite(presentationalSettingGroup));
-		addField(presentationalTableEditor);
+		composite = PreferencePageUtils.createCompositeGroup(parent, "Loglist level color settings");
+		// addField();
 	}
 }

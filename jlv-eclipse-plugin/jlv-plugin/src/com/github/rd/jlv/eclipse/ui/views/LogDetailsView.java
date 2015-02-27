@@ -16,9 +16,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
+import com.github.rd.jlv.LogConstants;
 import com.github.rd.jlv.eclipse.StringConstants;
-import com.github.rd.jlv.log4j.LogConstants;
-import com.github.rd.jlv.log4j.domain.Log;
 
 public class LogDetailsView extends ViewPart implements ISelectionListener {
 
@@ -60,24 +59,24 @@ public class LogDetailsView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		StructuredSelection logSelection = (StructuredSelection) selection;
-		Log log = (Log) logSelection.getFirstElement();
-
-		if (log != null) {
-			logFields.get(LogConstants.CATEGORY_FIELD_NAME).setText(log.getCategoryName());
-			logFields.get(LogConstants.CLASS_FIELD_NAME).setText(log.getClassName());
-			logFields.get(LogConstants.DATE_FIELD_NAME).setText(log.getDate());
-			logFields.get(LogConstants.FILE_FIELD_NAME).setText(log.getFileName());
-			logFields.get(LogConstants.LOCATION_INFO_FIELD_NAME).setText(log.getLocationInfo());
-			logFields.get(LogConstants.LINE_FIELD_NAME).setText(log.getLineNumber());
-			logFields.get(LogConstants.METHOD_FIELD_NAME).setText(log.getMethodName());
-			logFields.get(LogConstants.LEVEL_FIELD_NAME).setText(log.getLevel());
-			logFields.get(LogConstants.THREAD_FIELD_NAME).setText(log.getThreadName());
-			logFields.get(LogConstants.MESSAGE_FIELD_NAME).setText(log.getMessage());
-			logFields.get(LogConstants.THROWABLE_FIELD_NAME).setText(log.getThrowable());
-			logFields.get(LogConstants.NDC_FIELD_NAME).setText(log.getNdc());
-			logFields.get(LogConstants.MDC_FIELD_NAME).setText(log.getMdc());
-		}
+//		StructuredSelection logSelection = (StructuredSelection) selection;
+//		Log log = (Log) logSelection.getFirstElement();
+//
+//		if (log != null) {
+//			logFields.get(LogConstants.CATEGORY_FIELD_NAME).setText(log.getCategoryName());
+//			logFields.get(LogConstants.CLASS_FIELD_NAME).setText(log.getClassName());
+//			logFields.get(LogConstants.DATE_FIELD_NAME).setText(log.getDate());
+//			logFields.get(LogConstants.FILE_FIELD_NAME).setText(log.getFileName());
+//			logFields.get(LogConstants.LOCATION_INFO_FIELD_NAME).setText(log.getLocationInfo());
+//			logFields.get(LogConstants.LINE_FIELD_NAME).setText(log.getLineNumber());
+//			logFields.get(LogConstants.METHOD_FIELD_NAME).setText(log.getMethodName());
+//			logFields.get(LogConstants.LEVEL_FIELD_NAME).setText(log.getLevel());
+//			logFields.get(LogConstants.THREAD_FIELD_NAME).setText(log.getThreadName());
+//			logFields.get(LogConstants.MESSAGE_FIELD_NAME).setText(log.getMessage());
+//			logFields.get(LogConstants.THROWABLE_FIELD_NAME).setText(log.getThrowable());
+//			logFields.get(LogConstants.NDC_FIELD_NAME).setText(log.getNdc());
+//			logFields.get(LogConstants.MDC_FIELD_NAME).setText(log.getMdc());
+//		}
 	}
 
 	private void buildExpandItem(ExpandBar bar, String logFieldName, int logFieldStyle) {

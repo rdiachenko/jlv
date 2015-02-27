@@ -1,5 +1,6 @@
 package com.github.rd.jlv.eclipse;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -33,9 +34,9 @@ public class JlvActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		store = new JlvProperties(getStateLocation().toFile());
-		resourceManager = new ResourceManager();
-		preferenceManager = new PreferenceManager(getPreferenceStore());
+		store = new JlvProperties(new File(getStateLocation().toFile().getAbsolutePath() + File.separator + "jlv.properties"));
+//		resourceManager = new ResourceManager();
+//		preferenceManager = new PreferenceManager(getPreferenceStore());
 		configureLogging();
 	}
 
@@ -44,7 +45,7 @@ public class JlvActivator extends AbstractUIPlugin {
 		try {
 			plugin = null;
 			store.persist();
-			resourceManager.dispose();
+//			resourceManager.dispose();
 		} finally {
 			super.stop(context);
 		}

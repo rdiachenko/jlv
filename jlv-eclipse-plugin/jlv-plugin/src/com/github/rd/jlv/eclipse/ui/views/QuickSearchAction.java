@@ -19,8 +19,8 @@ public class QuickSearchAction extends AbstractHandler {
 
 		if (part != null) {
 			PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
-			boolean visible = !preferenceManager.isQuickSearchVisible();
-			preferenceManager.storeQuickSearchState(visible);
+//			boolean visible = !preferenceManager.isQuickSearchVisible();
+//			preferenceManager.storeQuickSearchState(visible);
 		}
 		return null;
 	}

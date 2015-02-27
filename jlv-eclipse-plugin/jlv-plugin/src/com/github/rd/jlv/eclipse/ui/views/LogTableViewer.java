@@ -7,7 +7,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
-import com.github.rd.jlv.log4j.LogConstants;
+import com.github.rd.jlv.LogConstants;
 
 public class LogTableViewer extends TableViewer {
 

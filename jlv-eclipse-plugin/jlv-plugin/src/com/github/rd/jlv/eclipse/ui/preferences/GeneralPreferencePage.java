@@ -22,6 +22,7 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
 	@Override
 	public void init(IWorkbench workbench) {
 		store = JlvActivator.getDefault().getStore();
+		setPreferenceStore(JlvActivator.getDefault().getPreferenceStore());
 		setDescription("General settings");
 	}
 

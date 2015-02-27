@@ -3,9 +3,7 @@ package com.github.rd.jlv.eclipse.ui.views;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import com.github.rd.jlv.log4j.LogConstants;
-import com.github.rd.jlv.log4j.LogUtils;
-import com.github.rd.jlv.log4j.domain.Log;
+import com.github.rd.jlv.LogConstants;
 import com.google.common.base.Strings;
 
 public class QuickLogFilter extends ViewerFilter {
@@ -25,14 +23,14 @@ public class QuickLogFilter extends ViewerFilter {
 		if (Strings.isNullOrEmpty(searchText)) {
 			isPastFilter = true;
 		} else {
-			Log log = (Log) element;
-
-			for (String logFieldName : LogConstants.LOG_FIELD_NAMES) {
-				if (LogUtils.getValue(log, logFieldName).matches(searchText)) {
-					isPastFilter = true;
-					break;
-				}
-			}
+//			Log log = (Log) element;
+//
+//			for (String logFieldName : LogConstants.LOG_FIELD_NAMES) {
+//				if (LogUtils.getValue(log, logFieldName).matches(searchText)) {
+//					isPastFilter = true;
+//					break;
+//				}
+//			}
 		}
 		return isPastFilter;
 	}

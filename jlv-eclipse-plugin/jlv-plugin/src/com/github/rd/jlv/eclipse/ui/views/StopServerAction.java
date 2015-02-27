@@ -26,7 +26,7 @@ public class StopServerAction extends AbstractHandler {
 
 		if (part != null) {
 			LogListView view = (LogListView) part;
-			view.getController().stopServer();
+//			view.getController().stopServer();
 			viewSourceProvider.setServerStarted(false);
 		}
 		return null;
