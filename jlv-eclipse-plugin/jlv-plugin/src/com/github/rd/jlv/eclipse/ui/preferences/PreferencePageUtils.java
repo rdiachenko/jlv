@@ -13,16 +13,7 @@ import org.eclipse.swt.widgets.Text;
 
 public final class PreferencePageUtils {
 
-	public static Composite createFieldEditorComposite(Composite parent) {
-		Composite composite = new Composite(parent, SWT.FILL);
-		GridLayout layout = new GridLayout();
-		composite.setLayout(layout);
-		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		composite.setLayoutData(layoutData);
-		return composite;
-	}
-
-	public static Group createSettingsGroup(Composite parent, String groupName) {
+	public static Composite createCompositeGroup(Composite parent, String groupName) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(groupName);
 		GridLayout layout = new GridLayout();

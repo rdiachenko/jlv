@@ -15,10 +15,10 @@ import org.eclipse.swt.widgets.Text;
 import com.github.rd.jlv.props.JlvProperties;
 import com.github.rd.jlv.props.PropertyKey;
 
-public class IntegerEditor extends FieldEditor {
+public class IntegerFieldEditor extends FieldEditor {
 
-	private int minValidValue = 0;
-	private int maxValidValue = Integer.MAX_VALUE;
+	private int minValidValue;
+	private int maxValidValue;
 	private String errorMessage;
 
 	private Text field;
@@ -28,19 +28,20 @@ public class IntegerEditor extends FieldEditor {
 	private JlvProperties store;
 	private PropertyKey key;
 
-	public IntegerEditor(JlvProperties store, PropertyKey key, Composite parent, String label) {
+	public IntegerFieldEditor(JlvProperties store, PropertyKey key, Composite parent, String label, int minValidValue,
+			int maxValidValue) {
 		this.store = store;
 		this.key = key;
 		this.label = label;
-		errorMessage = JFaceResources.getString("IntegerFieldEditor.errorMessage");
+		this.minValidValue = minValidValue;
+		this.maxValidValue = maxValidValue;
+		errorMessage = JFaceResources.format("IntegerFieldEditor.errorMessageRange",
+				new Object[] { new Integer(minValidValue), new Integer(maxValidValue) });
 		createControl(parent);
 	}
 
-	public void setValidRange(int min, int max) {
-		minValidValue = min;
-		maxValidValue = max;
-		errorMessage = JFaceResources.format("IntegerFieldEditor.errorMessageRange", new Object[] { new Integer(min),
-				new Integer(max) });
+	public IntegerFieldEditor(JlvProperties store, PropertyKey key, Composite parent, String label) {
+		this(store, key, parent, label, 0, Integer.MAX_VALUE);
 	}
 
 	@Override
