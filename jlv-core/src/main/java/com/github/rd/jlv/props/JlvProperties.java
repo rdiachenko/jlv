@@ -45,13 +45,13 @@ public class JlvProperties {
 	}
 
 	public JlvProperties(File propertyFile) {
-		if (isFileValid(propertyFile)) {
+		if (isAvailableForUsage(propertyFile)) {
 			this.propertyFile = propertyFile;
 
 			try (InputStream in = new FileInputStream(propertyFile)) {
 				store.load(in);
 			} catch (IOException e) {
-				logger.warn("Couldn't load jlv properties file {}. The default properties will be used instead.",
+				logger.warn("Couldn't load properties file {}. The default properties will be used instead.",
 						propertyFile, e);
 			}
 		}
@@ -80,11 +80,11 @@ public class JlvProperties {
 	}
 
 	public void persist() {
-		if (isFileValid(propertyFile)) {
+		if (isAvailableForUsage(propertyFile)) {
 			try (OutputStream out = new FileOutputStream(propertyFile)) {
 				store.store(out, null);
 			} catch (IOException e) {
-				logger.error("Couldn't persist jlv properties file {}.", propertyFile, e);
+				logger.error("Couldn't persist properties file {}.", propertyFile, e);
 			}
 		}
 	}
@@ -99,13 +99,27 @@ public class JlvProperties {
 		eventBus.unregister(listener);
 	}
 
-	private boolean isFileValid(File file) {
-		boolean valid = file != null && file.exists() && file.isFile();
+	private boolean isAvailableForUsage(File file) {
+		boolean available = true;
 
-		if (!valid) {
-			logger.warn("jlv properties file {} is not valid.", file);
+		if (file == null) {
+			logger.warn("Properties file is null. The in-memory storage will be used instead.");
+			available = false;
+		} else {
+			try {
+				if (!file.exists()) {
+					logger.debug("Properties file '{}' wasn't found. Trying to create an empty properties file.", file);
+
+					if (file.createNewFile()) {
+						logger.debug("Empty properties file '{}' was created.", file);
+					}
+				}
+			} catch (IOException e) {
+				logger.error("Properties file '{}' can not be used due to: {}", file, e);
+				available = false;
+			}
 		}
-		return valid;
+		return available;
 	}
 
 	@SuppressWarnings("unchecked")
