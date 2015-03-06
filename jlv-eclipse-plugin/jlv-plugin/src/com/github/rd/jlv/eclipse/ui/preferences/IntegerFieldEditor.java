@@ -36,21 +36,7 @@ public class IntegerFieldEditor extends FieldEditor {
 		this(key, label, parent, 0, Integer.MAX_VALUE);
 	}
 	
-	public void load() {
-		value = getStore().load(key);
-		field.setText(String.valueOf(value));
-	}
-
-	public void loadDefault() {
-		value = getStore().loadDefault(key);
-		field.setText(String.valueOf(value));
-	}
-
-	public void save() {
-		getStore().save(key, value);
-	}
-
-	public void fillIntoGrid(Composite parent, int numColumns) {
+	public void fillIntoGrid(Composite parent) {
 		field = PreferencePageUtils.createTextFieldControl(parent, label);
 		field.addKeyListener(new KeyAdapter() {
 			@Override
@@ -70,6 +56,25 @@ public class IntegerFieldEditor extends FieldEditor {
 				e.doit = isValid(e.text);
 			}
 		});
+	}
+	
+	@Override
+	protected int getGridColumnsNumber() {
+		return 1;  // one control per line in the layout grid
+	}
+	
+	public void load() {
+		value = getStore().load(key);
+		field.setText(String.valueOf(value));
+	}
+
+	public void loadDefault() {
+		value = getStore().loadDefault(key);
+		field.setText(String.valueOf(value));
+	}
+
+	public void save() {
+		getStore().save(key, value);
 	}
 
 	private boolean isValid(String value) {

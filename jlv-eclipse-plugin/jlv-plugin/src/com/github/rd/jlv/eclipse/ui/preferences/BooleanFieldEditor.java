@@ -21,7 +21,7 @@ public class BooleanFieldEditor extends FieldEditor {
 	}
 
 	@Override
-	protected void fillIntoGrid(Composite parent, int numColumns) {
+	protected void fillIntoGrid(Composite parent) {
 		field = PreferencePageUtils.createCheckBoxControl(parent, label);
 		field.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -29,6 +29,11 @@ public class BooleanFieldEditor extends FieldEditor {
 				value = field.getSelection();
 			}
 		});
+	}
+	
+	@Override
+	protected int getGridColumnsNumber() {
+		return 1;  // one control per line in the layout grid
 	}
 
 	@Override

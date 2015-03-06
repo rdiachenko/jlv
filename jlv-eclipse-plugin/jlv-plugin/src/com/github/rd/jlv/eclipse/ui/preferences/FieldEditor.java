@@ -17,7 +17,9 @@ public abstract class FieldEditor {
     /** The preference store */
 	private JlvProperties store;
 	
-    protected abstract void fillIntoGrid(Composite parent, int numColumns);
+    protected abstract void fillIntoGrid(Composite parent);
+    
+    protected abstract int getGridColumnsNumber();
     
     protected abstract void load();
     
@@ -51,11 +53,11 @@ public abstract class FieldEditor {
 	
 	public void createControl(Composite parent) {
         GridLayout layout = new GridLayout();
-        layout.numColumns = 1; // one control per line in the layout grid
+        layout.numColumns = getGridColumnsNumber();
         layout.marginWidth = 0;
         layout.marginHeight = 0;
         layout.horizontalSpacing = HORIZONTAL_GAP;
         parent.setLayout(layout);
-        fillIntoGrid(parent, layout.numColumns);
+        fillIntoGrid(parent);
     }
 }
