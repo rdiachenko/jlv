@@ -30,10 +30,10 @@ public class BooleanFieldEditor extends FieldEditor {
 			}
 		});
 	}
-	
+
 	@Override
 	protected int getGridColumnsNumber() {
-		return 1;  // one control per line in the layout grid
+		return 1; // one control per line in the layout grid
 	}
 
 	@Override

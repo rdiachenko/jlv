@@ -1,8 +1,6 @@
 package com.github.rd.jlv.eclipse.ui.preferences.additional;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -17,12 +15,12 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 	private Button downButton;
 	private LoglistColumn value;
 	private PropertyKey key;
-	
+
 	public LoglistColumnFieldEditor(PropertyKey key, Composite parent) {
 		this.key = key;
 		createControl(parent);
 	}
-	
+
 	@Override
 	protected void fillIntoGrid(Composite parent) {
 //		tableViewer = getTableViewerControl(parent);
@@ -34,7 +32,7 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 //		gridData.verticalAlignment = GridData.BEGINNING;
 //		buttonBox.setLayoutData(gridData);
 	}
-	
+
 	@Override
 	protected int getGridColumnsNumber() {
 		return 2; // Table composite and Button box composite

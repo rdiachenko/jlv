@@ -14,14 +14,14 @@ import com.github.rd.jlv.props.PropertyKey;
 
 public class IntegerFieldEditor extends FieldEditor {
 
-    private int minValidValue;
+	private int minValidValue;
 	private int maxValidValue;
 	private String errorMessage;
 	private Text field;
 	private String label;
 	private int value;
 	private PropertyKey key;
-	
+
 	public IntegerFieldEditor(PropertyKey key, String label, Composite parent, int minValidValue, int maxValidValue) {
 		this.key = key;
 		this.label = label;
@@ -35,7 +35,7 @@ public class IntegerFieldEditor extends FieldEditor {
 	public IntegerFieldEditor(PropertyKey key, String label, Composite parent) {
 		this(key, label, parent, 0, Integer.MAX_VALUE);
 	}
-	
+
 	public void fillIntoGrid(Composite parent) {
 		field = PreferencePageUtils.createTextFieldControl(parent, label);
 		field.addKeyListener(new KeyAdapter() {
@@ -57,12 +57,12 @@ public class IntegerFieldEditor extends FieldEditor {
 			}
 		});
 	}
-	
+
 	@Override
 	protected int getGridColumnsNumber() {
-		return 1;  // one control per line in the layout grid
+		return 1; // one control per line in the layout grid
 	}
-	
+
 	public void load() {
 		value = getStore().load(key);
 		field.setText(String.valueOf(value));

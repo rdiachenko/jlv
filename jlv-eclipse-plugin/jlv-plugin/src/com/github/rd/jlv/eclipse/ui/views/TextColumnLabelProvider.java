@@ -1,9 +1,6 @@
 package com.github.rd.jlv.eclipse.ui.views;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;

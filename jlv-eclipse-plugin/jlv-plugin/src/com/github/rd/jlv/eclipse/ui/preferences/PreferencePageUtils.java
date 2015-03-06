@@ -35,7 +35,6 @@ public final class PreferencePageUtils {
 		composite.setLayout(layout);
 
 		GridData layoutData = new GridData(SWT.BEGINNING, SWT.NONE, true, false);
-		layoutData.horizontalIndent = -5;
 		composite.setLayoutData(layoutData);
 
 		Button checkBoxControl = new Button(composite, SWT.CHECK);
@@ -50,7 +49,6 @@ public final class PreferencePageUtils {
 		composite.setLayout(layout);
 
 		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		layoutData.horizontalIndent = -5;
 		composite.setLayoutData(layoutData);
 
 		Label label = new Label(composite, SWT.NONE);
@@ -69,7 +67,6 @@ public final class PreferencePageUtils {
 		composite.setLayout(layout);
 
 		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		layoutData.horizontalIndent = -5;
 		composite.setLayoutData(layoutData);
 
 		Spinner spinner = new Spinner(composite, SWT.BORDER);

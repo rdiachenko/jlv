@@ -1,5 +1,6 @@
 package com.github.rd.jlv.eclipse.ui.preferences.additional;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -10,14 +11,15 @@ public class AdditionalPreferencePage extends JlvPreferencePage {
 
 	@Override
 	public Control createContents(Composite parent) {
-		parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
+		Composite composite = new Composite(parent, SWT.NULL);
+		composite.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
 
-		Composite composite = PreferencePageUtils.createCompositeGroup(parent, "Loglist column settings");
+		Composite group = PreferencePageUtils.createCompositeGroup(composite, "Loglist column settings");
 		// addField();
 
-		composite = PreferencePageUtils.createCompositeGroup(parent, "Loglist level color settings");
+		group = PreferencePageUtils.createCompositeGroup(composite, "Loglist level color settings");
 		// addField();
-		
-		return parent;
+
+		return composite;
 	}
 }

@@ -3,7 +3,6 @@ package com.github.rd.jlv.eclipse.ui.views;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import com.github.rd.jlv.LogConstants;
 import com.google.common.base.Strings;
 
 public class QuickLogFilter extends ViewerFilter {

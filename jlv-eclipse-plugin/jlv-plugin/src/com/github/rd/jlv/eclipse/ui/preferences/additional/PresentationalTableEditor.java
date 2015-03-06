@@ -1,26 +1,14 @@
 package com.github.rd.jlv.eclipse.ui.preferences.additional;
 
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColorCellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -41,9 +29,9 @@ public class PresentationalTableEditor extends FieldEditor {
 	private static final String FOREGROUND_COLUMN_HEADER = "Foreground";
 	private static final String BACKGROUND_COLUMN_HEADER = "Background";
 	private static final String[] COLUMN_NAMES = {
-		LEVEL_COLUMN_HEADER,
-		FOREGROUND_COLUMN_HEADER,
-		BACKGROUND_COLUMN_HEADER
+			LEVEL_COLUMN_HEADER,
+			FOREGROUND_COLUMN_HEADER,
+			BACKGROUND_COLUMN_HEADER
 	};
 
 	private static final int LEVEL_COLUMN_WIDTH = 60;

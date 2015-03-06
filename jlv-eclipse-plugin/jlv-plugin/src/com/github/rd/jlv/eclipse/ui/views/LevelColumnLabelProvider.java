@@ -1,15 +1,7 @@
 package com.github.rd.jlv.eclipse.ui.views;
 
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
-import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.TableItem;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
@@ -34,7 +26,7 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 	@Override
 	protected void paint(Event event, Object element) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 //	@Override

@@ -1,15 +1,5 @@
 package com.github.rd.jlv.eclipse.ui.views;
 
-import java.io.IOException;
-
-import org.eclipse.swt.widgets.Display;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.github.rd.jlv.eclipse.JlvActivator;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
-import com.github.rd.jlv.server.Server;
-
 public class LogListViewController {
 
 //	private final Logger logger = LoggerFactory.getLogger(getClass());

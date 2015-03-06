@@ -15,13 +15,13 @@ public final class PreferenceManager {
 
 	private static final PropertyConverter<List<LoglistColumn>> LOGLIST_COLUMN_CONVERTER = new LoglistColumnConverter();
 	private static final PropertyConverter<List<LoglistLevelColor>> LOGLIST_LEVEL_COLOR_CONVERTER = new LoglistLevelColorConverter();
-	
+
 	private IPreferenceStore store;
-	
+
 	public PreferenceManager(IPreferenceStore store) {
 		this.store = store;
 	}
-	
+
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (listener != null) {
 			store.addPropertyChangeListener(listener);

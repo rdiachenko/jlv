@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.AbstractSourceProvider;
-import org.eclipse.ui.ISources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

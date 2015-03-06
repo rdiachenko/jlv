@@ -24,7 +24,7 @@ public class JlvActivator extends AbstractUIPlugin {
 	private static final String LOG4J_PROPERTIES_PATH = "config/log4j.properties";
 
 	private static JlvActivator plugin;
-	
+
 	private JlvProperties store;
 
 	private PreferenceManager preferenceManager;
@@ -34,7 +34,8 @@ public class JlvActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		store = new JlvProperties(new File(getStateLocation().toFile().getAbsolutePath() + File.separator + "jlv.properties"));
+		store = new JlvProperties(new File(getStateLocation().toFile().getAbsolutePath() + File.separator
+				+ "jlv.properties"));
 //		resourceManager = new ResourceManager();
 //		preferenceManager = new PreferenceManager(getPreferenceStore());
 		configureLogging();
@@ -54,7 +55,7 @@ public class JlvActivator extends AbstractUIPlugin {
 	public static JlvActivator getDefault() {
 		return plugin;
 	}
-	
+
 	public JlvProperties getStore() {
 		return store;
 	}
