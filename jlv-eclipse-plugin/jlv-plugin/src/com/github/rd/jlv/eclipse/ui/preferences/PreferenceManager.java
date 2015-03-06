@@ -1,35 +1,39 @@
 package com.github.rd.jlv.eclipse.ui.preferences;
 
+import java.util.List;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+
+import com.github.rd.jlv.props.LoglistColumn;
+import com.github.rd.jlv.props.LoglistColumnConverter;
+import com.github.rd.jlv.props.LoglistLevelColor;
+import com.github.rd.jlv.props.LoglistLevelColorConverter;
+import com.github.rd.jlv.props.PropertyConverter;
 
 public final class PreferenceManager {
 
-//	private IPreferenceStore store;
-//
-//	private GeneralModel generalModel;
-//	private StructuralModel structuralModel;
-//	private PresentationalModel presentationalModel;
-//
-//	private Map<PreferenceEnum, Converter> converters = new EnumMap<>(PreferenceEnum.class);
-//
-//	public PreferenceManager(IPreferenceStore store) {
-//		this.store = store;
-//		generalModel = (GeneralModel) initAndGetModel(PreferenceEnum.JLV_GENERAL_SETTINGS);
-//		structuralModel = (StructuralModel) initAndGetModel(PreferenceEnum.LOG_LIST_STRUCTURAL_TABLE_SETTINGS);
-//		presentationalModel = (PresentationalModel) initAndGetModel(PreferenceEnum.LOG_LIST_PRESENTATIONAL_TABLE_SETTINGS);
-//	}
-//
-//	public void addPropertyChangeListener(IPropertyChangeListener listener) {
-//		if (listener != null) {
-//			store.addPropertyChangeListener(listener);
-//		}
-//	}
-//
-//	public void removePropertyChangeListener(IPropertyChangeListener listener) {
-//		if (listener != null) {
-//			store.removePropertyChangeListener(listener);
-//		}
-//	}
-//
+	private static final PropertyConverter<List<LoglistColumn>> LOGLIST_COLUMN_CONVERTER = new LoglistColumnConverter();
+	private static final PropertyConverter<List<LoglistLevelColor>> LOGLIST_LEVEL_COLOR_CONVERTER = new LoglistLevelColorConverter();
+	
+	private IPreferenceStore store;
+	
+	public PreferenceManager(IPreferenceStore store) {
+		this.store = store;
+	}
+	
+	public void addPropertyChangeListener(IPropertyChangeListener listener) {
+		if (listener != null) {
+			store.addPropertyChangeListener(listener);
+		}
+	}
+
+	public void removePropertyChangeListener(IPropertyChangeListener listener) {
+		if (listener != null) {
+			store.removePropertyChangeListener(listener);
+		}
+	}
+
 //	public void setValue(PreferenceEnum type, Model model) {
 //		update(type, model);
 //		Converter converter = converters.get(type);
