@@ -15,7 +15,7 @@ import com.google.common.eventbus.Subscribe;
 
 public class JlvPropertiesTest {
 
-	private static final File TEST_FILE = new File("src/test/resources/jlv.properties");
+	private static final File TEST_FILE = new File(System.getProperty("java.io.tmpdir", "src/test/resources") + "/jlv.properties");
 	
 	@BeforeClass
 	public static void init() throws IOException {
