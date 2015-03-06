@@ -1,10 +1,14 @@
 package com.github.rd.jlv.props;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.eventbus.Subscribe;
@@ -12,6 +16,31 @@ import com.google.common.eventbus.Subscribe;
 public class JlvPropertiesTest {
 
 	private static final File TEST_FILE = new File("src/test/resources/jlv.properties");
+	
+	@BeforeClass
+	public static void init() throws IOException {
+		String[] properties = {
+				"jlv.loglist.column=Line:true:77;Date:false:99;",
+				"jlv.server.port=4446",
+				"jlv.loglist.quicksearch=false",
+				"jlv.server.autostart=false",
+				"jlv.loglist.fontsize=14",
+				"jlv.loglist.refreshtime=100",
+				"jlv.loglist.buffersize=7000",
+				"jlv.loglist.levelimage=false",
+				"jlv.loglist.levelcolor=WARN:1-2-3:4-5-6;ERROR:7-8-9:253-254-255;",
+		};
+		try (PrintWriter out = new PrintWriter(TEST_FILE)) {
+			for (String prop : properties) {
+				out.println(prop);
+			}
+		}
+	}
+	
+	@AfterClass
+	public static void cleanUp() {
+		Assert.assertTrue("test file couldn't be deleted", TEST_FILE.delete());
+	}
 
 	@Test
 	public void testLoadDefault() {
