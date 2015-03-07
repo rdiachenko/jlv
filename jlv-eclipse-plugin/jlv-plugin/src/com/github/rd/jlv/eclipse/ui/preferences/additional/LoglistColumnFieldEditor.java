@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Widget;
 
 import com.github.rd.jlv.eclipse.ui.preferences.FieldEditor;
+import com.github.rd.jlv.props.EventScope;
 import com.github.rd.jlv.props.LoglistColumn;
 import com.github.rd.jlv.props.PropertyKey;
 
@@ -89,7 +90,9 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 
 	@Override
 	protected void save() {
+		List<LoglistColumn> oldValue = getStore().load(key);
 		getStore().save(key, value);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
 	}
 
 	private void createTableViewer(Composite parent) {

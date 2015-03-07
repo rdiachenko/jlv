@@ -5,6 +5,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import com.github.rd.jlv.props.EventScope;
 import com.github.rd.jlv.props.PropertyKey;
 
 public class BooleanFieldEditor extends FieldEditor {
@@ -50,6 +51,8 @@ public class BooleanFieldEditor extends FieldEditor {
 
 	@Override
 	protected void save() {
+		boolean oldValue = getStore().load(key);
 		getStore().save(key, value);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
 	}
 }

@@ -10,6 +10,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import com.github.rd.jlv.props.EventScope;
 import com.github.rd.jlv.props.PropertyKey;
 
 public class IntegerFieldEditor extends FieldEditor {
@@ -36,6 +37,7 @@ public class IntegerFieldEditor extends FieldEditor {
 		this(key, label, parent, 0, Integer.MAX_VALUE);
 	}
 
+	@Override
 	public void fillIntoGrid(Composite parent) {
 		field = PreferencePageUtils.createTextFieldControl(parent, label);
 		field.addKeyListener(new KeyAdapter() {
@@ -63,18 +65,23 @@ public class IntegerFieldEditor extends FieldEditor {
 		return 1; // one control per line in the layout grid
 	}
 
+	@Override
 	public void load() {
 		value = getStore().load(key);
 		field.setText(String.valueOf(value));
 	}
 
+	@Override
 	public void loadDefault() {
 		value = getStore().loadDefault(key);
 		field.setText(String.valueOf(value));
 	}
 
+	@Override
 	public void save() {
+		int oldValue = getStore().load(key);
 		getStore().save(key, value);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
 	}
 
 	private boolean isValid(String value) {
