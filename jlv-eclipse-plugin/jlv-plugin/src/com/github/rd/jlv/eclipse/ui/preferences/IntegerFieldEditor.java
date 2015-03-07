@@ -81,7 +81,7 @@ public class IntegerFieldEditor extends FieldEditor {
 	public void save() {
 		int oldValue = getStore().load(key);
 		getStore().save(key, value);
-		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.APPLICATION);
 	}
 
 	private boolean isValid(String value) {
@@ -89,9 +89,11 @@ public class IntegerFieldEditor extends FieldEditor {
 	}
 
 	private void valueChanged() {
-		int value = Integer.parseInt(field.getText());
-		if (value >= minValidValue && value <= maxValidValue) {
-			this.value = value;
+		int newValue = Integer.parseInt(field.getText());
+		if (newValue >= minValidValue && newValue <= maxValidValue) {
+			int oldValue = value;
+			value = newValue;
+			getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
 			clearErrorMessage();
 		} else {
 			showErrorMessage(errorMessage);

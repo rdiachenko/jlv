@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import com.github.rd.jlv.eclipse.ui.preferences.BooleanFieldEditor;
 import com.github.rd.jlv.eclipse.ui.preferences.JlvPreferencePage;
 import com.github.rd.jlv.eclipse.ui.preferences.PreferencePageUtils;
 import com.github.rd.jlv.props.PropertyKey;
@@ -19,7 +20,7 @@ public class AdditionalPreferencePage extends JlvPreferencePage {
 		addField(new LoglistColumnFieldEditor(PropertyKey.LOGLIST_COLUMN_KEY, group));
 
 		group = PreferencePageUtils.createCompositeGroup(composite, "Loglist level color settings");
-		// addField();
+		addField(new BooleanFieldEditor(PropertyKey.LOGLIST_LEVEL_IMAGE_KEY, "Use image to display log level", group));
 
 		return composite;
 	}

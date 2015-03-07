@@ -92,7 +92,7 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 	protected void save() {
 		List<LoglistColumn> oldValue = getStore().load(key);
 		getStore().save(key, value);
-		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.APPLICATION);
 	}
 
 	private void createTableViewer(Composite parent) {

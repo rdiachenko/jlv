@@ -27,7 +27,7 @@ public class BooleanFieldEditor extends FieldEditor {
 		field.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				value = field.getSelection();
+				valueChanged();
 			}
 		});
 	}
@@ -53,6 +53,12 @@ public class BooleanFieldEditor extends FieldEditor {
 	protected void save() {
 		boolean oldValue = getStore().load(key);
 		getStore().save(key, value);
+		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.APPLICATION);
+	}
+
+	private void valueChanged() {
+		boolean oldValue = value;
+		value = field.getSelection();
 		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
 	}
 }
