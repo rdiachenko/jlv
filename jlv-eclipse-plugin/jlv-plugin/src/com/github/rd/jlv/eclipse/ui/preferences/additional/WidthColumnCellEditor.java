@@ -45,9 +45,9 @@ public class WidthColumnCellEditor extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		LoglistColumn oldColumn = (LoglistColumn) element;
+		LoglistColumn column = (LoglistColumn) element;
 		int width = Integer.parseInt(String.valueOf(value));
-		LoglistColumn newColumn = new LoglistColumn(oldColumn.getName(), oldColumn.isVisible(), width);
-		viewer.update(newColumn, null);
+		column.setWidth(width);
+		viewer.update(column, null);
 	}
 }

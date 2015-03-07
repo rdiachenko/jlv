@@ -24,19 +24,19 @@ import com.github.rd.jlv.props.PropertyKey;
 
 public class LoglistColumnFieldEditor extends FieldEditor {
 
-	private static final String DISPLAY_COLUMN_HEADER = "Display";
 	private static final String NAME_COLUMN_HEADER = "Name";
+	private static final String VISIBLE_COLUMN_HEADER = "Visible";
 	private static final String WIDTH_COLUMN_HEADER = "Width";
 	private static final String[] COLUMN_HEADERS = {
-			DISPLAY_COLUMN_HEADER,
 			NAME_COLUMN_HEADER,
+			VISIBLE_COLUMN_HEADER,
 			WIDTH_COLUMN_HEADER
 	};
 
-	private static final int DISPLAY_COLUMN_WIDTH = 70;
 	private static final int NAME_COLUMN_WIDTH = 120;
+	private static final int VISIBLE_COLUMN_WIDTH = 70;
 	private static final int WIDTH_COLUMN_WIDTH = 120;
-	private static final int[] COLUMN_WIDTHS = { DISPLAY_COLUMN_WIDTH, NAME_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
+	private static final int[] COLUMN_WIDTHS = { NAME_COLUMN_WIDTH, VISIBLE_COLUMN_WIDTH, WIDTH_COLUMN_WIDTH };
 
 	private TableViewer tableViewer;
 	private Button upButton;
@@ -66,14 +66,8 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 
 	@Override
 	protected void fillIntoGrid(Composite parent) {
-		tableViewer = createTableViewerControl(parent);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		tableViewer.getControl().setLayoutData(gridData);
-
-		Composite buttonBox = createButtonBox(parent);
-		gridData = new GridData();
-		gridData.verticalAlignment = GridData.BEGINNING;
-		buttonBox.setLayoutData(gridData);
+		createTableViewer(parent);
+		createButtonBox(parent);
 	}
 
 	@Override
@@ -85,14 +79,12 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 	protected void load() {
 		value = getStore().load(key);
 		tableViewer.setInput(value);
-		tableViewer.refresh();
 	}
 
 	@Override
 	protected void loadDefault() {
 		value = getStore().loadDefault(key);
 		tableViewer.setInput(value);
-		tableViewer.refresh();
 	}
 
 	@Override
@@ -100,17 +92,25 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 		getStore().save(key, value);
 	}
 
-	private TableViewer createTableViewerControl(Composite parent) {
-		TableViewer tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
+	private void createTableViewer(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginLeft = 5;
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(layout);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		composite.setLayoutData(gridData);
+
+		tableViewer = new TableViewer(composite, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.HIDE_SELECTION);
 		tableViewer.setUseHashlookup(true);
 		Table table = tableViewer.getTable();
+		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.addSelectionListener(selectionListener);
 		createTableColumns(tableViewer);
 		tableViewer.setContentProvider(new ArrayContentProvider());
-		return tableViewer;
 	}
 
 	private void createTableColumns(TableViewer tableViewer) {
@@ -120,10 +120,6 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 			viewerColumn.getColumn().setWidth(COLUMN_WIDTHS[i]);
 
 			switch (COLUMN_HEADERS[i]) {
-			case DISPLAY_COLUMN_HEADER:
-				viewerColumn.setLabelProvider(new DisplayColumnLabelProvider());
-				viewerColumn.setEditingSupport(new DisplayColumnCellEditor(tableViewer));
-				break;
 			case NAME_COLUMN_HEADER:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
 					@Override
@@ -132,6 +128,10 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 						return column.getName();
 					}
 				});
+				break;
+			case VISIBLE_COLUMN_HEADER:
+				viewerColumn.setLabelProvider(new VisibleColumnLabelProvider());
+				viewerColumn.setEditingSupport(new VisibleColumnCellEditor(tableViewer));
 				break;
 			case WIDTH_COLUMN_HEADER:
 				viewerColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -150,18 +150,20 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 		}
 	}
 
-	private Composite createButtonBox(Composite parent) {
+	private void createButtonBox(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		Composite buttonBox = new Composite(parent, SWT.NULL);
-		buttonBox.setLayout(layout);
+		layout.marginRight = 5;
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(layout);
 
-		upButton = createButton(buttonBox, "Up");
-		downButton = createButton(buttonBox, "Down");
+		GridData gridData = new GridData();
+		gridData.verticalAlignment = GridData.BEGINNING;
+		composite.setLayoutData(gridData);
 
+		upButton = createButton(composite, "Up");
+		downButton = createButton(composite, "Down");
 		selectionChanged();
-		return buttonBox;
 	}
 
 	private Button createButton(Composite parent, String name) {

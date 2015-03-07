@@ -36,7 +36,7 @@ public class JlvActivator extends AbstractUIPlugin {
 		plugin = this;
 		store = new JlvProperties(new File(getStateLocation().toFile().getAbsolutePath() + File.separator
 				+ "jlv.properties"));
-//		resourceManager = new ResourceManager();
+		resourceManager = new ResourceManager();
 //		preferenceManager = new PreferenceManager(getPreferenceStore());
 		configureLogging();
 	}
@@ -46,7 +46,7 @@ public class JlvActivator extends AbstractUIPlugin {
 		try {
 			plugin = null;
 			store.persist();
-//			resourceManager.dispose();
+			resourceManager.dispose();
 		} finally {
 			super.stop(context);
 		}

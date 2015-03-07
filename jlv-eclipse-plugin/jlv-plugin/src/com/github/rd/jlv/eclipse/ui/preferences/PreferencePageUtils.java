@@ -47,7 +47,6 @@ public final class PreferencePageUtils {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		composite.setLayout(layout);
-
 		GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		composite.setLayoutData(layoutData);
 

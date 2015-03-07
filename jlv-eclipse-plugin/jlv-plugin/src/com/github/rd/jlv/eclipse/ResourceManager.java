@@ -62,11 +62,11 @@ public final class ResourceManager {
 //	public Rgb fromSystemRgb(RGB rgb) {
 //		return new Rgb(rgb.red, rgb.green, rgb.blue);
 //	}
-//
-//	public void dispose() {
-//		internalManager.dispose();
-//	}
-//
+
+	public void dispose() {
+		internalManager.dispose();
+	}
+
 	private static final class InternalManager {
 
 //		private final Logger logger = LoggerFactory.getLogger(getClass());

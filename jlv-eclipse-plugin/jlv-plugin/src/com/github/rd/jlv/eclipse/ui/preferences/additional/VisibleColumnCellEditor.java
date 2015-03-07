@@ -8,12 +8,12 @@ import org.eclipse.swt.SWT;
 
 import com.github.rd.jlv.props.LoglistColumn;
 
-public class DisplayColumnCellEditor extends EditingSupport {
+public class VisibleColumnCellEditor extends EditingSupport {
 
 	private final TableViewer viewer;
 	private final CellEditor editor;
 
-	public DisplayColumnCellEditor(TableViewer viewer) {
+	public VisibleColumnCellEditor(TableViewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
 		editor = new CheckboxCellEditor(viewer.getTable(), SWT.CHECK | SWT.CENTER);
@@ -36,8 +36,8 @@ public class DisplayColumnCellEditor extends EditingSupport {
 
 	@Override
 	protected void setValue(Object element, Object value) {
-		LoglistColumn oldColumn = (LoglistColumn) element;
-		LoglistColumn newColumn = new LoglistColumn(oldColumn.getName(), (boolean) value, oldColumn.getWidth());
-		viewer.update(newColumn, null);
+		LoglistColumn column = (LoglistColumn) element;
+		column.setVisible((boolean) value);
+		viewer.update(column, null);
 	}
 }

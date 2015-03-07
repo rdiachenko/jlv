@@ -11,7 +11,7 @@ import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
 import com.github.rd.jlv.props.LoglistColumn;
 
-public class DisplayColumnLabelProvider extends OwnerDrawLabelProvider {
+public class VisibleColumnLabelProvider extends OwnerDrawLabelProvider {
 
 	private final ResourceManager resourceManager = JlvActivator.getDefault().getResourceManager();
 

@@ -6,8 +6,8 @@ import com.google.common.base.Objects;
 public class LoglistColumn {
 
 	private final String name;
-	private final boolean visible;
-	private final int width;
+	private boolean visible;
+	private int width;
 
 	public LoglistColumn(String name, boolean visible, int width) {
 		this.name = name;
@@ -23,13 +23,21 @@ public class LoglistColumn {
 		return visible;
 	}
 
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
 	public int getWidth() {
 		return width;
 	}
 
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(name, visible, width);
+		return Objects.hashCode(name);
 	}
 
 	@Override
