@@ -1,9 +1,8 @@
 package com.github.rd.jlv.props;
 
 /**
- * Event object which describes a property change. The property change is represented by property key, its old value and
- * its new value.
- * 
+ * Event object which describes a property change.
+ *
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
 public class PropertyChangeEvent {
@@ -14,10 +13,13 @@ public class PropertyChangeEvent {
 
 	private Object newValue;
 
-	public PropertyChangeEvent(PropertyKey property, Object oldValue, Object newValue) {
+	private EventScope scope;
+
+	public PropertyChangeEvent(PropertyKey property, Object oldValue, Object newValue, EventScope scope) {
 		this.property = property;
 		this.oldValue = oldValue;
 		this.newValue = newValue;
+		this.scope = scope;
 	}
 
 	public PropertyKey getProperty() {
@@ -30,5 +32,9 @@ public class PropertyChangeEvent {
 
 	public Object getNewValue() {
 		return newValue;
+	}
+
+	public EventScope getScope() {
+		return scope;
 	}
 }

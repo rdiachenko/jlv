@@ -143,17 +143,20 @@ public class JlvPropertiesTest {
 		class PropertyChangeListener {
 			@Subscribe
 			public void propertyChange(PropertyChangeEvent event) {
+				Assert.assertEquals(EventScope.CONFIGURATION, event.getScope());
+				Assert.assertEquals(PropertyKey.LOGLIST_LEVEL_COLOR_KEY, event.getProperty());
 				Assert.assertFalse("property old and new values are the same",
 						event.getOldValue().equals(event.getNewValue()));
 			}
 		}
 		PropertyChangeListener listener = new PropertyChangeListener();
 		store.addPropertyChangeListener(listener);
-		store.save(PropertyKey.SERVER_PORT_KEY, 4445);
-		store.save(PropertyKey.SERVER_PORT_KEY, 1234);
-		store.save(PropertyKey.LOGLIST_LEVEL_COLOR_KEY,
-				Arrays.asList(new LoglistLevelColor("WARN", new LevelColor(1, 2, 3), new LevelColor(4, 5, 6))));
-		store.save(PropertyKey.LOGLIST_COLUMN_KEY, Arrays.asList(new LoglistColumn("Line", true, 77)));
+
+		List<LoglistLevelColor> oldValue = store.load(PropertyKey.LOGLIST_LEVEL_COLOR_KEY);
+		List<LoglistLevelColor> newValue = Arrays.asList(new LoglistLevelColor("WARN", new LevelColor(1, 2, 3),
+				new LevelColor(4, 5, 6)));
+		store.save(PropertyKey.LOGLIST_LEVEL_COLOR_KEY, newValue);
+		store.firePropertyChangeEvent(PropertyKey.LOGLIST_LEVEL_COLOR_KEY, oldValue, newValue, EventScope.CONFIGURATION);
 		store.removePropertyChangeListener(listener);
 	}
 }

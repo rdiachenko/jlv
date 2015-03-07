@@ -60,11 +60,6 @@ public class JlvProperties {
 	public <T> void save(PropertyKey key, T value) {
 		Preconditions.checkNotNull(value, "Property value musn't be null");
 		PropertyConverter<T> converter = getConverter(key);
-		T oldValue = load(key);
-
-		if (!value.equals(oldValue)) {
-			eventBus.post(new PropertyChangeEvent(key, oldValue, value));
-		}
 		store.setProperty(key.keyName(), converter.convertToString(value));
 	}
 
@@ -86,6 +81,15 @@ public class JlvProperties {
 			} catch (IOException e) {
 				logger.error("Couldn't persist properties file {}.", propertyFile, e);
 			}
+		}
+	}
+
+	public <T> void firePropertyChangeEvent(PropertyKey key, T oldValue, T newValue, EventScope scope) {
+		Preconditions.checkNotNull(oldValue, "Property value musn't be null");
+		Preconditions.checkNotNull(newValue, "Property value musn't be null");
+
+		if (!newValue.equals(oldValue)) {
+			eventBus.post(new PropertyChangeEvent(key, oldValue, newValue, scope));
 		}
 	}
 
