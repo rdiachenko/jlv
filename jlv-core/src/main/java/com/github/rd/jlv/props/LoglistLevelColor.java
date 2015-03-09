@@ -6,8 +6,8 @@ import com.google.common.base.Objects;
 public class LoglistLevelColor {
 
 	private final String name;
-	private final LevelColor foreground;
-	private final LevelColor background;
+	private LevelColor foreground;
+	private LevelColor background;
 
 	public LoglistLevelColor(String name, LevelColor foreground, LevelColor background) {
 		this.name = name;
@@ -23,13 +23,21 @@ public class LoglistLevelColor {
 		return foreground;
 	}
 
+	public void setForeground(LevelColor foreground) {
+		this.foreground = foreground;
+	}
+
 	public LevelColor getBackground() {
 		return background;
 	}
 
+	public void setBackground(LevelColor background) {
+		this.background = background;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(name, foreground, background);
+		return Objects.hashCode(name);
 	}
 
 	@Override

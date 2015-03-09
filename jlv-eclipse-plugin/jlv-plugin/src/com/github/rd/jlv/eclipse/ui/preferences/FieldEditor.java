@@ -60,4 +60,8 @@ public abstract class FieldEditor {
 		parent.setLayout(layout);
 		fillIntoGrid(parent);
 	}
+
+	public void dispose() {
+		// no code
+	}
 }

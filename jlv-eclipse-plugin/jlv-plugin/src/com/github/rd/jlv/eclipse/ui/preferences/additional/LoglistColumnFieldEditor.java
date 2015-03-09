@@ -147,8 +147,7 @@ public class LoglistColumnFieldEditor extends FieldEditor {
 				viewerColumn.setEditingSupport(new WidthColumnCellEditor(tableViewer));
 				break;
 			default:
-				throw new IllegalArgumentException("No column with such a name: " + COLUMN_HEADERS[i]
-						+ ". Only [Name, Width, Display] are allowed.");
+				throw new IllegalArgumentException("No column with such a name: " + COLUMN_HEADERS[i]);
 			}
 		}
 	}

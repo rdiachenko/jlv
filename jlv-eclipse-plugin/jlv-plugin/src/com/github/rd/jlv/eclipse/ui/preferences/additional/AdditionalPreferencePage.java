@@ -23,6 +23,7 @@ public class AdditionalPreferencePage extends JlvPreferencePage {
 		group = PreferencePageUtils.createCompositeGroup(composite, "Loglist level color settings");
 		addField(new BooleanFieldEditor(PropertyKey.LOGLIST_LEVEL_IMAGE_KEY, "Use image to display log level", group));
 		addField(new SpinnerFieldEditor(PropertyKey.LOGLIST_FONT_SIZE_KEY, "Font size", group));
+		addField(new LoglistLevelColorFieldEditor(PropertyKey.LOGLIST_LEVEL_COLOR_KEY, group));
 
 		return composite;
 	}

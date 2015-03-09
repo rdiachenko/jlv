@@ -43,6 +43,15 @@ public abstract class JlvPreferencePage extends PreferencePage implements IWorkb
 		}
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		for (FieldEditor field : fieldEditors) {
+			field.dispose();
+		}
+	}
+
 	public void addField(FieldEditor fieldEditor) {
 		fieldEditor.setPage(this);
 		fieldEditor.setStore(store);
