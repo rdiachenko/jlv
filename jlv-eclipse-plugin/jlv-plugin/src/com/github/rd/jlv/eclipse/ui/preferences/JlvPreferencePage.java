@@ -54,7 +54,6 @@ public abstract class JlvPreferencePage extends PreferencePage implements IWorkb
 
 	public void addField(FieldEditor fieldEditor) {
 		fieldEditor.setPage(this);
-		fieldEditor.setStore(store);
 		fieldEditor.load();
 		fieldEditors.add(fieldEditor);
 	}

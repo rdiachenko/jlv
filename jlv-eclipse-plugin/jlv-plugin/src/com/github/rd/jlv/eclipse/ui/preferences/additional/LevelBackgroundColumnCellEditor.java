@@ -36,13 +36,13 @@ public class LevelBackgroundColumnCellEditor extends EditingSupport {
 	@Override
 	protected Object getValue(Object element) {
 		LoglistLevelColor level = (LoglistLevelColor) element;
-		return resourceManager.toSystemRgb(level.getForeground());
+		return resourceManager.toSystemRgb(level.getBackground());
 	}
 
 	@Override
 	protected void setValue(Object element, Object value) {
 		LoglistLevelColor level = (LoglistLevelColor) element;
-		level.setForeground(resourceManager.fromSystemRgb((RGB) value));
+		level.setBackground(resourceManager.fromSystemRgb((RGB) value));
 		viewer.update(level, null);
 	}
 }

@@ -4,6 +4,7 @@ import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.props.JlvProperties;
 
 public abstract class FieldEditor {
@@ -11,11 +12,11 @@ public abstract class FieldEditor {
 	/** Gap between label and control. */
 	protected static final int HORIZONTAL_GAP = 8;
 
-	/** The page containing this field editor */
-	private DialogPage page;
-
 	/** The preference store */
 	private JlvProperties store;
+
+	/** The page containing this field editor */
+	private DialogPage page;
 
 	protected abstract void fillIntoGrid(Composite parent);
 
@@ -31,11 +32,10 @@ public abstract class FieldEditor {
 		this.page = page;
 	}
 
-	public void setStore(JlvProperties store) {
-		this.store = store;
-	}
-
 	public JlvProperties getStore() {
+		if (store == null) {
+			store = JlvActivator.getDefault().getStore();
+		}
 		return store;
 	}
 
