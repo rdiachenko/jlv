@@ -62,8 +62,10 @@ public class SpinnerFieldEditor extends FieldEditor {
 	}
 
 	private void valueChanged() {
-		int oldValue = value;
-		value = Integer.parseInt(field.getText());
-		getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
+		if (!field.getText().isEmpty()) {
+			int oldValue = value;
+			value = Integer.parseInt(field.getText());
+			getStore().firePropertyChangeEvent(key, oldValue, value, EventScope.CONFIGURATION);
+		}
 	}
 }
