@@ -26,30 +26,29 @@ public final class ResourceManager {
 //
 //	public static final Rgb BACKGROUND = new Rgb(255, 255, 255);
 
-	private final Map<String, ImageType> imageNameMap;
-
+	private final Map<String, JlvImage> images;
 	private final InternalManager internalManager;
 
 	public ResourceManager() {
 		internalManager = new InternalManager();
-		imageNameMap = new HashMap<>();
-		imageNameMap.put(LogConstants.DEBUG_LEVEL_NAME, ImageType.DEBUG_LEVEL_ICON);
-		imageNameMap.put(LogConstants.INFO_LEVEL_NAME, ImageType.INFO_LEVEL_ICON);
-		imageNameMap.put(LogConstants.WARN_LEVEL_NAME, ImageType.WARN_LEVEL_ICON);
-		imageNameMap.put(LogConstants.ERROR_LEVEL_NAME, ImageType.ERROR_LEVEL_ICON);
-		imageNameMap.put(LogConstants.FATAL_LEVEL_NAME, ImageType.FATAL_LEVEL_ICON);
+		images = new HashMap<>();
+		images.put(LogConstants.DEBUG_LEVEL_NAME, JlvImage.DEBUG_LEVEL_ICON);
+		images.put(LogConstants.INFO_LEVEL_NAME, JlvImage.INFO_LEVEL_ICON);
+		images.put(LogConstants.WARN_LEVEL_NAME, JlvImage.WARN_LEVEL_ICON);
+		images.put(LogConstants.ERROR_LEVEL_NAME, JlvImage.ERROR_LEVEL_ICON);
+		images.put(LogConstants.FATAL_LEVEL_NAME, JlvImage.FATAL_LEVEL_ICON);
 	}
 
 	public Image getImage(String name) {
-		if (imageNameMap.containsKey(name)) {
-			return getImage(imageNameMap.get(name));
+		if (images.containsKey(name)) {
+			return getImage(images.get(name));
 		} else {
 			throw new IllegalArgumentException("No image with such a name: " + name);
 		}
 	}
 
-	public Image getImage(ImageType type) {
-		return internalManager.getImage(type);
+	public Image getImage(JlvImage jlvImage) {
+		return internalManager.getImage(jlvImage);
 	}
 
 	public Color getColor(LevelColor rgb) {
@@ -76,21 +75,18 @@ public final class ResourceManager {
 
 		private final Logger logger = LoggerFactory.getLogger(getClass());
 
-		private final Map<ImageType, Image> imageRegistry = new EnumMap<>(ImageType.class);
-
+		private final Map<JlvImage, Image> imageRegistry = new EnumMap<>(JlvImage.class);
 		private final Map<LevelColor, Color> colorRegistry = new HashMap<>();
-
 		private final Map<Integer, Font> fontRegistry = new HashMap<>();
 
 		private Font systemFont;
-
 		private FontData[] systemFontData;
 
 		public InternalManager() {
 			loadImagesToRegistry();
 		}
 
-		public Image getImage(ImageType type) {
+		public Image getImage(JlvImage type) {
 			return imageRegistry.get(type);
 		}
 
@@ -136,7 +132,7 @@ public final class ResourceManager {
 		private void loadImagesToRegistry() {
 			Bundle bundle = JlvActivator.getDefault().getBundle();
 
-			for (ImageType imageType : ImageType.values()) {
+			for (JlvImage imageType : JlvImage.values()) {
 				URL url = bundle.getEntry(imageType.path());
 				ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
 				imageRegistry.put(imageType, descriptor.createImage());

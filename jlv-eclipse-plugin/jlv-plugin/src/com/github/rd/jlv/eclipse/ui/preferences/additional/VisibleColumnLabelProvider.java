@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.github.rd.jlv.eclipse.ImageType;
+import com.github.rd.jlv.eclipse.JlvImage;
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
 import com.github.rd.jlv.props.LoglistColumn;
@@ -24,8 +24,8 @@ public class VisibleColumnLabelProvider extends OwnerDrawLabelProvider {
 	protected void paint(Event event, Object element) {
 		TableItem item = (TableItem) event.item;
 		LoglistColumn column = (LoglistColumn) item.getData();
-		Image image = (column.isVisible()) ? resourceManager.getImage(ImageType.CHECKBOX_CHECKED_ICON)
-				: resourceManager.getImage(ImageType.CHECKBOX_UNCHECKED_ICON);
+		Image image = (column.isVisible()) ? resourceManager.getImage(JlvImage.CHECKBOX_CHECKED_ICON)
+				: resourceManager.getImage(JlvImage.CHECKBOX_UNCHECKED_ICON);
 		Rectangle bounds = item.getBounds(event.index);
 		Rectangle imageBounds = image.getBounds();
 		int xOffset = bounds.width / 2 - imageBounds.width / 2;

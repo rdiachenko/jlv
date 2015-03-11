@@ -1,6 +1,6 @@
 package com.github.rd.jlv.eclipse;
 
-public enum ImageType {
+public enum JlvImage {
 
 	CHECKBOX_CHECKED_ICON("/icons/checkboxChecked.gif"),
 	CHECKBOX_UNCHECKED_ICON("/icons/checkboxUnchecked.gif"),
@@ -12,7 +12,7 @@ public enum ImageType {
 
 	private String path;
 
-	private ImageType(String path) {
+	private JlvImage(String path) {
 		this.path = path;
 	}
 
