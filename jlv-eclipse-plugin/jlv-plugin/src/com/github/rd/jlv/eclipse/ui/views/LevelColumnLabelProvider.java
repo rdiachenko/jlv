@@ -5,16 +5,15 @@ import org.eclipse.swt.widgets.Event;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
 
-	private PreferenceManager preferenceManager;
+//	private PreferenceManager preferenceManager;
 
 	private ResourceManager resourceManager;
 
 	public LevelColumnLabelProvider() {
-		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+//		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 		resourceManager = JlvActivator.getDefault().getResourceManager();
 	}
 

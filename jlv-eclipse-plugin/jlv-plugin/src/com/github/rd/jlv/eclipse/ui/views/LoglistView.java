@@ -6,36 +6,28 @@ import java.util.Map;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.StringConstants;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
 
-public class LogListView extends ViewPart {
+public class LoglistView extends ViewPart {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-//	private final LogListViewController controller;
-	private final PreferenceManager preferenceManager;
+	private final LoglistViewController controller;
 
 	private Text quickSearchField;
 	private QuickLogFilter quickFilter;
@@ -48,15 +40,10 @@ public class LogListView extends ViewPart {
 	private ViewLifecycleListener viewLifecycleListener;
 	private IPropertyChangeListener preferenceListener;
 
-	public LogListView() {
-//		controller = new LogListViewController(this);
+	public LoglistView() {
+		controller = new LoglistViewController(this);
 		quickFilter = new QuickLogFilter();
-		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 	}
-
-//	public LogListViewController getController() {
-//		return controller;
-//	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -105,7 +92,7 @@ public class LogListView extends ViewPart {
 		try {
 //			getController().dispose();
 			getViewSite().getPage().removePartListener(viewLifecycleListener);
-			logger.debug("Lifecycle listener was removed from Jlv log list view");
+			logger.debug("Lifecycle listener removed from Jlv loglist view");
 //			preferenceManager.removePropertyChangeListener(preferenceListener);
 			logger.debug("PropertyChange listener was removed from Jlv log list view");
 		} finally {
@@ -129,7 +116,7 @@ public class LogListView extends ViewPart {
 
 	public void clear() {
 		viewer.getTable().removeAll();
-		logger.debug("log list view was cleared.");
+		logger.debug("loglist view cleared.");
 //		getController().clearLogContainer();
 		logger.debug("Log's container was cleared.");
 	}
@@ -167,7 +154,7 @@ public class LogListView extends ViewPart {
 
 	private TableViewer createViewer(Composite parent) {
 		int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
-		TableViewer viewer = new LogTableViewer(parent, style);
+		TableViewer viewer = new JlvTableViewer(parent, style);
 		final Table table = viewer.getTable();
 //		table.setItemCount(JlvActivator.getPreferenceManager().getLogsBufferSize());
 //
@@ -224,84 +211,12 @@ public class LogListView extends ViewPart {
 //		table.setColumnOrder(newColumnOrder);
 //		table.redraw();
 //	}
-
-	private class ColumnResizeListener implements ControlListener, Runnable {
-
-		private static final int DELAY = 500; // ms
-
-		private long lastEvent = 0;
-
-		private ControlEvent event;
-
-		@Override
-		public void controlMoved(ControlEvent e) {
-			// no code
-		}
-
-		@Override
-		public void controlResized(ControlEvent e) {
-			if (e.getSource() instanceof TableColumn) {
-				event = e;
-				lastEvent = System.currentTimeMillis();
-				Display.getDefault().timerExec(DELAY, this);
-			}
-		}
-
-		@Override
-		public void run() {
-			if ((lastEvent + DELAY) < System.currentTimeMillis()) {
-				TableColumn column = (TableColumn) event.getSource();
-				String columnName = column.getText();
-				int width = column.getWidth();
-//				preferenceManager.storeColumnWidth(columnName, width);
-			} else {
-				Display.getDefault().timerExec(DELAY, this);
-			}
-		}
+	
+	public void startServer() {
+		
 	}
-
-	// Inner class represents handler for LogView life cycle actions: close/open view, activate/deactivate view, etc.
-	private class ViewLifecycleListener implements IPartListener {
-
-		@Override
-		public void partActivated(final IWorkbenchPart part) {
-			// no code
-		}
-
-		@Override
-		public void partBroughtToTop(final IWorkbenchPart part) {
-			// no code
-		}
-
-		@Override
-		public void partClosed(final IWorkbenchPart part) {
-			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
-
-				if (part instanceof LogListView) {
-					logger.debug("Jlv log list view was closed.");
-				}
-			}
-		}
-
-		@Override
-		public void partDeactivated(final IWorkbenchPart part) {
-			// no code
-		}
-
-		@Override
-		public void partOpened(final IWorkbenchPart part) {
-			if (StringConstants.JLV_PLUGIN_ID.equals(part.getSite().getPluginId())) {
-
-				if (part instanceof LogListView) {
-//					boolean isServerAutoStart = preferenceManager.isServerAutoStart();
-//					logger.debug("Server auto start option: {}", isServerAutoStart);
-//
-//					if (isServerAutoStart) {
-//						getController().startServer();
-//					}
-//					logger.debug("Jlv log list view was opened.");
-				}
-			}
-		}
+	
+	public void stopServer() {
+		
 	}
 }

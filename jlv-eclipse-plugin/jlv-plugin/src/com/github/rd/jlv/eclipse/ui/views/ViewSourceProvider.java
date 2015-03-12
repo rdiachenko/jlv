@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.AbstractSourceProvider;
+import org.eclipse.ui.ISources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.StringConstants;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
+import com.github.rd.jlv.props.JlvProperties;
 
 public class ViewSourceProvider extends AbstractSourceProvider {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private PreferenceManager preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+	private JlvProperties store = JlvActivator.getDefault().getStore();
 
 //	private boolean isServerStarted = preferenceManager.isServerAutoStart();
 
@@ -27,7 +28,7 @@ public class ViewSourceProvider extends AbstractSourceProvider {
 	@Override
 	public void dispose() {
 //		setServerStarted(preferenceManager.isServerAutoStart());
-//		logger.debug("View source provider has been disposed.");
+		logger.debug("View source provider disposed.");
 	}
 
 	@Override

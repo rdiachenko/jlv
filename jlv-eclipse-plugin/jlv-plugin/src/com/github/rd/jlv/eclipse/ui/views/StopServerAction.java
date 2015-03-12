@@ -25,8 +25,8 @@ public class StopServerAction extends AbstractHandler {
 		IViewPart part = window.getActivePage().findView(StringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
-			LogListView view = (LogListView) part;
-//			view.getController().stopServer();
+			LoglistView view = (LoglistView) part;
+			view.stopServer();
 			viewSourceProvider.setServerStarted(false);
 		}
 		return null;

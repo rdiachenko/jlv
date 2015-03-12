@@ -29,7 +29,6 @@ public abstract class JlvPreferencePage extends PreferencePage implements IWorkb
 			for (FieldEditor field : fieldEditors) {
 				field.save();
 			}
-			store.persist();
 		} finally {
 			state = super.performOk();
 		}

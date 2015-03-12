@@ -25,8 +25,8 @@ public class StartServerAction extends AbstractHandler {
 		IViewPart part = window.getActivePage().findView(StringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
-			LogListView view = (LogListView) part;
-//			view.getController().startServer();
+			LoglistView view = (LoglistView) part;
+			view.startServer();
 			viewSourceProvider.setServerStarted(true);
 		}
 		return null;

@@ -16,7 +16,7 @@ public class ClearViewAction extends AbstractHandler {
 				.findView(StringConstants.JLV_LOG_LIST_VIEW_ID);
 
 		if (part != null) {
-			LogListView view = (LogListView) part;
+			LoglistView view = (LoglistView) part;
 			view.clear();
 		}
 		return null;

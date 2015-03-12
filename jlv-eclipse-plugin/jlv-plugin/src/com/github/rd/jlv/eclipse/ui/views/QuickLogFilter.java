@@ -3,6 +3,7 @@ package com.github.rd.jlv.eclipse.ui.views;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
+import com.github.rd.jlv.Log;
 import com.google.common.base.Strings;
 
 public class QuickLogFilter extends ViewerFilter {
@@ -17,20 +18,21 @@ public class QuickLogFilter extends ViewerFilter {
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		boolean isPastFilter = false;
-
-		if (Strings.isNullOrEmpty(searchText)) {
-			isPastFilter = true;
-		} else {
-//			Log log = (Log) element;
-//
-//			for (String logFieldName : LogConstants.LOG_FIELD_NAMES) {
-//				if (LogUtils.getValue(log, logFieldName).matches(searchText)) {
-//					isPastFilter = true;
-//					break;
-//				}
-//			}
-		}
-		return isPastFilter;
+		Log log = (Log) element;
+		return Strings.isNullOrEmpty(searchText)
+				|| log.getCategoryName().matches(searchText)
+				|| log.getClassName().matches(searchText)
+				|| log.getDate().matches(searchText)
+				|| log.getFileName().matches(searchText)
+				|| log.getLevel().matches(searchText)
+				|| log.getLineNumber().matches(searchText)
+				|| log.getLocationInfo().matches(searchText)
+				|| log.getMdc().matches(searchText)
+				|| log.getMessage().matches(searchText)
+				|| log.getMethodName().matches(searchText)
+				|| log.getMs().matches(searchText)
+				|| log.getNdc().matches(searchText)
+				|| log.getThreadName().matches(searchText)
+				|| log.getThrowable().matches(searchText);
 	}
 }

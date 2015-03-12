@@ -23,7 +23,7 @@
       </category>
       <view
             category="com.github.rd.jlv.ui.views.category"
-            class="com.github.rd.jlv.eclipse.ui.views.LogListView"
+            class="com.github.rd.jlv.eclipse.ui.views.LoglistView"
             icon="icons/jlvLogListViewIcon.png"
             id="com.github.rd.jlv.ui.views.loglistview"
             name="JLV log list"

@@ -1,23 +1,25 @@
 package com.github.rd.jlv.eclipse.ui.views;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 
+import com.github.rd.jlv.Log;
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
+import com.github.rd.jlv.props.JlvProperties;
 
 public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 
 	private String fieldName;
 
-	private PreferenceManager preferenceManager;
-
+	private JlvProperties store;
 	private ResourceManager resourceManager;
 
 	public DefaultColumnLabelProvider(String fieldName) {
-		super();
 		this.fieldName = fieldName;
-		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+		store = JlvActivator.getDefault().getStore();
 		resourceManager = JlvActivator.getDefault().getResourceManager();
 	}
 
@@ -26,12 +28,12 @@ public class DefaultColumnLabelProvider extends ColumnLabelProvider {
 //		Log log = (Log) element;
 //		return LogUtils.getValue(log, fieldName);
 //	}
-//
-//	@Override
-//	public Image getImage(Object element) {
-//		return null;
-//	}
-//
+
+	@Override
+	public Image getImage(Object element) {
+		return null;
+	}
+
 //	@Override
 //	public Color getForeground(Object element) {
 //		Rgb rgb = preferenceManager.getLogLevelRgb(((Log) element).getLevel());

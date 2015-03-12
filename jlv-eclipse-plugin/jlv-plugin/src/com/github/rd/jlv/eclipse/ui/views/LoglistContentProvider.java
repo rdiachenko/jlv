@@ -3,7 +3,10 @@ package com.github.rd.jlv.eclipse.ui.views;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-public class LogListContentProvider implements IStructuredContentProvider {
+import com.github.rd.jlv.CircularBuffer;
+import com.github.rd.jlv.Log;
+
+public class LoglistContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
@@ -16,14 +19,9 @@ public class LogListContentProvider implements IStructuredContentProvider {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object[] getElements(Object inputElement) {
-		// TODO Auto-generated method stub
-		return null;
+		CircularBuffer<Log> logs = (CircularBuffer<Log>) inputElement;
+		return logs.toArray();
 	}
-
-//	@Override
-//	public Object[] getElements(Object inputElement) {
-//		LogCollection logs = (LogCollection) inputElement;
-//		return logs.toArray();
-//	}
 }

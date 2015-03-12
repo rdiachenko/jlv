@@ -9,9 +9,9 @@ import org.eclipse.swt.widgets.Table;
 
 import com.github.rd.jlv.LogConstants;
 
-public class LogTableViewer extends TableViewer {
+public class JlvTableViewer extends TableViewer {
 
-	public LogTableViewer(Composite parent, int style) {
+	public JlvTableViewer(Composite parent, int style) {
 		super(parent, style);
 		Table table = getTable();
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -20,7 +20,7 @@ public class LogTableViewer extends TableViewer {
 		table.setLinesVisible(true);
 		createColumns();
 		setUseHashlookup(true);
-		setContentProvider(new LogListContentProvider());
+		setContentProvider(new LoglistContentProvider());
 	}
 
 	private void createColumns() {

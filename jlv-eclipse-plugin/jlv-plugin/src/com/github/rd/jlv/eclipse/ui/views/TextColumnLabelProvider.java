@@ -4,7 +4,6 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 
 import com.github.rd.jlv.eclipse.JlvActivator;
 import com.github.rd.jlv.eclipse.ResourceManager;
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
 
 public class TextColumnLabelProvider extends ColumnLabelProvider {
 
@@ -12,14 +11,14 @@ public class TextColumnLabelProvider extends ColumnLabelProvider {
 
 	private String fieldName;
 
-	private PreferenceManager preferenceManager;
+//	private PreferenceManager preferenceManager;
 
 	private ResourceManager resourceManager;
 
 	public TextColumnLabelProvider(String fieldName) {
 		super();
 		this.fieldName = fieldName;
-		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
+//		preferenceManager = JlvActivator.getDefault().getPreferenceManager();
 		resourceManager = JlvActivator.getDefault().getResourceManager();
 	}
 

@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.github.rd.jlv.eclipse.ui.preferences.PreferenceManager;
 import com.github.rd.jlv.props.JlvProperties;
+import com.google.common.base.Strings;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -26,27 +26,23 @@ public class JlvActivator extends AbstractUIPlugin {
 	private static JlvActivator plugin;
 
 	private JlvProperties store;
-
-	private PreferenceManager preferenceManager;
 	private ResourceManager resourceManager;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		store = new JlvProperties(new File(getStateLocation().toFile().getAbsolutePath() + File.separator
-				+ "jlv.properties"));
-		resourceManager = new ResourceManager();
-//		preferenceManager = new PreferenceManager(getPreferenceStore());
 		configureLogging();
+		configureStore();
+		resourceManager = new ResourceManager();
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
-			plugin = null;
 			store.persist();
 			resourceManager.dispose();
+			plugin = null;
 		} finally {
 			super.stop(context);
 		}
@@ -60,25 +56,28 @@ public class JlvActivator extends AbstractUIPlugin {
 		return store;
 	}
 
-	public PreferenceManager getPreferenceManager() {
-		return preferenceManager;
-	}
-
 	public ResourceManager getResourceManager() {
 		return resourceManager;
+	}
+	
+	private void configureStore() {
+		String pluginStateLocation = getStateLocation().toFile().getAbsolutePath();
+		
+		if (Strings.isNullOrEmpty(pluginStateLocation)) {
+			pluginStateLocation = System.getProperty("java.io.tmpdir", ".");
+		}
+		File jlvPropertiesFile = new File(pluginStateLocation + File.separator + "jlv.properties");
+		store = new JlvProperties(jlvPropertiesFile);
 	}
 
 	private void configureLogging() throws IOException {
 		Properties props = new Properties();
-
 		URL url = getDefault().getBundle().getEntry(LOG4J_PROPERTIES_PATH);
 
 		try (FileInputStream configFile = new FileInputStream(FileLocator.toFileURL(url).getFile())) {
 			props.load(configFile);
 		}
-
-		String logFileLocation = plugin.getStateLocation().toString();
-		props.put("log.dir", logFileLocation);
+		props.put("log.dir", getStateLocation().toFile().getAbsolutePath());
 		PropertyConfigurator.configure(props);
 	}
 }
