@@ -3,7 +3,6 @@ bin
 gh-pages
 repo
 *.settings
-*.classpath
 *~
 .checkstyle
 *.zip
