@@ -20,8 +20,6 @@ import com.rdiachenko.jlv.LogUtils;
 
 public class Log4j1ConverterTest {
     
-    private static final Converter<LoggingEvent> CONVERTER = ConverterFactory.getConverter(LoggingEvent.class);
-    
     private static final long NOW = System.currentTimeMillis();
     private static final String LEVEL = "INFO";
     private static final String THREAD_NAME = "main";
@@ -67,7 +65,7 @@ public class Log4j1ConverterTest {
         when(mockLoggingEvent.getNDC()).thenReturn(NDC);
         when(mockLoggingEvent.getProperties()).thenReturn(MDC_MAP);
         
-        Log log = CONVERTER.convert(mockLoggingEvent);
+        Log log = LogConverterType.LOG4J_1.convert(mockLoggingEvent);
         Assert.assertEquals(LogUtils.formatDate(NOW), log.getDate());
         Assert.assertEquals(LEVEL, log.getLevel());
         Assert.assertEquals(THREAD_NAME, log.getThreadName());

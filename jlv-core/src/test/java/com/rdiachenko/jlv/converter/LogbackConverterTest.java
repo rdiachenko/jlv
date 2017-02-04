@@ -14,15 +14,12 @@ import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.LogUtils;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 
 public class LogbackConverterTest {
-    
-    private static final Converter<ILoggingEvent> CONVERTER = ConverterFactory.getConverter(ILoggingEvent.class);
     
     private static final long NOW = System.currentTimeMillis();
     private static final String LEVEL = "INFO";
@@ -74,7 +71,7 @@ public class LogbackConverterTest {
         when(mockLoggingEvent.getThrowableProxy()).thenReturn(mockThrowableProxy);
         when(mockLoggingEvent.getMDCPropertyMap()).thenReturn(MDC_MAP);
         
-        Log log = CONVERTER.convert(LoggingEventVO.build(mockLoggingEvent));
+        Log log = LogConverterType.LOGBACK.convert(LoggingEventVO.build(mockLoggingEvent));
         Assert.assertEquals(LogUtils.formatDate(NOW), log.getDate());
         Assert.assertEquals(LEVEL, log.getLevel());
         Assert.assertEquals(THREAD_NAME, log.getThreadName());

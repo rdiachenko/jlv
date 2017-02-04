@@ -2,7 +2,7 @@ package com.rdiachenko.jlv.converter;
 
 import com.rdiachenko.jlv.Log;
 
-public interface Converter<T> {
+public interface Converter {
     
-    public Log convert(T le);
+    Log convert(Object obj);
 }

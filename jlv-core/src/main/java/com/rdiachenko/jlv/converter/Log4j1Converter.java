@@ -9,10 +9,11 @@ import org.apache.log4j.spi.ThrowableInformation;
 import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.LogUtils;
 
-public class Log4j1Converter implements Converter<LoggingEvent> {
-    
+public class Log4j1Converter implements Converter {
+
     @Override
-    public Log convert(LoggingEvent le) {
+    public Log convert(Object obj) {
+        LoggingEvent le = (LoggingEvent) obj;
         Log.Builder builder = Log.newBuilder()
                 .date(LogUtils.formatDate(le.getTimeStamp()))
                 .level(le.getLevel().toString())
@@ -22,9 +23,9 @@ public class Log4j1Converter implements Converter<LoggingEvent> {
                 .throwable(getThrowable(le))
                 .ndc(LogUtils.nullToEmpty(le.getNDC()))
                 .mdc(getMdc(le));
-        
+
         LocationInfo localInfo = le.getLocationInformation();
-        
+
         if (localInfo != null) {
             builder.className(LogUtils.nullToEmpty(localInfo.getClassName()))
                     .methodName(LogUtils.nullToEmpty(localInfo.getMethodName()))
@@ -33,11 +34,11 @@ public class Log4j1Converter implements Converter<LoggingEvent> {
         }
         return builder.build();
     }
-    
+
     private String getThrowable(LoggingEvent le) {
         ThrowableInformation throwableInfo = le.getThrowableInformation();
         StringBuilder throwable = new StringBuilder();
-        
+
         if (throwableInfo != null && throwableInfo.getThrowableStrRep() != null) {
             for (String exception : throwableInfo.getThrowableStrRep()) {
                 throwable.append(exception).append(System.lineSeparator());
@@ -45,11 +46,11 @@ public class Log4j1Converter implements Converter<LoggingEvent> {
         }
         return throwable.toString().trim();
     }
-    
+
     private String getMdc(LoggingEvent le) {
         Map<?, ?> mdcMap = le.getProperties();
         String mdc = "";
-        
+
         if (mdcMap != null && !mdcMap.isEmpty()) {
             mdc = mdcMap.toString();
         }
