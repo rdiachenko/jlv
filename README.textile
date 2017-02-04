@@ -1,4 +1,4 @@
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=185332" class="drag" title="Drag to your running Eclipse workspace to install JLV"><img src="http://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install JLV" /></a>
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=185332" class="drag" title="Drag to your running Eclipse workspace to install JLV"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install JLV." /></a>
 "!https://api.travis-ci.org/rdiachenko/jlv.png!":http://travis-ci.org/rdiachenko/jlv
 
 h3. Information
