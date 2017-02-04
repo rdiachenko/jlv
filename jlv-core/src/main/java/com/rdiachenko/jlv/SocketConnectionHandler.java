@@ -5,58 +5,45 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+import com.google.common.eventbus.EventBus;
 import com.rdiachenko.jlv.converter.LogConverterType;
 
 public class SocketConnectionHandler implements Runnable {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final Socket socket;
 
-    private final Set<LogEventListener> logEventListeners;
-    
-    public SocketConnectionHandler(Socket socket) {
-        this(socket, new HashSet<>());
-    }
+    private final EventBus eventBus;
 
-    public SocketConnectionHandler(Socket socket, Set<LogEventListener> logEventListeners) {
-        if (socket == null) {
-            throw new NullPointerException("Socket is null");
-        }
+    public SocketConnectionHandler(Socket socket, EventBus eventBus) {
+        Preconditions.checkNotNull(socket, "Socket is null");
+        Preconditions.checkNotNull(eventBus, "Event bus is null");
         this.socket = socket;
-
-        if (logEventListeners == null) {
-            throw new NullPointerException("Log event listeners collection is null");
-        }
-        this.logEventListeners = new HashSet<>(logEventListeners);
+        this.eventBus = eventBus;
     }
-    
+
     @Override
     public void run() {
         try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
                 ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
-            
+
             LogConverterType converterType = null;
-            
+
             while (!socket.isClosed()) {
                 Object obj = objectStream.readObject();
-                
+
                 if (converterType == null) {
                     converterType = LogConverterType.valueOf(obj);
                     logger.info("Log converter type detected: {}", converterType.name());
                 }
-                
                 Log log = converterType.convert(obj);
-                
-                for (LogEventListener listener : logEventListeners) {
-                    listener.handleLog(log);
-                }
+                eventBus.post(log);
             }
         } catch (EOFException e) {
             // When client closes connection, the stream will run out of data,
@@ -68,7 +55,7 @@ public class SocketConnectionHandler implements Runnable {
             stop();
         }
     }
-    
+
     private void stop() {
         logger.info("Stopping connection handler");
         try {

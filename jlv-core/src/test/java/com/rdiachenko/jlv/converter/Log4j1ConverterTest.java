@@ -19,7 +19,7 @@ import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.LogUtils;
 
 public class Log4j1ConverterTest {
-    
+
     private static final long NOW = System.currentTimeMillis();
     private static final String LEVEL = "INFO";
     private static final String THREAD_NAME = "main";
@@ -29,20 +29,20 @@ public class Log4j1ConverterTest {
     private static final String METHOD_NAME = "test";
     private static final String LINE_NUMBER = "7";
     private static final String FILE_NAME = Log4j1ConverterTest.class.getSimpleName() + ".java";
-    
+
     private static final String[] THROWABLE_INFO = {
             "java.lang.IllegalStateException: test exception",
             "\tat com.rdiachenko.jlv.Main.main(Main.java:12)"
     };
     private static final String THROWABLE = THROWABLE_INFO[0] + System.lineSeparator() + THROWABLE_INFO[1];
-    
+
     private static final String NDC = "ndc-value";
-    
+
     private static final Map<String, String> MDC_MAP = new HashMap<>();
     static {
         MDC_MAP.put("mdc-key", "mdc-value");
     }
-    
+
     @Test
     public void testConvert() throws NoSuchFieldException, IllegalAccessException, SecurityException {
         LocationInfo mockLocationInfo = mock(LocationInfo.class);
@@ -50,10 +50,10 @@ public class Log4j1ConverterTest {
         when(mockLocationInfo.getMethodName()).thenReturn(METHOD_NAME);
         when(mockLocationInfo.getLineNumber()).thenReturn(LINE_NUMBER);
         when(mockLocationInfo.getFileName()).thenReturn(FILE_NAME);
-        
+
         ThrowableInformation mockThrowableInfo = mock(ThrowableInformation.class);
         when(mockThrowableInfo.getThrowableStrRep()).thenReturn(THROWABLE_INFO);
-        
+
         LoggingEvent mockLoggingEvent = mock(LoggingEvent.class);
         setFinalField(mockLoggingEvent, LoggingEvent.class.getDeclaredField("timeStamp"), NOW);
         when(mockLoggingEvent.getLevel()).thenReturn(Level.toLevel(LEVEL));
@@ -64,7 +64,7 @@ public class Log4j1ConverterTest {
         when(mockLoggingEvent.getThrowableInformation()).thenReturn(mockThrowableInfo);
         when(mockLoggingEvent.getNDC()).thenReturn(NDC);
         when(mockLoggingEvent.getProperties()).thenReturn(MDC_MAP);
-        
+
         Log log = LogConverterType.LOG4J_1.convert(mockLoggingEvent);
         Assert.assertEquals(LogUtils.formatDate(NOW), log.getDate());
         Assert.assertEquals(LEVEL, log.getLevel());
@@ -80,7 +80,7 @@ public class Log4j1ConverterTest {
         Assert.assertEquals(NDC, log.getNdc());
         Assert.assertEquals(MDC_MAP.toString(), log.getMdc());
     }
-    
+
     private static void setFinalField(Object obj, Field field, Object newValue)
             throws NoSuchFieldException, IllegalAccessException {
         field.setAccessible(true);

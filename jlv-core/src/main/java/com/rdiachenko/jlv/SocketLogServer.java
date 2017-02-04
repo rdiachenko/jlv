@@ -3,8 +3,6 @@ package com.rdiachenko.jlv;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -12,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+import com.google.common.eventbus.EventBus;
 
 public class SocketLogServer {
 
@@ -25,7 +26,7 @@ public class SocketLogServer {
 
     private final ServerSocket serverSocket;
 
-    private final Set<LogEventListener> logEventListeners = new HashSet<>();
+    private final EventBus eventBus;
 
     public SocketLogServer(int port) {
         try {
@@ -35,18 +36,19 @@ public class SocketLogServer {
         }
         mainExecutor = Executors.newSingleThreadExecutor();
         workerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        eventBus = new EventBus();
     }
 
-    public void addLogEventListener(LogEventListener listener) {
-        if (logEventListeners.add(listener)) {
-            logger.info("Log event listener {} added", listener);
-        }
+    public void addLogEventListener(Object listener) {
+        Preconditions.checkNotNull(listener, "Log event listener is null");
+        eventBus.register(listener);
+        logger.info("Log event listener {} added", listener);
     }
 
-    public void removeLogEventListener(LogEventListener listener) {
-        if (logEventListeners.remove(listener)) {
-            logger.info("Log event listener {} removed", listener);
-        }
+    public void removeLogEventListener(Object listener) {
+        Preconditions.checkNotNull(listener, "Log event listener is null");
+        eventBus.unregister(listener);
+        logger.info("Log event listener {} removed", listener);
     }
 
     public void start() {
@@ -60,8 +62,7 @@ public class SocketLogServer {
                         Socket socket = serverSocket.accept();
                         socket.setSoTimeout(SOCKET_TIMEOUT_MS);
                         logger.info("Connection has been accepted from {}", socket.getInetAddress());
-                        SocketConnectionHandler connectionHandler = new SocketConnectionHandler(socket,
-                                logEventListeners);
+                        SocketConnectionHandler connectionHandler = new SocketConnectionHandler(socket, eventBus);
                         executeConnectionHandler(connectionHandler);
                     } catch (Exception e) {
                         logger.warn("Failed to accept a new connection: {}", e.getLocalizedMessage());

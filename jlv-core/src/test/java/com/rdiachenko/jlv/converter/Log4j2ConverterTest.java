@@ -20,7 +20,7 @@ import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.LogUtils;
 
 public class Log4j2ConverterTest {
-    
+
     private static final long NOW = System.currentTimeMillis();
     private static final String LEVEL = "INFO";
     private static final String THREAD_NAME = "main";
@@ -31,28 +31,28 @@ public class Log4j2ConverterTest {
     private static final String LINE_NUMBER = "7";
     private static final String FILE_NAME = Log4j2ConverterTest.class.getSimpleName() + ".java";
     private static final String MARKER = "TEST";
-    
+
     private static final String THROWABLE = "java.lang.IllegalStateException: test exception"
             + System.lineSeparator() + "\tat com.rdiachenko.jlv.Main.main(Main.java:12)";
-    
+
     private static final String NDC = "ndc-value";
-    
+
     private static final Map<String, String> MDC_MAP = new HashMap<>();
     static {
         MDC_MAP.put("mdc-key", "mdc-value");
     }
-    
+
     @Test
     public void testConverter() {
         StringMap mockMdc = mock(StringMap.class);
         when(mockMdc.toMap()).thenReturn(MDC_MAP);
-        
+
         ContextStack mockNdc = mock(ContextStack.class);
         when(mockNdc.toString()).thenReturn(NDC);
-        
+
         ThrowableProxy mockThrowableProxy = mock(ThrowableProxy.class);
         when(mockThrowableProxy.getExtendedStackTraceAsString()).thenReturn(THROWABLE);
-        
+
         LogEvent logEvent = Log4jLogEvent.newBuilder()
                 .setTimeMillis(NOW)
                 .setLevel(org.apache.logging.log4j.Level.toLevel(LEVEL))
@@ -65,7 +65,7 @@ public class Log4j2ConverterTest {
                 .setContextStack(mockNdc)
                 .setContextData(mockMdc)
                 .build();
-        
+
         Log log = LogConverterType.LOG4J_2.convert(logEvent);
         Assert.assertEquals(LogUtils.formatDate(NOW), log.getDate());
         Assert.assertEquals(LEVEL, log.getLevel());
