@@ -2,6 +2,7 @@ target
 bin
 gh-pages
 repo
+logs
 *.settings
 *~
 .checkstyle

@@ -49,7 +49,7 @@ public class SocketConnectionHandler implements Runnable {
             // When client closes connection, the stream will run out of data,
             // and the ObjectInputStream.readObject method will throw the exception
             logger.warn("Reached EOF while reading from socket");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             logger.error("Failed to handle input stream", e);
         } finally {
             stop();

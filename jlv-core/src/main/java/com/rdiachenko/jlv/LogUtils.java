@@ -20,8 +20,12 @@ public final class LogUtils {
     }
 
     public static String formatDate(long timestamp) {
-        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), TimeZone
+        return formatDate(timestamp, DATE_FORMAT);
+    }
+    
+    public static String formatDate(long timestamp, DateTimeFormatter format) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone
                 .getDefault().toZoneId());
-        return dateTime.format(DATE_FORMAT);
+        return dateTime.format(format);
     }
 }
