@@ -1,40 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.rd.jlv</groupId>
-	<artifactId>com.github.rd.jlv.parent</artifactId>
+	<groupId>com.rdiachenko.eclipse</groupId>
+	<artifactId>com.rdiachenko.jlv.parent</artifactId>
 	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Java logging viewer Eclipse plugin (parent)</name>
-
-	<modules>
-		<module>jlv-plugin</module>
-		<module>jlv-plugin-tests</module>
-		<module>jlv-feature</module>
-		<module>jlv-update-site</module>
-	</modules>
-
 	<properties>
-		<tycho-version>0.19.0</tycho-version>
-		<jlv-core.version>1.0.0-SNAPSHOT</jlv-core.version>
-		<kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
+		<tycho.version>0.26.0</tycho.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<neon.repo.url>http://download.eclipse.org/releases/neon</neon.repo.url>
 	</properties>
 
 	<repositories>
 		<repository>
-			<id>kepler</id>
+			<id>neon</id>
 			<layout>p2</layout>
-			<url>${kepler-repo.url}</url>
+			<url>${neon.repo.url}</url>
 		</repository>
 	</repositories>
+
+	<modules>
+		<module>com.rdiachenko.jlv.plugin</module>
+		<module>com.rdiachenko.jlv.feature</module>
+		<module>com.rdiachenko.jlv.update</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.github.rd.jlv</groupId>
+				<groupId>com.rdiachenko</groupId>
 				<artifactId>jlv-core</artifactId>
-				<version>${jlv-core.version}</version>
+				<version>1.0.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -44,15 +41,15 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 				<extensions>true</extensions>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
+				<version>${tycho.version}</version>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

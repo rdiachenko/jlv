@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.rdiachenko.jlv.feature_1.4.0.qualifier.jar" id="com.rdiachenko.jlv.feature" version="1.4.0.qualifier">
+      <category name="com.rdiachenko.jlv"/>
+   </feature>
+   <category-def name="com.rdiachenko.jlv" label="Java logging viewer"/>
+</site>
