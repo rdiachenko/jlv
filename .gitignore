@@ -14,3 +14,5 @@ logs
 *.class
 *.db
 *.swp
+pom.xml.releaseBackup
+release.properties
