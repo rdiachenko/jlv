@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-	<category-def name="jlv" label="JLV Eclipse plugin" />
-	
-	<feature url="features/com.github.rd.jlv.feature_1.0.0.qualifier.jar" id="com.github.rd.jlv.feature">
-		<category name="jlv" />
-	</feature>
-</site>
