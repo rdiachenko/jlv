@@ -23,24 +23,13 @@
 				<version>3.0.0</version>
 				<executions>
 					<execution>
-						<id>unpack</id>
-						<phase>compile</phase>
+						<id>copy-dependencies</id>
+						<phase>initialize</phase>
 						<goals>
-							<goal>unpack</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.rdiachenko</groupId>
-									<artifactId>jlv-core</artifactId>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${basedir}/target/classes</outputDirectory>
-									<includes>
-										com/rdiachenko/jlv/**/*.class
-									</includes>
-								</artifactItem>
-							</artifactItems>
+							<includeScope>runtime</includeScope>
 						</configuration>
 					</execution>
 				</executions>
