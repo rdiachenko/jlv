@@ -11,4 +11,11 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- target/dependency/jlv-core-1.0.1.jar
+ target/dependency/jlv-core-1.0.2.jar,
+ target/dependency/guava-21.0.jar,
+ target/dependency/log4j-1.2.17.jar,
+ target/dependency/log4j-api-2.7.jar,
+ target/dependency/log4j-core-2.7.jar,
+ target/dependency/logback-classic-1.1.8.jar,
+ target/dependency/logback-core-1.1.8.jar,
+ target/dependency/slf4j-api-1.7.21.jar
