@@ -21,21 +21,15 @@ public class SocketLogServer {
     private static final int SOCKET_TIMEOUT_MS = 10000;
     private static final int EXECUTOR_TIMEOUT_MS = 30000;
 
-    private final ExecutorService mainExecutor;
-    private final ExecutorService workerExecutor;
-
-    private final ServerSocket serverSocket;
-
+    private final int port;
     private final EventBus eventBus;
 
+    private ServerSocket serverSocket;
+    private ExecutorService mainExecutor;
+    private ExecutorService workerExecutor;
+
     public SocketLogServer(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not open socket on port: " + port);
-        }
-        mainExecutor = Executors.newSingleThreadExecutor();
-        workerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        this.port = port;
         eventBus = new EventBus();
     }
 
@@ -53,6 +47,13 @@ public class SocketLogServer {
 
     public void start() {
         logger.info("Starting socket server");
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not open socket on port: " + port);
+        }
+        mainExecutor = Executors.newSingleThreadExecutor();
+        workerExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         mainExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -76,7 +77,9 @@ public class SocketLogServer {
     public void stop() {
         logger.info("Stopping socket server");
         try {
-            serverSocket.close();
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
             logger.info("Socket server stopped");
         } catch (IOException e) {
             logger.error("Failed to stop socket server", e);
@@ -87,16 +90,18 @@ public class SocketLogServer {
     }
 
     private void shutdownExecutor(ExecutorService executor) {
-        logger.info("Shutting down executor {}", executor);
-        try {
-            executor.shutdown();
+        if (executor != null && !executor.isShutdown()) {
+            logger.info("Shutting down executor {}", executor);
+            try {
+                executor.shutdown();
 
-            if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
-                executor.shutdownNow();
+                if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                    executor.shutdownNow();
+                }
+                logger.info("Executor shut down: {}", executor.isTerminated());
+            } catch (Exception e) {
+                logger.error("Failed to shutdown executor {}", executor, e);
             }
-            logger.info("Executor shut down: {}", executor.isTerminated());
-        } catch (Exception e) {
-            logger.error("Failed to shutdown executor {}", executor, e);
         }
     }
 
