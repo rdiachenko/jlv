@@ -16,72 +16,78 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.plugin.JlvConstants;
 import com.rdiachenko.jlv.plugin.LogField;
 
 public class LogListView extends ViewPart {
-    
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private QuickLogFilter quickFilter;
     private LogListViewController controller;
     private IContextActivation context;
     private TableViewer viewer;
     private Text quickSearchField;
-    
+
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
         quickFilter = new QuickLogFilter();
         controller = new LogListViewController(this);
     }
-
+    
     @Override
     public void createPartControl(Composite parent) {
         IContextService contextService = getSite().getService(IContextService.class);
-
+        
         if (contextService != null) {
             context = contextService.activateContext(JlvConstants.LOGLIST_CONTEXT_ID);
         }
-        
+
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
         layout.marginWidth = 0;
         layout.marginHeight = 0;
         parent.setLayout(layout);
-        
+
         viewer = createViewer(parent);
         quickSearchField = createQuickSearchField(parent);
+        controller.startViewRefresher();
     }
-    
+
     @Override
     public void setFocus() {
         viewer.getControl().setFocus();
     }
-    
+
     @Override
     public void dispose() {
         try {
             IContextService contextService = getSite().getService(IContextService.class);
-
+            
             if (contextService != null) {
                 contextService.deactivateContext(context);
             }
+            controller.dispose();
         } finally {
             super.dispose();
         }
     }
-    
+
     public LogListViewController getController() {
         return controller;
     }
-
+    
     public void setSearchFieldVisible(boolean visible) {
         GridData gridData = (GridData) quickSearchField.getLayoutData();
         gridData.exclude = !visible;
         quickSearchField.setVisible(visible);
         quickSearchField.getParent().layout();
-
+        
         if (visible) {
             quickSearchField.selectAll();
             quickSearchField.setFocus();
@@ -89,22 +95,22 @@ public class LogListView extends ViewPart {
             setFocus();
         }
     }
-
+    
     public boolean isSearchFieldVisible() {
         return quickSearchField.isVisible();
     }
-
+    
     public void clear() {
         controller.getInput().clear();
         viewer.getTable().removeAll();
     }
-
+    
     public void refresh() {
         if (!viewer.getTable().isDisposed()) {
             viewer.refresh();
         }
     }
-
+    
     private TableViewer createViewer(Composite parent) {
         int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
         TableViewer viewer = new TableViewer(parent, style);
@@ -112,10 +118,11 @@ public class LogListView extends ViewPart {
         viewer.setContentProvider(new LogListContentProvider());
         viewer.setInput(controller.getInput());
         viewer.addFilter(quickFilter);
-        
+
         for (LogField field : LogField.values()) {
             TableViewerColumn columnViewer = new TableViewerColumn(viewer, SWT.NONE);
             columnViewer.getColumn().setText(field.getName());
+            columnViewer.getColumn().setWidth(100);
             columnViewer.getColumn().setResizable(true);
             columnViewer.getColumn().setMoveable(false);
             columnViewer.setLabelProvider(new ColumnLabelProvider() {
@@ -126,7 +133,7 @@ public class LogListView extends ViewPart {
                 }
             });
         }
-        
+
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         Table table = viewer.getTable();
         table.setLayoutData(gridData);
@@ -134,7 +141,7 @@ public class LogListView extends ViewPart {
         table.setLinesVisible(true);
         return viewer;
     }
-
+    
     private Text createQuickSearchField(Composite parent) {
         Text searchField = new Text(parent, SWT.BORDER);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
