@@ -1,4 +1,4 @@
-package com.rdiachenko.jlv.plugin.view;
+package com.rdiachenko.jlv.plugin;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;

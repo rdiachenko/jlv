@@ -1,4 +1,4 @@
-package com.rdiachenko.jlv.plugin.view;
+package com.rdiachenko.jlv.plugin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,15 +1,20 @@
-package com.rdiachenko.jlv.plugin.view;
+package com.rdiachenko.jlv.plugin.actions;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import com.rdiachenko.jlv.plugin.view.LogListView;
+
 public class ScrollToBottomAction extends AbstractHandler {
-    
+
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        // TODO Auto-generated method stub
+        LogListView view = ActionUtils.getLogListView(event);
+
+        if (view != null) {
+            view.toggleScrollToBottom();
+        }
         return null;
     }
-    
 }
