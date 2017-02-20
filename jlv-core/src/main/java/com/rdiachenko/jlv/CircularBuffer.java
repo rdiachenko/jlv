@@ -29,13 +29,13 @@ import java.util.NoSuchElementException;
  * @author <a href="mailto:rd.ryly@gmail.com">Ruslan Diachenko</a>
  */
 public class CircularBuffer<T> implements Iterable<T> {
-    
+
     private T[] buffer;
-    
+
     private int head;
-    
+
     private int tail;
-    
+
     @SuppressWarnings("unchecked")
     public CircularBuffer(int capacity) {
         if (capacity <= 0) {
@@ -43,7 +43,7 @@ public class CircularBuffer<T> implements Iterable<T> {
         }
         buffer = (T[]) new Object[capacity + 1];
     }
-    
+
     public synchronized int size() {
         if (head < tail) {
             return tail - head;
@@ -53,41 +53,41 @@ public class CircularBuffer<T> implements Iterable<T> {
             return 0;
         }
     }
-    
+
     public synchronized void add(T item) {
         if (item == null) {
             throw new IllegalArgumentException("item is null");
         }
         buffer[tail++] = item;
         tail %= buffer.length;
-        
+
         if (tail == head) {
             head = (head + 1) % buffer.length;
         }
     }
-    
+
     public synchronized T get(int index) {
         if (index < 0 || index >= size()) {
             throw new IllegalArgumentException("Index is out of bounds: " + index);
         }
         return buffer[(head + index) % buffer.length];
     }
-    
+
     public synchronized void clear() {
         Arrays.fill(buffer, null);
         head = 0;
         tail = 0;
     }
-    
+
     @SuppressWarnings("unchecked")
     public synchronized T[] toArray() {
         T[] array;
-        
+
         if (head == tail) {
             array = (T[]) new Object[] {};
         } else {
             array = (T[]) new Object[size()];
-            
+
             if (head < tail) {
                 System.arraycopy(buffer, head, array, 0, tail);
             } else {
@@ -97,21 +97,21 @@ public class CircularBuffer<T> implements Iterable<T> {
         }
         return array;
     }
-    
+
     @Override
     public Iterator<T> iterator() {
         return new CircularBufferIterator();
     }
-    
+
     private class CircularBufferIterator implements Iterator<T> {
-        
+
         private int index;
-        
+
         @Override
         public boolean hasNext() {
             return (head + index) % buffer.length != tail;
         }
-        
+
         @Override
         public T next() {
             if (!hasNext()) {
@@ -121,7 +121,7 @@ public class CircularBuffer<T> implements Iterable<T> {
             ++index;
             return item;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("'remove' operation is not supported");

@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -45,14 +46,18 @@ public class SocketLogServerTest {
     
     @Test
     public void testOneClient() throws IOException, InterruptedException {
+        int eventCount = 3;
+        CountDownLatch latch = new CountDownLatch(eventCount);
+        logCollector.setLatch(latch);
+        
         try (Socket socket = new Socket(HOST, PORT);
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
             out.writeObject(TestUtils.createSimpleLog4j1Log(LOG4J_1_MESSAGE));
             out.writeObject(TestUtils.createSimpleLog4j2Log(LOG4J_2_MESSAGE));
             out.writeObject(TestUtils.createSimpleLogbackLog(LOGBACK_MESSAGE));
         }
-        waitForBufferSize(buffer, 3);
-        Assert.assertTrue(buffer.size() == 3);
+        latch.await(WAIT_MS, TimeUnit.MILLISECONDS);
+        Assert.assertTrue(buffer.size() == eventCount);
         Assert.assertEquals(LOG4J_1_MESSAGE, buffer.get(0).getMessage());
         Assert.assertEquals(LOG4J_2_MESSAGE, buffer.get(1).getMessage());
         Assert.assertEquals(LOGBACK_MESSAGE, buffer.get(2).getMessage());
@@ -60,6 +65,10 @@ public class SocketLogServerTest {
     
     @Test
     public void testMultipleClients() throws IOException, InterruptedException {
+        int eventCount = 7;
+        CountDownLatch latch = new CountDownLatch(eventCount);
+        logCollector.setLatch(latch);
+        
         try (Socket socket1 = new Socket(HOST, PORT);
                 ObjectOutputStream out1 = new ObjectOutputStream(socket1.getOutputStream());
                 Socket socket2 = new Socket(HOST, PORT);
@@ -74,14 +83,14 @@ public class SocketLogServerTest {
             out1.writeObject(TestUtils.createSimpleLogbackLog(LOGBACK_MESSAGE));
             out3.writeObject(TestUtils.createSimpleLog4j2Log(LOG4J_2_MESSAGE));
         }
-        waitForBufferSize(buffer, 7);
+        latch.await(WAIT_MS, TimeUnit.MILLISECONDS);
         Collections.sort(buffer, new Comparator<Log>() {
             @Override
             public int compare(Log log1, Log log2) {
                 return log1.getMessage().compareTo(log2.getMessage());
             }
         });
-        Assert.assertTrue(buffer.size() == 7);
+        Assert.assertTrue(buffer.size() == eventCount);
         Assert.assertEquals(LOG4J_1_MESSAGE, buffer.get(0).getMessage());
         Assert.assertEquals(LOG4J_1_MESSAGE, buffer.get(1).getMessage());
         Assert.assertEquals(LOG4J_2_MESSAGE, buffer.get(2).getMessage());
@@ -89,15 +98,5 @@ public class SocketLogServerTest {
         Assert.assertEquals(LOG4J_2_MESSAGE, buffer.get(4).getMessage());
         Assert.assertEquals(LOGBACK_MESSAGE, buffer.get(5).getMessage());
         Assert.assertEquals(LOGBACK_MESSAGE, buffer.get(6).getMessage());
-    }
-
-    private static void waitForBufferSize(Collection<?> buffer, int waitSize) throws InterruptedException {
-        long startTime = System.currentTimeMillis();
-        long curTime = startTime;
-
-        while (buffer.size() < waitSize && (curTime - startTime) <= WAIT_MS) {
-            Thread.sleep(200);
-            curTime = System.currentTimeMillis();
-        }
     }
 }
