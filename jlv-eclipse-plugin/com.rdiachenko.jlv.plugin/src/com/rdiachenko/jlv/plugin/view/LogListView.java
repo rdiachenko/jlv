@@ -3,6 +3,7 @@ package com.rdiachenko.jlv.plugin.view;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
@@ -23,52 +24,65 @@ import com.rdiachenko.jlv.plugin.LogField;
 import com.rdiachenko.jlv.plugin.QuickLogFilter;
 
 public class LogListView extends ViewPart {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private QuickLogFilter quickFilter;
     private LogListViewController controller;
     private IContextActivation context;
     private TableViewer viewer;
+    private Text detailedViewer;
     private Text quickSearchField;
     private boolean scrollToBottom;
-    
+
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
         quickFilter = new QuickLogFilter();
         controller = new LogListViewController(this);
     }
-    
+
     @Override
     public void createPartControl(Composite parent) {
         IContextService contextService = getSite().getService(IContextService.class);
-        
+
         if (contextService != null) {
             context = contextService.activateContext(JlvConstants.LOGLIST_CONTEXT_ID);
         }
-        
-        GridLayout layout = new GridLayout();
-        layout.verticalSpacing = 0;
-        layout.marginWidth = 0;
-        layout.marginHeight = 0;
-        parent.setLayout(layout);
 
-        viewer = createViewer(parent);
+        GridLayout parentLayout = new GridLayout();
+        parentLayout.verticalSpacing = 0;
+        parentLayout.marginWidth = 0;
+        parentLayout.marginHeight = 0;
+        parent.setLayout(parentLayout);
+        
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 0;
+        layout.marginHeight = 2;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        SashForm sash = new SashForm(composite, SWT.HORIZONTAL);
+        sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        viewer = createViewer(sash);
+        detailedViewer = createDetailedViewer(sash);
+        sash.setWeights(new int[] { 60, 40 });
+
         quickSearchField = createQuickSearchField(parent);
         controller.startViewRefresher();
     }
-    
+
     @Override
     public void setFocus() {
         viewer.getControl().setFocus();
     }
-    
+
     @Override
     public void dispose() {
         try {
             IContextService contextService = getSite().getService(IContextService.class);
-            
+
             if (contextService != null) {
                 contextService.deactivateContext(context);
             }
@@ -77,17 +91,17 @@ public class LogListView extends ViewPart {
             super.dispose();
         }
     }
-    
+
     public LogListViewController getController() {
         return controller;
     }
-    
+
     public void setSearchFieldVisible(boolean visible) {
         GridData gridData = (GridData) quickSearchField.getLayoutData();
         gridData.exclude = !visible;
         quickSearchField.setVisible(visible);
         quickSearchField.getParent().layout();
-        
+
         if (visible) {
             quickSearchField.selectAll();
             quickSearchField.setFocus();
@@ -95,20 +109,20 @@ public class LogListView extends ViewPart {
             setFocus();
         }
     }
-    
+
     public boolean isSearchFieldVisible() {
         return quickSearchField.isVisible();
     }
-    
+
     public void toggleScrollToBottom() {
         scrollToBottom = !scrollToBottom;
     }
-    
+
     public void clear() {
         controller.getInput().clear();
         viewer.getTable().removeAll();
     }
-    
+
     public void refresh() {
         if (!viewer.getTable().isDisposed()) {
             if (scrollToBottom) {
@@ -119,7 +133,7 @@ public class LogListView extends ViewPart {
             viewer.refresh(true, scrollToBottom);
         }
     }
-    
+
     private TableViewer createViewer(Composite parent) {
         int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
         TableViewer viewer = new TableViewer(parent, style);
@@ -127,14 +141,14 @@ public class LogListView extends ViewPart {
         viewer.setContentProvider(new LogListContentProvider());
         viewer.setInput(controller.getInput());
         viewer.addFilter(quickFilter);
-        
+
         for (LogField field : LogField.values()) {
             TableViewerColumn columnViewer = new TableViewerColumn(viewer, SWT.NONE);
             columnViewer.getColumn().setText(field.getName());
             columnViewer.getColumn().setWidth(100);
             columnViewer.getColumn().setResizable(true);
             columnViewer.getColumn().setMoveable(false);
-            
+
             switch (field) {
             case MESSAGE:
             case THROWABLE:
@@ -146,15 +160,19 @@ public class LogListView extends ViewPart {
                 columnViewer.setLabelProvider(new DefaultColumnLabelProvider(field));
             }
         }
-        
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         Table table = viewer.getTable();
-        table.setLayoutData(gridData);
+        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         return viewer;
     }
-    
+
+    private Text createDetailedViewer(Composite parent) {
+        Text viewer = new Text(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        viewer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        return viewer;
+    }
+
     private Text createQuickSearchField(Composite parent) {
         Text searchField = new Text(parent, SWT.BORDER);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
