@@ -1,4 +1,4 @@
-package com.rdiachenko.jlv.plugin.actions;
+package com.rdiachenko.jlv.plugin.action;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.IWorkbenchWindow;
