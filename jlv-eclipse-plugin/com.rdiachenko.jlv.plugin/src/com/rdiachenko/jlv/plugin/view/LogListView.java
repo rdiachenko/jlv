@@ -14,11 +14,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.plugin.JlvConstants;
@@ -27,17 +30,27 @@ import com.rdiachenko.jlv.plugin.QuickLogFilter;
 
 public class LogListView extends ViewPart {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final String SASH_LEFT_WIDTH_KEY = "LogListView.SASH_LEFT_WIDTH";
+    private static final String SASH_RIGHT_WIDTH_KEY = "LogListView.SASH_RIGHT_WIDTH";
+
     private QuickLogFilter quickFilter;
     private LogListViewController controller;
     private IContextActivation context;
+    private IMemento memento;
+
+    private SashForm sash;
     private TableViewer logListViewer;
     private LogDetailsViewer logDetailsViewer;
+
     private Text quickSearchField;
     private boolean scrollToBottom;
 
     @Override
-    public void init(IViewSite site) throws PartInitException {
-        super.init(site);
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        this.memento = memento;
         quickFilter = new QuickLogFilter();
         controller = new LogListViewController(this);
     }
@@ -55,7 +68,7 @@ public class LogListView extends ViewPart {
         parentLayout.marginWidth = 0;
         parentLayout.marginHeight = 0;
         parent.setLayout(parentLayout);
-        
+
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.marginWidth = 0;
@@ -63,11 +76,19 @@ public class LogListView extends ViewPart {
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        SashForm sash = new SashForm(composite, SWT.HORIZONTAL);
+        sash = new SashForm(composite, SWT.HORIZONTAL);
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         logListViewer = createLogListViewer(sash);
         logDetailsViewer = new LogDetailsViewer(sash);
-        sash.setWeights(new int[] { 60, 40 });
+        int leftWidth = 60;
+        int rightWidth = 40;
+
+        if (memento != null && memento.getInteger(SASH_LEFT_WIDTH_KEY) != null
+                && memento.getInteger(SASH_RIGHT_WIDTH_KEY) != null) {
+            leftWidth = memento.getInteger(SASH_LEFT_WIDTH_KEY);
+            rightWidth = memento.getInteger(SASH_RIGHT_WIDTH_KEY);
+        }
+        sash.setWeights(new int[] { leftWidth, rightWidth });
 
         quickSearchField = createQuickSearchField(parent);
         controller.startViewRefresher();
@@ -76,6 +97,15 @@ public class LogListView extends ViewPart {
     @Override
     public void setFocus() {
         logListViewer.getControl().setFocus();
+    }
+
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        int[] weights = sash.getWeights();
+        memento.putInteger(SASH_LEFT_WIDTH_KEY, weights[0]);
+        memento.putInteger(SASH_RIGHT_WIDTH_KEY, weights[1]);
+        logger.info("LogListView state saved");
     }
 
     @Override
