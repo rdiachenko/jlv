@@ -1,5 +1,8 @@
 package com.rdiachenko.jlv.plugin.view;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -16,22 +19,19 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.plugin.JlvConstants;
 import com.rdiachenko.jlv.plugin.LogField;
 import com.rdiachenko.jlv.plugin.QuickLogFilter;
 
 public class LogListView extends ViewPart {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     private QuickLogFilter quickFilter;
     private LogListViewController controller;
     private IContextActivation context;
-    private TableViewer viewer;
-    private Text detailedViewer;
+    private TableViewer logListViewer;
+    private LogDetailsViewer logDetailsViewer;
     private Text quickSearchField;
     private boolean scrollToBottom;
 
@@ -65,8 +65,8 @@ public class LogListView extends ViewPart {
 
         SashForm sash = new SashForm(composite, SWT.HORIZONTAL);
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        viewer = createViewer(sash);
-        detailedViewer = createDetailedViewer(sash);
+        logListViewer = createLogListViewer(sash);
+        logDetailsViewer = new LogDetailsViewer(sash);
         sash.setWeights(new int[] { 60, 40 });
 
         quickSearchField = createQuickSearchField(parent);
@@ -75,7 +75,7 @@ public class LogListView extends ViewPart {
 
     @Override
     public void setFocus() {
-        viewer.getControl().setFocus();
+        logListViewer.getControl().setFocus();
     }
 
     @Override
@@ -120,27 +120,39 @@ public class LogListView extends ViewPart {
 
     public void clear() {
         controller.getInput().clear();
-        viewer.getTable().removeAll();
+        logListViewer.getTable().removeAll();
+        logDetailsViewer.clear();
     }
 
     public void refresh() {
-        if (!viewer.getTable().isDisposed()) {
+        if (!logListViewer.getTable().isDisposed()) {
             if (scrollToBottom) {
-                Table table = viewer.getTable();
+                Table table = logListViewer.getTable();
                 int itemCount = table.getItemCount();
                 table.setSelection(itemCount - 1);
             }
-            viewer.refresh(true, scrollToBottom);
+            logListViewer.refresh(true, scrollToBottom);
         }
     }
 
-    private TableViewer createViewer(Composite parent) {
-        int style = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
+    private TableViewer createLogListViewer(Composite parent) {
+        int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
         TableViewer viewer = new TableViewer(parent, style);
         viewer.setUseHashlookup(true);
         viewer.setContentProvider(new LogListContentProvider());
         viewer.setInput(controller.getInput());
         viewer.addFilter(quickFilter);
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                StructuredSelection selection = (StructuredSelection) event.getSelection();
+                Log log = (Log) selection.getFirstElement();
+
+                if (log != null) {
+                    logDetailsViewer.showDetails(log);
+                }
+            }
+        });
 
         for (LogField field : LogField.values()) {
             TableViewerColumn columnViewer = new TableViewerColumn(viewer, SWT.NONE);
@@ -164,12 +176,6 @@ public class LogListView extends ViewPart {
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        return viewer;
-    }
-
-    private Text createDetailedViewer(Composite parent) {
-        Text viewer = new Text(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        viewer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         return viewer;
     }
 
