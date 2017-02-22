@@ -6,22 +6,50 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.plugin.LogField;
 
 public class LogDetailsViewer {
-    
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final String COLON = ":";
+
     private StyledText viewer;
-    
+    private Font logFieldNameFont;
+
     public LogDetailsViewer(Composite parent) {
         viewer = new StyledText(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         viewer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.setEditable(false);
+
+        Font font = viewer.getFont();
+        FontData[] fontData = font.getFontData();
+
+        for (FontData data : fontData) {
+            data.setHeight(data.getHeight() - 2); // make it a bit smaller
+            data.setStyle(SWT.BOLD);
+        }
+        logFieldNameFont = new Font(viewer.getDisplay(), fontData);
+
+        viewer.addDisposeListener(new DisposeListener() {
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                logFieldNameFont.dispose();
+                logger.info("Font for log field name disposed");
+            }
+        });
     }
-    
+
     public void clear() {
         viewer.setText("");
     }
@@ -36,11 +64,13 @@ public class LogDetailsViewer {
             if (!value.isEmpty()) {
                 StyleRange style = new StyleRange();
                 style.start = builder.length();
-                style.length = field.getName().length();
-                style.fontStyle = SWT.BOLD;
+                style.length = field.getName().length() + COLON.length();
+                style.font = logFieldNameFont;
+                style.foreground = viewer.getDisplay().getSystemColor(SWT.COLOR_GRAY);
                 styles.add(style);
-                
+
                 builder.append(field.getName().toUpperCase())
+                        .append(COLON)
                         .append(System.lineSeparator())
                         .append(value)
                         .append(System.lineSeparator())
@@ -48,7 +78,7 @@ public class LogDetailsViewer {
             }
         }
         viewer.setText(builder.toString().trim());
-        
+
         for (StyleRange style : styles) {
             viewer.setStyleRange(style);
         }
