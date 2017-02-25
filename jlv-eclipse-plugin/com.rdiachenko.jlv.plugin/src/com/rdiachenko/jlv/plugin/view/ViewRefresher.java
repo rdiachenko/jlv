@@ -9,44 +9,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.rdiachenko.jlv.plugin.JlvConstants;
+import com.rdiachenko.jlv.plugin.Operation;
+import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 
-public class LogListViewRefresher {
+public class ViewRefresher {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final int EXECUTOR_TIMEOUT_MS = 5000;
 
-    private final LogListView view;
-
+    private final Operation callback;
+    
     private ExecutorService executor;
-
+    
     private volatile boolean running;
 
-    public LogListViewRefresher(LogListView view) {
-        Preconditions.checkNotNull(view, "Log list view is null");
-        this.view = view;
+    public ViewRefresher(Operation callback) {
+        Preconditions.checkNotNull(callback, "View refresher callback is null");
+        this.callback = callback;
     }
 
-    public void start(long refreshingTimeMs) {
+    public void start() {
+        if (running) {
+            throw new IllegalStateException("Refresher is already in progress and can't be started");
+        }
         logger.info("Starting log list view refresher");
         running = true;
         executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (running) {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.refresh();
-                        }
-                    });
-                    try {
-                        Thread.sleep(refreshingTimeMs);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        logger.error("Timer thread was interrupted", e);
-                    }
+        executor.execute(() -> {
+            while (running) {
+                Display.getDefault().asyncExec(() -> callback.perform());
+                try {
+                    long refreshingTimeMs = PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY);
+                    Thread.sleep(refreshingTimeMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Timer thread was interrupted", e);
                 }
             }
         });

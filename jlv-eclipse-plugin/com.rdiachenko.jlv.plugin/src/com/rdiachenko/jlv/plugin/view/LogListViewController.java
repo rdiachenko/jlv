@@ -1,58 +1,72 @@
 package com.rdiachenko.jlv.plugin.view;
 
+import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 import com.rdiachenko.jlv.CircularBuffer;
 import com.rdiachenko.jlv.Log;
 import com.rdiachenko.jlv.SocketLogServer;
+import com.rdiachenko.jlv.plugin.JlvConstants;
+import com.rdiachenko.jlv.plugin.Operation;
+import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 
 public class LogListViewController {
-    
-    private final CircularBuffer<Log> input;
-    private final LogCollector logCollector;
-    private final SocketLogServer server;
-    private final LogListViewRefresher viewRefresher;
-    
-    public LogListViewController(LogListView view) {
-        input = new CircularBuffer<>(10000);
+
+    private SocketLogServer server;
+    private LogCollector logCollector;
+    private ViewRefresher viewRefresher;
+
+    public void initLogCollector(CircularBuffer<Log> input) {
+        if (server != null && logCollector != null) {
+            server.removeLogEventListener(logCollector);
+        }
         logCollector = new LogCollector(input);
-        server = new SocketLogServer(7777);
-        server.addLogEventListener(logCollector);
-        viewRefresher = new LogListViewRefresher(view);
-    }
-
-    public CircularBuffer<Log> getInput() {
-        return input;
-    }
-
-    public void startServer() {
-        server.start();
-    }
-
-    public void stopServer() {
-        server.stop();
+        
+        if (server != null) {
+            server.addLogEventListener(logCollector);
+        }
     }
     
-    public void startViewRefresher() {
-        viewRefresher.start(2000);
-    }
-    
-    public void stopViewRefresher() {
-        viewRefresher.stop();
+    public void initViewRefresher(Operation callback) {
+        viewRefresher = new ViewRefresher(callback);
     }
 
     public void dispose() {
-        server.stop();
-        viewRefresher.stop();
+        stopServer();
+        stopViewRefresher();
+    }
+
+    public void startServer() {
+        Preconditions.checkNotNull(logCollector, "Log collector is null");
+        server = new SocketLogServer(PreferenceStoreUtils.getInt(JlvConstants.SERVER_PORT_PREF_KEY));
+        server.addLogEventListener(logCollector);
+        server.start();
     }
     
+    public void stopServer() {
+        if (server != null) {
+            server.stop();
+        }
+    }
+
+    public void startViewRefresher() {
+        Preconditions.checkNotNull(viewRefresher, "View refresher is null");
+        viewRefresher.start();
+    }
+
+    public void stopViewRefresher() {
+        if (viewRefresher != null) {
+            viewRefresher.stop();
+        }
+    }
+
     private final class LogCollector {
-
+        
         private CircularBuffer<Log> buffer;
-
+        
         public LogCollector(CircularBuffer<Log> buffer) {
             this.buffer = buffer;
         }
-
+        
         @Subscribe
         public void handle(Log log) {
             buffer.add(log);

@@ -183,5 +183,19 @@
          </variable>
       </sourceProvider>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.rdiachenko.jlv.plugin.preference.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.rdiachenko.jlv.plugin.preference.GeneralPreferencePage"
+            id="com.rdiachenko.jlv.plugin.preference.general"
+            name="Java Logging Viewer">
+      </page>
+   </extension>
 
 </plugin>

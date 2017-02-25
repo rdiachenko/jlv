@@ -1,5 +1,6 @@
 package com.rdiachenko.jlv.plugin.view;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -23,10 +24,15 @@ import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rdiachenko.jlv.CircularBuffer;
 import com.rdiachenko.jlv.Log;
+import com.rdiachenko.jlv.plugin.JlvActivator;
 import com.rdiachenko.jlv.plugin.JlvConstants;
 import com.rdiachenko.jlv.plugin.LogField;
+import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 import com.rdiachenko.jlv.plugin.QuickLogFilter;
+import com.rdiachenko.jlv.plugin.SourceProvider;
+import com.rdiachenko.jlv.plugin.action.ActionUtils;
 
 public class LogListView extends ViewPart {
 
@@ -35,10 +41,12 @@ public class LogListView extends ViewPart {
     private static final String SASH_LEFT_WIDTH_KEY = "LogListView.SASH_LEFT_WIDTH";
     private static final String SASH_RIGHT_WIDTH_KEY = "LogListView.SASH_RIGHT_WIDTH";
 
-    private QuickLogFilter quickFilter;
-    private LogListViewController controller;
+    private final QuickLogFilter quickFilter = new QuickLogFilter();
+    private final LogListViewController controller = new LogListViewController();
+
     private IContextActivation context;
     private IMemento memento;
+    private IPropertyChangeListener preferenceChangeListener;
 
     private SashForm sash;
     private TableViewer logListViewer;
@@ -51,17 +59,22 @@ public class LogListView extends ViewPart {
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         this.memento = memento;
-        quickFilter = new QuickLogFilter();
-        controller = new LogListViewController(this);
+        
+        preferenceChangeListener = new LogListViewPreferenceChangeListener(this);
+        JlvActivator.getDefault().getPreferenceStore().addPropertyChangeListener(preferenceChangeListener);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void createPartControl(Composite parent) {
         IContextService contextService = getSite().getService(IContextService.class);
 
         if (contextService != null) {
             context = contextService.activateContext(JlvConstants.LOGLIST_CONTEXT_ID);
         }
+
+        SourceProvider sourceProvider = ActionUtils.getSourceProvider(getSite().getWorkbenchWindow());
+        sourceProvider.setServerStarted(PreferenceStoreUtils.getBoolean(JlvConstants.SERVER_AUTO_START_PREF_KEY));
 
         GridLayout parentLayout = new GridLayout();
         parentLayout.verticalSpacing = 0;
@@ -91,7 +104,15 @@ public class LogListView extends ViewPart {
         sash.setWeights(new int[] { leftWidth, rightWidth });
 
         quickSearchField = createQuickSearchField(parent);
+        setSearchFieldVisible(PreferenceStoreUtils.getBoolean(JlvConstants.QUICK_SEARCH_VISIBLE_PREF_KEY));
+        
+        controller.initLogCollector((CircularBuffer<Log>) logListViewer.getInput());
+        controller.initViewRefresher(() -> refresh());
         controller.startViewRefresher();
+        
+        if (PreferenceStoreUtils.getBoolean(JlvConstants.SERVER_AUTO_START_PREF_KEY)) {
+            controller.startServer();
+        }
     }
 
     @Override
@@ -111,6 +132,7 @@ public class LogListView extends ViewPart {
     @Override
     public void dispose() {
         try {
+            JlvActivator.getDefault().getPreferenceStore().removePropertyChangeListener(preferenceChangeListener);
             IContextService contextService = getSite().getService(IContextService.class);
 
             if (contextService != null) {
@@ -124,6 +146,17 @@ public class LogListView extends ViewPart {
 
     public LogListViewController getController() {
         return controller;
+    }
+
+    public void setLogListInput(CircularBuffer<Log> input) {
+        logListViewer.setInput(input);
+        controller.initLogCollector(input);
+    }
+
+    public CircularBuffer<Log> getLogListInput() {
+        @SuppressWarnings("unchecked")
+        CircularBuffer<Log> input = (CircularBuffer<Log>) logListViewer.getInput();
+        return input;
     }
 
     public void setSearchFieldVisible(boolean visible) {
@@ -148,13 +181,14 @@ public class LogListView extends ViewPart {
         scrollToBottom = !scrollToBottom;
     }
 
+    @SuppressWarnings("unchecked")
     public void clear() {
-        controller.getInput().clear();
+        ((CircularBuffer<Log>) logListViewer.getInput()).clear();
         logListViewer.getTable().removeAll();
         logDetailsViewer.clear();
     }
 
-    public void refresh() {
+    private void refresh() {
         if (!logListViewer.getTable().isDisposed()) {
             if (scrollToBottom) {
                 Table table = logListViewer.getTable();
@@ -166,11 +200,14 @@ public class LogListView extends ViewPart {
     }
 
     private TableViewer createLogListViewer(Composite parent) {
+        CircularBuffer<Log> input = new CircularBuffer<>(
+                PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY));
+        
         int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
         TableViewer viewer = new TableViewer(parent, style);
         viewer.setUseHashlookup(true);
         viewer.setContentProvider(new LogListContentProvider());
-        viewer.setInput(controller.getInput());
+        viewer.setInput(input);
         viewer.addFilter(quickFilter);
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
