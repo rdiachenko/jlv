@@ -28,23 +28,4 @@ public final class PreferencePageUtils {
         group.setLayoutData(layoutData);
         return group;
     }
-    
-    public static Composite createGroupComposite(Composite parent) {
-        Composite composite = new Composite(parent, SWT.FILL);
-        GridLayout layout = new GridLayout();
-        composite.setLayout(layout);
-        GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        composite.setLayoutData(layoutData);
-        return composite;
-    }
-    
-    public static Composite createFieldEditorComposite(Composite parent) {
-        Composite composite = new Composite(parent, SWT.FILL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        composite.setLayout(layout);
-        GridData layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        composite.setLayoutData(layoutData);
-        return composite;
-    }
 }

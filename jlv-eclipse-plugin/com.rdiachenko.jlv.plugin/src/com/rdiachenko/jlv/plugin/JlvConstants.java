@@ -10,7 +10,9 @@ public final class JlvConstants {
     public static final String LOGLIST_BUFFER_SIZE_PREF_KEY = "logbuffersize";
     public static final String LOGLIST_REFRESH_TIME_MS_PREF_KEY = "loglistrefreshtime";
     public static final String QUICK_SEARCH_VISIBLE_PREF_KEY = "quicksearchvisible";
-    
+    public static final String STRUCTURAL_UI_PREF_KEY = "structuralui";
+    public static final String PRESENTATIONAL_UI_PREF_KEY = "presentationalui";
+
     private JlvConstants() {
         // Utility class
     }

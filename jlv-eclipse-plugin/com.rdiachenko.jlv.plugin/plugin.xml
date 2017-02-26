@@ -196,6 +196,12 @@
             id="com.rdiachenko.jlv.plugin.preference.general"
             name="Java Logging Viewer">
       </page>
+      <page
+            category="com.rdiachenko.jlv.plugin.preference.general"
+            class="com.rdiachenko.jlv.plugin.preference.UiPreferencePage"
+            id="com.rdiachenko.jlv.plugin.preference.ui"
+            name="User Interface">
+      </page>
    </extension>
 
 </plugin>

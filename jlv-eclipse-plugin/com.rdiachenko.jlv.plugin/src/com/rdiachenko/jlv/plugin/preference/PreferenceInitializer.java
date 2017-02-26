@@ -1,13 +1,17 @@
 package com.rdiachenko.jlv.plugin.preference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.rdiachenko.jlv.plugin.JlvActivator;
 import com.rdiachenko.jlv.plugin.JlvConstants;
+import com.rdiachenko.jlv.plugin.LogLevel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
+    
     @Override
     public void initializeDefaultPreferences() {
         IPreferenceStore store = JlvActivator.getDefault().getPreferenceStore();
@@ -16,5 +20,16 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY, 10000);
         store.setDefault(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY, 500);
         store.setDefault(JlvConstants.QUICK_SEARCH_VISIBLE_PREF_KEY, true);
+        
+        List<PresentationalModelItem> modelItems = new ArrayList<>();
+        modelItems.add(new PresentationalModelItem(LogLevel.DEBUG.name(), new Rgb(0, 0, 0), new Rgb(255, 255, 255)));
+        modelItems.add(new PresentationalModelItem(LogLevel.INFO.name(), new Rgb(0, 255, 0), new Rgb(255, 255, 255)));
+        modelItems.add(new PresentationalModelItem(LogLevel.WARN.name(), new Rgb(255, 128, 0), new Rgb(255, 255, 255)));
+        modelItems.add(new PresentationalModelItem(LogLevel.ERROR.name(), new Rgb(255, 0, 0), new Rgb(255, 255, 255)));
+        modelItems.add(new PresentationalModelItem(LogLevel.FATAL.name(), new Rgb(165, 42, 42), new Rgb(255, 255, 255)));
+        modelItems.add(new PresentationalModelItem(LogLevel.OTHER.name(), new Rgb(51, 102, 255), new Rgb(255, 255, 255)));
+        PresentationalModel presentationalModel = new PresentationalModel(true, 11, modelItems);
+        store.setDefault(JlvConstants.PRESENTATIONAL_UI_PREF_KEY,
+                PresentationalModelConverter.toString(presentationalModel));
     }
 }
