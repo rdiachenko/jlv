@@ -233,10 +233,13 @@ public class LogListView extends ViewPart {
             case THROWABLE:
             case MDC:
             case NDC:
-                columnViewer.setLabelProvider(new LimitedTextColumnLabelProvider(field));
+                columnViewer.setLabelProvider(new LimitedTextColumnLabelProvider(viewer, field));
+                break;
+            case LEVEL:
+                columnViewer.setLabelProvider(new LevelColumnLabelProvider(viewer));
                 break;
             default:
-                columnViewer.setLabelProvider(new DefaultColumnLabelProvider(field));
+                columnViewer.setLabelProvider(new DefaultColumnLabelProvider(viewer, field));
             }
         }
         Table table = viewer.getTable();
