@@ -25,14 +25,17 @@ public class UiPreferencePage extends FieldEditorPreferencePage implements IWork
         Composite parent = getFieldEditorParent();
         parent.setLayout(PreferencePageUtils.createFieldEditorParentLayout());
         
-        Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
-                "Structural log table settings");
-        
         Group presentationalSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
                 "Presentational log table settings");
         FieldEditor presentationalTableEditor = new PresentationalTableEditor(
                 createFieldEditorComposite(presentationalSettingsGroup));
         addField(presentationalTableEditor);
+        
+        Group structuralSettingsGroup = PreferencePageUtils.createSettingsGroup(parent,
+                "Structural log table settings");
+        FieldEditor structuralTableEditor = new StructuralTableEditor(
+                createFieldEditorComposite(structuralSettingsGroup));
+        addField(structuralTableEditor);
     }
     
     private static Composite createFieldEditorComposite(Composite parent) {
