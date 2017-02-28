@@ -4,11 +4,13 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.rdiachenko.jlv.plugin.preference.PresentationalModel;
 import com.rdiachenko.jlv.plugin.preference.PresentationalModelConverter;
+import com.rdiachenko.jlv.plugin.preference.StructuralModel;
+import com.rdiachenko.jlv.plugin.preference.StructuralModelConverter;
 
 public final class PreferenceStoreUtils {
 
     private static final IPreferenceStore STORE = JlvActivator.getDefault().getPreferenceStore();
-
+    
     private PreferenceStoreUtils() {
         // Utility class
     }
@@ -55,5 +57,22 @@ public final class PreferenceStoreUtils {
     public static void setPresentationalModel(PresentationalModel model) {
         String value = PresentationalModelConverter.toString(model);
         STORE.setValue(JlvConstants.PRESENTATIONAL_UI_PREF_KEY, value);
+    }
+
+    public static StructuralModel getDefaultStructuralModel() {
+        String value = STORE.getDefaultString(JlvConstants.STRUCTURAL_UI_PREF_KEY);
+        StructuralModel model = StructuralModelConverter.toModel(value);
+        return model;
+    }
+
+    public static StructuralModel getStructuralModel() {
+        String value = getString(JlvConstants.STRUCTURAL_UI_PREF_KEY);
+        StructuralModel model = StructuralModelConverter.toModel(value);
+        return model;
+    }
+    
+    public static void setStructuralModel(StructuralModel model) {
+        String value = StructuralModelConverter.toString(model);
+        STORE.setValue(JlvConstants.STRUCTURAL_UI_PREF_KEY, value);
     }
 }

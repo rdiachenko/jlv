@@ -19,35 +19,35 @@ import com.rdiachenko.jlv.plugin.preference.PresentationalModel;
 import com.rdiachenko.jlv.plugin.preference.PresentationalModelItem;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
-
+    
     private final TableViewer viewer;
-
+    
     public LevelColumnLabelProvider(TableViewer viewer) {
         this.viewer = viewer;
     }
-
+    
     @Override
     public void measure(Event event, Object element) {
         // no code
     }
-    
+
     @Override
     public void update(ViewerCell cell) {
         Log log = (Log) cell.getElement();
         PresentationalModel model = PreferenceStoreUtils.getPresentationalModel();
-        PresentationalModelItem item = getPresentationalModelItem(log);
+        PresentationalModelItem item = model.getModelItem(LogLevel.toLogLevel(log.getLevel()));
         cell.setBackground(ResourceManager.getColor(Display.getCurrent(), item.getBackground()));
         cell.setForeground(ResourceManager.getColor(Display.getCurrent(), item.getForeground()));
         cell.setFont(ResourceManager.getFont(viewer.getTable(), model.getFontSize(), SWT.NONE));
         super.update(cell);
     }
-
+    
     @Override
     public void paint(Event event, Object element) {
         Log log = (Log) element;
         Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
         PresentationalModel model = PreferenceStoreUtils.getPresentationalModel();
-
+        
         if (model.isLevelAsImage()) {
             Image image = ResourceManager.getImage(LogLevel.toLogLevel(log.getLevel()));
             Rectangle imageBounds = image.getBounds();
@@ -65,25 +65,11 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
             event.gc.drawText(log.getLevel(), x, y, true);
         }
     }
-
+    
     @Override
     public void erase(Event event, Object element) {
         if ((event.detail & SWT.SELECTED) != 0) {
             event.detail &= ~SWT.FOREGROUND;
         }
-    }
-    
-    private PresentationalModelItem getPresentationalModelItem(Log log) {
-        PresentationalModel model = PreferenceStoreUtils.getPresentationalModel();
-        LogLevel level = LogLevel.toLogLevel(log.getLevel());
-        PresentationalModelItem modelItem = null;
-        
-        for (PresentationalModelItem item : model.getModelItems()) {
-            if (item.getLevelName().equals(level.name())) {
-                modelItem = item;
-                break;
-            }
-        }
-        return modelItem;
     }
 }

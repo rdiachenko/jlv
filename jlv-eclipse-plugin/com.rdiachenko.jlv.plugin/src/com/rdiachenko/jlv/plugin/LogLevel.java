@@ -1,15 +1,29 @@
 package com.rdiachenko.jlv.plugin;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.common.base.Preconditions;
+
 public enum LogLevel {
 
     DEBUG, INFO, WARN, ERROR, FATAL, OTHER;
 
-    public static LogLevel toLogLevel(String value) {
+    private static final Map<String, LogLevel> STR_TO_LEVEL = new HashMap<>();
+
+    static {
         for (LogLevel level : values()) {
-            if (level.name().equalsIgnoreCase(value)) {
-                return level;
-            }
+            STR_TO_LEVEL.put(level.name(), level);
         }
-        return LogLevel.OTHER;
+    }
+    
+    public static LogLevel toLogLevel(String value) {
+        Preconditions.checkNotNull(value, "Log level string value is null");
+        LogLevel level = STR_TO_LEVEL.get(value.toUpperCase());
+
+        if (level == null) {
+            level = OTHER;
+        }
+        return level;
     }
 }

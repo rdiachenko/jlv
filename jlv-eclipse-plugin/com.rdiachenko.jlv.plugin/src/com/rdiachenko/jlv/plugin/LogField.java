@@ -4,8 +4,19 @@ import com.rdiachenko.jlv.Log;
 
 public enum LogField {
     
-    DATE("Date"), LEVEL("Level"), THREAD("Thread"), LOGGER("Logger"), MESSAGE("Message"), CLASS("Class"), METHOD(
-            "Method"), LINE("Line"), FILE("File"), MARKER("Marker"), THROWABLE("Throwable"), NDC("Ndc"), MDC("Mdc");
+    DATE("Date"),
+    LEVEL("Level"),
+    THREAD("Thread"),
+    LOGGER("Logger"),
+    MESSAGE("Message"),
+    CLASS("Class"),
+    METHOD("Method"),
+    LINE("Line"),
+    FILE("File"),
+    MARKER("Marker"),
+    THROWABLE("Throwable"),
+    NDC("Ndc"),
+    MDC("Mdc");
     
     private final String name;
     
