@@ -18,8 +18,8 @@ public class SocketLogServer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final int SOCKET_TIMEOUT_MS = 10000;
-    private static final int EXECUTOR_TIMEOUT_MS = 30000;
+    private static final int SOCKET_TIMEOUT_MS = 5000;
+    private static final int EXECUTOR_TIMEOUT_MS = 2000;
 
     private final int port;
     private final EventBus eventBus;

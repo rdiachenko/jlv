@@ -14,31 +14,31 @@ import com.google.common.eventbus.EventBus;
 import com.rdiachenko.jlv.converter.LogConverterType;
 
 public class SocketConnectionHandler implements Runnable {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final Socket socket;
-    
+
     private final EventBus eventBus;
-    
+
     public SocketConnectionHandler(Socket socket, EventBus eventBus) {
         Preconditions.checkNotNull(socket, "Socket is null");
         Preconditions.checkNotNull(eventBus, "Event bus is null");
         this.socket = socket;
         this.eventBus = eventBus;
     }
-    
+
     @Override
     public void run() {
         try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
                 ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
-            
-            LogConverterType prevConverterType = null;
 
-            while (!socket.isClosed()) {
+            LogConverterType prevConverterType = null;
+            
+            while (!socket.isClosed() && !Thread.currentThread().isInterrupted()) {
                 Object obj = objectStream.readObject();
                 LogConverterType converterType = LogConverterType.valueOf(obj);
-
+                
                 if (prevConverterType != converterType) {
                     prevConverterType = converterType;
                     logger.info("Log converter type detected: {} for log's object: {}",
@@ -57,7 +57,7 @@ public class SocketConnectionHandler implements Runnable {
             stop();
         }
     }
-    
+
     private void stop() {
         logger.info("Stopping connection handler");
         try {
