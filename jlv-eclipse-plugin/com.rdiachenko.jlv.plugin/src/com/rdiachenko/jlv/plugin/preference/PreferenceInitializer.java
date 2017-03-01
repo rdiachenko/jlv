@@ -12,7 +12,7 @@ import com.rdiachenko.jlv.plugin.LogField;
 import com.rdiachenko.jlv.plugin.LogLevel;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-    
+
     @Override
     public void initializeDefaultPreferences() {
         IPreferenceStore store = JlvActivator.getDefault().getPreferenceStore();
@@ -21,15 +21,15 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY, 10000);
         store.setDefault(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY, 500);
         store.setDefault(JlvConstants.QUICK_SEARCH_VISIBLE_PREF_KEY, true);
-        
+
         List<StructuralModelItem> structuralModelItems = new ArrayList<>();
         for (LogField field : LogField.values()) {
-            structuralModelItems.add(new StructuralModelItem(field.getName(), true, 50));
+            structuralModelItems.add(new StructuralModelItem(field.getName(), true, 100));
         }
         StructuralModel structuralModel = new StructuralModel(structuralModelItems);
         store.setDefault(JlvConstants.STRUCTURAL_UI_PREF_KEY,
                 StructuralModelConverter.toString(structuralModel));
-        
+
         List<PresentationalModelItem> presentationalModelItems = new ArrayList<>();
         presentationalModelItems.add(new PresentationalModelItem(
                 LogLevel.DEBUG.name(), new Rgb(0, 0, 0), new Rgb(255, 255, 255)));

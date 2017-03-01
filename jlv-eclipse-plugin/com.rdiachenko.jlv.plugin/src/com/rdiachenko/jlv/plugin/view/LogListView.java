@@ -1,5 +1,9 @@
 package com.rdiachenko.jlv.plugin.view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -14,6 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -33,6 +38,7 @@ import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 import com.rdiachenko.jlv.plugin.QuickLogFilter;
 import com.rdiachenko.jlv.plugin.SourceProvider;
 import com.rdiachenko.jlv.plugin.action.ActionUtils;
+import com.rdiachenko.jlv.plugin.preference.StructuralModelItem;
 
 public class LogListView extends ViewPart {
 
@@ -43,6 +49,7 @@ public class LogListView extends ViewPart {
 
     private final QuickLogFilter quickFilter = new QuickLogFilter();
     private final LogListViewController controller = new LogListViewController();
+    private final Map<String, Integer> logListViewerColumnOrder = new HashMap<>();
 
     private IContextActivation context;
     private IMemento memento;
@@ -59,9 +66,14 @@ public class LogListView extends ViewPart {
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         this.memento = memento;
-        
         preferenceChangeListener = new LogListViewPreferenceChangeListener(this);
         JlvActivator.getDefault().getPreferenceStore().addPropertyChangeListener(preferenceChangeListener);
+        
+        int index = 0;
+        for (LogField field : LogField.values()) {
+            logListViewerColumnOrder.put(field.getName(), index);
+            index++;
+        }
     }
 
     @Override
@@ -91,7 +103,10 @@ public class LogListView extends ViewPart {
 
         sash = new SashForm(composite, SWT.HORIZONTAL);
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
         logListViewer = createLogListViewer(sash);
+        updateLogListViewerColumns(PreferenceStoreUtils.getStructuralModel().getModelItems());
+        
         logDetailsViewer = new LogDetailsViewer(sash);
         int leftWidth = 60;
         int rightWidth = 40;
@@ -187,6 +202,31 @@ public class LogListView extends ViewPart {
         logListViewer.getTable().removeAll();
         logDetailsViewer.clear();
     }
+    
+    public void updateLogListViewerColumns(List<StructuralModelItem> items) {
+        Table table = logListViewer.getTable();
+        int[] columnOrder = table.getColumnOrder();
+        int[] newColumnOrder = new int[columnOrder.length];
+        int index = 0;
+
+        for (StructuralModelItem item : items) {
+            int position = logListViewerColumnOrder.get(item.getFieldName());
+            newColumnOrder[index] = columnOrder[position];
+            logListViewerColumnOrder.put(item.getFieldName(), index);
+            
+            TableColumn column = table.getColumn(newColumnOrder[index]);
+
+            if (item.isDisplay()) {
+                column.setWidth(item.getWidth());
+            } else {
+                column.setWidth(0);
+            }
+            index++;
+        }
+        table.setColumnOrder(newColumnOrder);
+        table.redraw();
+        logger.info("Log list viewer columns updated");
+    }
 
     private void refresh() {
         if (!logListViewer.getTable().isDisposed()) {
@@ -227,6 +267,7 @@ public class LogListView extends ViewPart {
             columnViewer.getColumn().setWidth(100);
             columnViewer.getColumn().setResizable(true);
             columnViewer.getColumn().setMoveable(false);
+            columnViewer.getColumn().addControlListener(new ColumnResizeListener());
 
             switch (field) {
             case MESSAGE:
