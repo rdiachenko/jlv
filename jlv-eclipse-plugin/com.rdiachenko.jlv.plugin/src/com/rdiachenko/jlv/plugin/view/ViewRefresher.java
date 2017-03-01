@@ -2,6 +2,7 @@ package com.rdiachenko.jlv.plugin.view;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.swt.widgets.Display;
@@ -17,44 +18,34 @@ public class ViewRefresher {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    private static final int EXECUTOR_TIMEOUT_MS = 5000;
+    private static final int EXECUTOR_TIMEOUT_MS = 2000;
     
     private final Operation callback;
 
-    private ExecutorService executor;
+    private ScheduledExecutorService executor;
 
-    private volatile boolean running;
-    
     public ViewRefresher(Operation callback) {
         Preconditions.checkNotNull(callback, "View refresher callback is null");
         this.callback = callback;
     }
     
     public void start() {
-        if (running) {
+        if (executor != null && !executor.isShutdown()) {
             throw new IllegalStateException("Refresher is already in progress and can't be started");
         }
-        logger.info("Starting log list view refresher");
-        running = true;
-        executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            while (running) {
-                Display.getDefault().syncExec(() -> callback.perform());
-                try {
-                    long refreshingTimeMs = PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY);
-                    Thread.sleep(refreshingTimeMs);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    logger.warn("Timer thread was interrupted");
-                }
-            }
-        });
+        int refreshingTimeMs = PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY);
+        logger.info("Starting log list view refresher with period time: {} ms", refreshingTimeMs);
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(
+                () -> Display.getDefault().syncExec(() -> callback.perform()),
+                500,
+                refreshingTimeMs,
+                TimeUnit.MILLISECONDS);
         logger.info("Log list view refresher started");
     }
     
     public void stop() {
         logger.info("Stopping log list view refresher");
-        running = false;
         shutdownExecutor(executor);
         logger.info("Log list view refresher stopped");
     }

@@ -243,7 +243,7 @@ public class LogListView extends ViewPart {
         CircularBuffer<Log> input = new CircularBuffer<>(
                 PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY));
         
-        int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION;
+        int style = SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL;
         TableViewer viewer = new TableViewer(parent, style);
         viewer.setUseHashlookup(true);
         viewer.setContentProvider(new LogListContentProvider());
