@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<configuration scan="true">
+<configuration scan="true" scanPeriod="60 seconds">
 	<property name="log.pattern" value="[%d{'yyyy-MM-dd HH:mm:ss,SSS'}] [%p] [%c{0}] [%t]: %m%n" />
 	<property name="log.filename" value="jlv-plugin.log" />
+	<property name="log.dir" value="${JLV_LOG_DIR}/logs" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -11,10 +12,10 @@
 	</appender>
 
     <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logs/${log.filename}</file>
+		<file>${log.dir}/${log.filename}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-            	logs/${log.filename}.%d{dd-MM-yyyy}
+            	${log.dir}/${log.filename}.%d{dd-MM-yyyy}
             </fileNamePattern>
         </rollingPolicy>
         <encoder>

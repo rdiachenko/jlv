@@ -2,7 +2,7 @@
 
 <configuration scan="true">
 	<property name="log.pattern" value="[%d{'yyyy-MM-dd HH:mm:ss,SSS'}] [%p] [%c{0}] [%t]: %m%n" />
-	<property name="log.filename" value="jlv.log" />
+	<property name="log.filename" value="jlv-core.log" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
