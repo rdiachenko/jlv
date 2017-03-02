@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="target/dependency/log4j-api-2.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="target/dependency/log4j-core-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/log4j-1.2.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependency/log4j-api-2.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="target/dependency/log4j-core-2.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/logback-classic-1.1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/logback-core-1.1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/slf4j-api-1.7.21.jar"/>

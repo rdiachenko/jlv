@@ -15,36 +15,36 @@ import com.google.common.base.Preconditions;
 import com.google.common.eventbus.EventBus;
 
 public class SocketLogServer {
-
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    
     private static final int SOCKET_TIMEOUT_MS = 5000;
     private static final int EXECUTOR_TIMEOUT_MS = 2000;
-
+    
     private final int port;
     private final EventBus eventBus;
-
+    
     private ServerSocket serverSocket;
     private ExecutorService mainExecutor;
     private ExecutorService workerExecutor;
-
+    
     public SocketLogServer(int port) {
         this.port = port;
         eventBus = new EventBus();
     }
-
+    
     public void addLogEventListener(Object listener) {
         Preconditions.checkNotNull(listener, "Log event listener is null");
         eventBus.register(listener);
         logger.info("Log event listener {} added", listener);
     }
-
+    
     public void removeLogEventListener(Object listener) {
         Preconditions.checkNotNull(listener, "Log event listener is null");
         eventBus.unregister(listener);
         logger.info("Log event listener {} removed", listener);
     }
-
+    
     public void start() {
         logger.info("Starting socket server");
         try {
@@ -73,7 +73,7 @@ public class SocketLogServer {
         });
         logger.info("Socket server started");
     }
-
+    
     public void stop() {
         logger.info("Stopping socket server");
         try {
@@ -88,23 +88,23 @@ public class SocketLogServer {
             shutdownExecutor(mainExecutor);
         }
     }
-
+    
     private void shutdownExecutor(ExecutorService executor) {
         if (executor != null && !executor.isShutdown()) {
             logger.info("Shutting down executor {}", executor);
             try {
                 executor.shutdown();
-
+                
                 if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                     executor.shutdownNow();
                 }
-                logger.info("Executor shut down: {}", executor.isTerminated());
+                logger.info("Executor shut down: {}", executor.isShutdown());
             } catch (Exception e) {
                 logger.error("Failed to shutdown executor {}", executor, e);
             }
         }
     }
-
+    
     private void executeConnectionHandler(Runnable runnable) {
         try {
             workerExecutor.execute(runnable);

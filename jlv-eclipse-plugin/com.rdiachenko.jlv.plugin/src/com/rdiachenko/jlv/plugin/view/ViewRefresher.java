@@ -15,20 +15,20 @@ import com.rdiachenko.jlv.plugin.Operation;
 import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 
 public class ViewRefresher {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private static final int EXECUTOR_TIMEOUT_MS = 2000;
-    
+
     private final Operation callback;
-
+    
     private ScheduledExecutorService executor;
-
+    
     public ViewRefresher(Operation callback) {
         Preconditions.checkNotNull(callback, "View refresher callback is null");
         this.callback = callback;
     }
-    
+
     public void start() {
         if (executor != null && !executor.isShutdown()) {
             throw new IllegalStateException("Refresher is already in progress and can't be started");
@@ -43,23 +43,23 @@ public class ViewRefresher {
                 TimeUnit.MILLISECONDS);
         logger.info("Log list view refresher started");
     }
-    
+
     public void stop() {
         logger.info("Stopping log list view refresher");
         shutdownExecutor(executor);
         logger.info("Log list view refresher stopped");
     }
-    
+
     private void shutdownExecutor(ExecutorService executor) {
         if (executor != null && !executor.isShutdown()) {
             logger.info("Shutting down executor {}", executor);
             try {
                 executor.shutdown();
-                
+
                 if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                     executor.shutdownNow();
                 }
-                logger.info("Executor shut down: {}", executor.isTerminated());
+                logger.info("Executor shut down: {}", executor.isShutdown());
             } catch (Exception e) {
                 logger.error("Failed to shutdown executor {}", executor, e);
             }
