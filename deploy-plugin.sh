@@ -4,6 +4,12 @@
 # $2 - next snapshot version
 # E.g.: ./deploy.sh 1.0.0 1.0.1
 
+if [ $# -ne 2 ]
+then
+	echo "ERROR: release version and next snapshot version are not specified"
+	exit 1
+fi
+
 function check_status() {
 	if [ "$1" -gt 0 ]; then
     	  echo "[BUILD FAILED] during $2 phase"
@@ -35,7 +41,7 @@ check_status $? '[setting up jlv-eclipse-plugin next snapshot version to $2-SNAP
 
 cd ../
 
-echo "cd ./repo && git add . && git commit -m \"jlv released $1\" && git push origin repo"
-echo "git add . && git commit -m \"jlv-eclipse-plugin version was bumped to $2-SNAPSHOT\" && git push"
+echo "cd ./repo && git add . && git commit -m \"jlv-eclipse-plugin released $1\" && git push origin repo"
+echo "cd ../ && git add . && git commit -m \"jlv-eclipse-plugin version bumped to $2-SNAPSHOT\" && git push"
 echo "git tag -a plugin-$1"
 echo "git push --tags"
