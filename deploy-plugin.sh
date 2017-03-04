@@ -36,6 +36,8 @@ check_status $? '[jlv-eclipse-plugin build]'
 cd ./com.rdiachenko.jlv.update && mvn wagon:upload
 check_status $? '[jlv-eclipse-plugin deploy]'
 
+cd ../
+
 mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$2-SNAPSHOT
 check_status $? '[setting up jlv-eclipse-plugin next snapshot version to $2-SNAPSHOT]'
 
