@@ -18,9 +18,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     IPreferenceStore store = JlvActivator.getDefault().getPreferenceStore();
     store.setDefault(JlvConstants.SERVER_PORT_PREF_KEY, 4445);
     store.setDefault(JlvConstants.SERVER_AUTO_START_PREF_KEY, true);
-    store.setDefault(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY, 5000);
+    store.setDefault(JlvConstants.LOGLIST_BUFFER_SIZE_PREF_KEY, 1000);
     store.setDefault(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY, 2000);
-    store.setDefault(JlvConstants.QUICK_SEARCH_VISIBLE_PREF_KEY, true);
+    store.setDefault(JlvConstants.QUICK_SEARCH_VISIBLE_PREF_KEY, false);
 
     List<StructuralModelItem> structuralModelItems = new ArrayList<>();
     for (LogField field : LogField.values()) {

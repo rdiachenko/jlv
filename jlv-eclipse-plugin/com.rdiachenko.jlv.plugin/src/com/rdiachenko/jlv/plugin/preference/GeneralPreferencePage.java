@@ -19,7 +19,7 @@ public class GeneralPreferencePage extends FieldEditorPreferencePage implements 
   private static final int LOGLIST_VIEW_LOGS_COUNT_MIN = 50;
   private static final int LOGLIST_VIEW_LOGS_COUNT_MAX = 10000;
 
-  private static final int LOGLIST_VIEW_REFRESHING_TIME_MS_MIN = 500;
+  private static final int LOGLIST_VIEW_REFRESHING_TIME_MS_MIN = 1000;
   private static final int LOGLIST_VIEW_REFRESHING_TIME_MS_MAX = 60000;
 
   @Override
