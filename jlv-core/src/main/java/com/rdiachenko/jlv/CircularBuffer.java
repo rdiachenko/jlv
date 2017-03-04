@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
  * <li>Increment the tail</li>
  * <li>Insert a new element at the tail</li>
  * <li>If the tail is equal to the head then increment the head</li>
+ * </ul>
  * </p>
  * E.g.:
  *

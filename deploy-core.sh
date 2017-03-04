@@ -7,7 +7,7 @@ function check_status() {
 	fi
 }
 
-cd ./jlv-core && mvn release:clean release:prepare release:perform -B
+cd ./jlv-core && mvn release:clean release:prepare release:perform -Darguments="-Dmaven.javadoc.skip=true -Dmaven.deploy.skip=true" -B
 check_status $? '[jlv-core release]'
 
 cd ../
