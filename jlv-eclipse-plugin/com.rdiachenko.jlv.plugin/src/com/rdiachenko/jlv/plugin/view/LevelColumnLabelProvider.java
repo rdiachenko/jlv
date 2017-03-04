@@ -19,18 +19,18 @@ import com.rdiachenko.jlv.plugin.preference.PresentationalModel;
 import com.rdiachenko.jlv.plugin.preference.PresentationalModelItem;
 
 public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
-    
+
     private final TableViewer viewer;
-    
+
     public LevelColumnLabelProvider(TableViewer viewer) {
         this.viewer = viewer;
     }
-    
+
     @Override
     public void measure(Event event, Object element) {
         // no code
     }
-
+    
     @Override
     public void update(ViewerCell cell) {
         Log log = (Log) cell.getElement();
@@ -41,13 +41,13 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
         cell.setFont(ResourceManager.getFont(viewer.getTable(), model.getFontSize(), SWT.NONE));
         super.update(cell);
     }
-    
+
     @Override
     public void paint(Event event, Object element) {
         Log log = (Log) element;
         Rectangle bounds = ((TableItem) event.item).getBounds(event.index);
         PresentationalModel model = PreferenceStoreUtils.getPresentationalModel();
-        
+
         if (model.isLevelAsImage()) {
             Image image = ResourceManager.getImage(LogLevel.toLogLevel(log.getLevel()));
             Rectangle imageBounds = image.getBounds();
@@ -63,13 +63,6 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
             int x = xOffset > 0 ? event.x + xOffset : event.x;
             int y = yOffset > 0 ? event.y + yOffset : event.y;
             event.gc.drawText(log.getLevel(), x, y, true);
-        }
-    }
-    
-    @Override
-    public void erase(Event event, Object element) {
-        if ((event.detail & SWT.SELECTED) != 0) {
-            event.detail &= ~SWT.FOREGROUND;
         }
     }
 }
