@@ -8,13 +8,13 @@ import com.rdiachenko.jlv.plugin.view.LogListView;
 
 public class ScrollToBottomAction extends AbstractHandler {
 
-    @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-        LogListView view = ActionUtils.getLogListView(event);
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    LogListView view = ActionUtils.getLogListView(event);
 
-        if (view != null) {
-            view.toggleScrollToBottom();
-        }
-        return null;
+    if (view != null) {
+      view.toggleScrollToBottom();
     }
+    return null;
+  }
 }

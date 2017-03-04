@@ -16,53 +16,53 @@ import com.rdiachenko.jlv.plugin.PreferenceStoreUtils;
 
 public class ViewRefresher {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final int EXECUTOR_TIMEOUT_MS = 2000;
+  private static final int EXECUTOR_TIMEOUT_MS = 2000;
 
-    private final Operation callback;
-    
-    private ScheduledExecutorService executor;
-    
-    public ViewRefresher(Operation callback) {
-        Preconditions.checkNotNull(callback, "View refresher callback is null");
-        this.callback = callback;
+  private final Operation callback;
+
+  private ScheduledExecutorService executor;
+
+  public ViewRefresher(Operation callback) {
+    Preconditions.checkNotNull(callback, "View refresher callback is null");
+    this.callback = callback;
+  }
+
+  public void start() {
+    if (executor != null && !executor.isShutdown()) {
+      throw new IllegalStateException("Refresher is already in progress and can't be started");
     }
+    int refreshingTimeMs = PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY);
+    logger.info("Starting log list view refresher with period time: {} ms", refreshingTimeMs);
+    executor = Executors.newSingleThreadScheduledExecutor();
+    executor.scheduleAtFixedRate(
+        () -> Display.getDefault().syncExec(() -> callback.perform()),
+        500,
+        refreshingTimeMs,
+        TimeUnit.MILLISECONDS);
+    logger.info("Log list view refresher started");
+  }
 
-    public void start() {
-        if (executor != null && !executor.isShutdown()) {
-            throw new IllegalStateException("Refresher is already in progress and can't be started");
+  public void stop() {
+    logger.info("Stopping log list view refresher");
+    shutdownExecutor(executor);
+    logger.info("Log list view refresher stopped");
+  }
+
+  private void shutdownExecutor(ExecutorService executor) {
+    if (executor != null && !executor.isShutdown()) {
+      logger.info("Shutting down executor {}", executor);
+      try {
+        executor.shutdown();
+
+        if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+          executor.shutdownNow();
         }
-        int refreshingTimeMs = PreferenceStoreUtils.getInt(JlvConstants.LOGLIST_REFRESH_TIME_MS_PREF_KEY);
-        logger.info("Starting log list view refresher with period time: {} ms", refreshingTimeMs);
-        executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(
-                () -> Display.getDefault().syncExec(() -> callback.perform()),
-                500,
-                refreshingTimeMs,
-                TimeUnit.MILLISECONDS);
-        logger.info("Log list view refresher started");
+        logger.info("Executor shut down: {}", executor.isShutdown());
+      } catch (Exception e) {
+        logger.error("Failed to shutdown executor {}", executor, e);
+      }
     }
-
-    public void stop() {
-        logger.info("Stopping log list view refresher");
-        shutdownExecutor(executor);
-        logger.info("Log list view refresher stopped");
-    }
-
-    private void shutdownExecutor(ExecutorService executor) {
-        if (executor != null && !executor.isShutdown()) {
-            logger.info("Shutting down executor {}", executor);
-            try {
-                executor.shutdown();
-
-                if (!executor.awaitTermination(EXECUTOR_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
-                    executor.shutdownNow();
-                }
-                logger.info("Executor shut down: {}", executor.isShutdown());
-            } catch (Exception e) {
-                logger.error("Failed to shutdown executor {}", executor, e);
-            }
-        }
-    }
+  }
 }

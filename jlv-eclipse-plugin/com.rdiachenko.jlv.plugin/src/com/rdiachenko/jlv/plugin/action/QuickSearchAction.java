@@ -8,14 +8,14 @@ import com.rdiachenko.jlv.plugin.view.LogListView;
 
 public class QuickSearchAction extends AbstractHandler {
 
-    @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-        LogListView view = ActionUtils.getLogListView(event);
-        
-        if (view != null) {
-            boolean visible = view.isSearchFieldVisible();
-            view.setSearchFieldVisible(!visible);
-        }
-        return null;
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    LogListView view = ActionUtils.getLogListView(event);
+
+    if (view != null) {
+      boolean visible = view.isSearchFieldVisible();
+      view.setSearchFieldVisible(!visible);
     }
+    return null;
+  }
 }

@@ -10,20 +10,20 @@ import com.rdiachenko.jlv.plugin.view.LogListViewController;
 
 public class StartServerAction extends AbstractHandler {
 
-    @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-        LogListView view = ActionUtils.getLogListView(event);
+  @Override
+  public Object execute(ExecutionEvent event) throws ExecutionException {
+    LogListView view = ActionUtils.getLogListView(event);
 
-        if (view != null) {
-            LogListViewController controller = view.getController();
-            controller.startServer();
+    if (view != null) {
+      LogListViewController controller = view.getController();
+      controller.startServer();
 
-            SourceProvider sourceProvider = ActionUtils.getSourceProvider(event);
+      SourceProvider sourceProvider = ActionUtils.getSourceProvider(event);
 
-            if (sourceProvider != null) {
-                sourceProvider.setServerStarted(true);
-            }
-        }
-        return null;
+      if (sourceProvider != null) {
+        sourceProvider.setServerStarted(true);
+      }
     }
+    return null;
+  }
 }

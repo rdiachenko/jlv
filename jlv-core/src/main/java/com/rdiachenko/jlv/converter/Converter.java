@@ -4,5 +4,5 @@ import com.rdiachenko.jlv.Log;
 
 public interface Converter {
 
-    Log convert(Object obj);
+  Log convert(Object obj);
 }

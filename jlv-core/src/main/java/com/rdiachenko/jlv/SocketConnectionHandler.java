@@ -15,56 +15,56 @@ import com.rdiachenko.jlv.converter.LogConverterType;
 
 public class SocketConnectionHandler implements Runnable {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Socket socket;
+  private final Socket socket;
 
-    private final EventBus eventBus;
+  private final EventBus eventBus;
 
-    public SocketConnectionHandler(Socket socket, EventBus eventBus) {
-        Preconditions.checkNotNull(socket, "Socket is null");
-        Preconditions.checkNotNull(eventBus, "Event bus is null");
-        this.socket = socket;
-        this.eventBus = eventBus;
-    }
+  public SocketConnectionHandler(Socket socket, EventBus eventBus) {
+    Preconditions.checkNotNull(socket, "Socket is null");
+    Preconditions.checkNotNull(eventBus, "Event bus is null");
+    this.socket = socket;
+    this.eventBus = eventBus;
+  }
 
-    @Override
-    public void run() {
-        try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
-                ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
+  @Override
+  public void run() {
+    try (BufferedInputStream inputStream = new BufferedInputStream(socket.getInputStream());
+        ObjectInputStream objectStream = new ObjectInputStream(inputStream)) {
 
-            LogConverterType prevConverterType = null;
-            
-            while (!socket.isClosed() && !Thread.currentThread().isInterrupted()) {
-                Object obj = objectStream.readObject();
-                LogConverterType converterType = LogConverterType.valueOf(obj);
-                
-                if (prevConverterType != converterType) {
-                    prevConverterType = converterType;
-                    logger.info("Log converter type detected: {} for log's object: {}",
-                            converterType.name(), obj.getClass().getName());
-                }
-                Log log = converterType.convert(obj);
-                eventBus.post(log);
-            }
-        } catch (EOFException e) {
-            // When client closes connection, the stream will run out of data,
-            // and the ObjectInputStream.readObject method will throw the exception
-            logger.warn("Reached EOF while reading from socket");
-        } catch (Exception e) {
-            logger.error("Failed to handle input stream", e);
-        } finally {
-            stop();
+      LogConverterType prevConverterType = null;
+
+      while (!socket.isClosed() && !Thread.currentThread().isInterrupted()) {
+        Object obj = objectStream.readObject();
+        LogConverterType converterType = LogConverterType.valueOf(obj);
+
+        if (prevConverterType != converterType) {
+          prevConverterType = converterType;
+          logger.info("Log converter type detected: {} for log's object: {}",
+              converterType.name(), obj.getClass().getName());
         }
+        Log log = converterType.convert(obj);
+        eventBus.post(log);
+      }
+    } catch (EOFException e) {
+      // When client closes connection, the stream will run out of data,
+      // and the ObjectInputStream.readObject method will throw the exception
+      logger.warn("Reached EOF while reading from socket");
+    } catch (Exception e) {
+      logger.error("Failed to handle input stream", e);
+    } finally {
+      stop();
     }
+  }
 
-    private void stop() {
-        logger.info("Stopping connection handler");
-        try {
-            socket.close();
-            logger.info("Connection handler stopped");
-        } catch (IOException e) {
-            logger.error("Failed to stop connection handler", e);
-        }
+  private void stop() {
+    logger.info("Stopping connection handler");
+    try {
+      socket.close();
+      logger.info("Connection handler stopped");
+    } catch (IOException e) {
+      logger.error("Failed to stop connection handler", e);
     }
+  }
 }
