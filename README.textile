@@ -5,19 +5,21 @@ h3. Information
 
 Java logging viewer is available as a plugin for Eclipse IDE.
 
-Currently it supports the following logging system clients:
+h5. Supported logging system clients:
+* logback v1.x
 * log4j v1.x
+* log4j v2.x
 
-h5. Current main features:
-* Getting logs by socket
-* Quick filtering by any log's field
+h5. Main features:
+* Receiving logs via socket
+* Quick filtration
 * Detailed information about selected log
 * Preferences page for controlling and saving plugin state
-* Additional preference page for customizing logs' representation
+* Preferences page for customizing log list representation
 
-h5. Requirements:
-* Eclipse 4.x
-* Java 1.7
+h5. Minimum requirements:
+* Eclipse 4.6
+* Java 1.8
 
 h3. Eclipse update site
 
@@ -25,54 +27,86 @@ bc.. https://github.com/rdiachenko/jlv/raw/repo/eclipse
 
 h3. Release notes
 
-* "Past releases":https://github.com/rdiachenko/JLV/issues/milestones?state=closed
-* "Upcoming releases":https://github.com/rdiachenko/JLV/issues/milestones?state=open
+* "Past releases":https://github.com/rdiachenko/jlv/milestones?state=closed
+* "Upcoming releases":https://github.com/rdiachenko/jlv/milestones?state=open
 
-h3. Client's log4j v1.x configuration
+h3. Client logging system configuration
 
-JLV uses socket connection to receive logs from clients. Clients should configure their log4j properties file for successful interaction. Default port is 4445, but you may also change it in JLV's preferences. Add this configuration to your log4j properties file:
+Jlv uses socket connection to receive logs from clients. Clients should configure their logging system properties file for successful interaction. Default port is 4445, but you may also change it in Jlv plugin preferences page.
 
-h5. XML Format
+h5. Logback minimum configuration (logback.xml)
+
+b.. <?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+  <appender name="JLV" class="ch.qos.logback.classic.net.SocketAppender">
+    <remoteHost>localhost</remoteHost>
+    <port>4445</port>
+    <includeCallerData>true</includeCallerData>
+  </appender>
+  <root level="DEBUG">
+    <appender-ref ref="JLV" />
+  </root>
+</configuration>
+
+h5. Log4j1 minimum configuration (log4j.xml/log4j.properties)
 
 bc.. <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
- <appender name="jlv" class="org.apache.log4j.net.SocketAppender">
-    <param name="remoteHost" value="localhost"/>
-    <param name="port" value="4445"/>
-    <param name="locationInfo" value="true"/>
+  <appender name="JLV" class="org.apache.log4j.net.SocketAppender">
+    <param name="remoteHost" value="localhost" />
+    <param name="port" value="4445" />
+    <param name="locationInfo" value="true" />
   </appender>
   <root>
-    <priority value="debug"/>
-    <appender-ref ref="jlv"/>
+    <priority value="DEBUG" />
+    <appender-ref ref="JLV" />
   </root>
 </log4j:configuration>
 
-h5. Properties Format
+bc.. log4j.rootCategory=DEBUG, JLV
+log4j.appender.JLV=org.apache.log4j.net.SocketAppender
+log4j.appender.JLV.remoteHost=localhost
+log4j.appender.JLV.port=4445
+log4j.appender.JLV.locationInfo=true
 
-bc.. log4j.rootCategory=DEBUG, jlv
-log4j.appender.jlv=org.apache.log4j.net.SocketAppender
-log4j.appender.jlv.remoteHost=localhost
-log4j.appender.jlv.port=4445
-log4j.appender.jlv.locationInfo=true
+h5. Log4j2 minimum configuration (log4j2.xml)
+
+bc.. <?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <Socket name="JLV" host="localhost" port="4445">
+      <SerializedLayout />
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Root level="DEBUG">
+      <AppenderRef ref="JLV" />
+    </Root>
+  </Loggers>
+</Configuration>
 
 h3. Screenshots
 
-h5. Show JLV's view in Eclipse (Window > Show View > Other)
+h5. Open Jlv view (Window > Show View > Other > Java Logging Viewer > Log list)
 
-!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/show_jlv_view.png!
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/open_jlv_view.png!
 
-h5. JLV's main preferences page (Window > Preferences > JLV)
+h5. Main preferences page (Window > Preferences > Java Logging Viewer)
 
 !https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_main_preferences.png!
 
-h5. JLV's additional preferences page (Window > Preferences > JLV > Additional)
+h5. User Interface preferences page (Window > Preferences > Java Logging Viewer > User Interface)
 
-!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_additional_preferences.png!
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_ui_preferences.png!
 
-h5. JLV's log list view and log details view
+h5. Log list view and log details
 
-!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_views.png!
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_loglist_view.png!
+
+h5. Log list view with filtering
+
+!https://raw.github.com/rdiachenko/JLV/gh-pages/jlv_screenshots/jlv_loglist_with_filtering.png!
 
 h3. How to contribute
 
