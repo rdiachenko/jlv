@@ -45,5 +45,4 @@ cd ../
 
 echo "cd ./repo && git add . && git commit -m \"jlv-eclipse-plugin released $1\" && git push origin repo"
 echo "cd ../ && git add . && git commit -m \"jlv-eclipse-plugin version bumped to $2-SNAPSHOT\" && git push"
-echo "git tag -a plugin-$1"
-echo "git push --tags"
+echo "git tag plugin-$1 && git push --tags"
