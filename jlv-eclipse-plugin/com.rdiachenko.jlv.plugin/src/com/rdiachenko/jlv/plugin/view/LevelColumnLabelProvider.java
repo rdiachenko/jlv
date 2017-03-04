@@ -65,4 +65,11 @@ public class LevelColumnLabelProvider extends OwnerDrawLabelProvider {
       event.gc.drawText(log.getLevel(), x, y, true);
     }
   }
+
+  @Override
+  public void erase(Event event, Object element) {
+    if ((event.detail & SWT.SELECTED) != 0) {
+      event.detail &= ~SWT.FOREGROUND;
+    }
+  }
 }
