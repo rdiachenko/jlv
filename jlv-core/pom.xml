@@ -4,7 +4,7 @@
 	<groupId>com.rdiachenko</groupId>
 	<artifactId>jlv-core</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<name>Java Logging Viewer - Core</name>
 
 	<properties>
@@ -90,6 +90,6 @@
 		<connection>scm:git:git@github.com:rdiachenko/jlv.git</connection>
 		<developerConnection>scm:git:git@github.com:rdiachenko/jlv.git</developerConnection>
 		<url>https://github.com/rdiachenko/jlv</url>
-		<tag>core-1.0.2</tag>
+		<tag>HEAD</tag>
 	</scm>
 </project>
