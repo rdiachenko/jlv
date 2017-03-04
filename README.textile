@@ -5,7 +5,7 @@ h3. Information
 
 Java logging viewer is available as a plugin for Eclipse IDE.
 
-h5. Supported logging system clients:
+h5. Supported logging systems:
 * logback v1.x
 * log4j v1.x
 * log4j v2.x
@@ -36,7 +36,7 @@ Jlv uses socket connection to receive logs from clients. Clients should configur
 
 h5. Logback minimum configuration (logback.xml)
 
-b.. <?xml version="1.0" encoding="UTF-8"?>
+bc.. <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
   <appender name="JLV" class="ch.qos.logback.classic.net.SocketAppender">
     <remoteHost>localhost</remoteHost>
@@ -112,7 +112,6 @@ h3. How to contribute
 
 * "Install and configure your Eclipse":https://github.com/rdiachenko/JLV/wiki/Eclipse-installation-and-configuration
 * Read article about "development workflow with git":https://github.com/rdiachenko/JLV/wiki/Development-workflow-with-Git%3A-Fork%2C-Branching%2C-Commits-and-Pull-Request
-* "Create jlv run configuration within Eclipse":https://github.com/rdiachenko/JLV/wiki/JLV-Eclipse-plugin%27s-run-configuration
 
 h3. Contributors
 
