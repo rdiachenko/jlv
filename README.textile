@@ -21,6 +21,9 @@ h5. Minimum requirements:
 * Eclipse 4.6
 * Java 1.8
 
+h5. Breaking backward compatibility:
+* *Release 1.4.0:* Jlv Eclipse plugin 1.4.0 uses plugin element ids which are different from those, used in 1.3.3 version, so old versions of Jlv Eclipse plugin should be removed before installing 1.4.0 ("#82":https://github.com/rdiachenko/jlv/issues/82).
+
 h3. Eclipse update site
 
 bc.. https://github.com/rdiachenko/jlv/raw/repo/eclipse
