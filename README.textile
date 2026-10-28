@@ -1,3 +1,5 @@
+p. *Unmaintained since 2017, archived.* JLV depends on vulnerable Log4j versions: log4j-core 2.8.1, which is affected by Log4Shell (CVE-2021-44228), and the end-of-life Log4j 1.2.17. It receives serialized log events over a socket, so don't run it where untrusted clients can reach that port.
+
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=185332" class="drag" title="Drag to your running Eclipse workspace to install JLV"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install JLV." /></a>
 "!https://api.travis-ci.org/rdiachenko/jlv.png!":http://travis-ci.org/rdiachenko/jlv
 
